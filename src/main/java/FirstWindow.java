@@ -6,43 +6,55 @@ import java.awt.event.ActionListener;
 
 public class FirstWindow {
     private JButton nextFirstWindow;
+    private JButton button1;
     private JPanel panel1;
     private JTextField numOfVariables;
+    private JTextField numOfObjFunct;
     private JComboBox algorithmType;
     private JComboBox variableType;
+    private JPanel navigationPanel;
+    private JPanel parameterPanel;
+
+    static JFrame frame;
 
     public FirstWindow() {
         nextFirstWindow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    Jmetal_cst cst = new Jmetal_cst();
-                    cst.run();
-
-                    // create chart
-                    Chart chart = new Chart(null,null);
-                    chart.run();
-
-                    // show message dialog
-                    JOptionPane.showMessageDialog(null,"Hello jMetal\n" +
-                            "Algorithm executed\n" +
-                            "Computing time took: " + Long.toString(cst.computingTime)
-                    );
-
-
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
+                Container.numOfVariablesString = numOfVariables.getText();
+                Container.numOfObjFunctString = numOfObjFunct.getText();
+                SecondWindow.run();
             }
         });
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("jMetal GUI");
-        //frame.setSize(200,100);
+    public static void run() {
         frame.setContentPane(new FirstWindow().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        //frame.pack();
+        frame.setVisible(true);
+    }
+
+    public void save() {
+        Container.numOfObjFunctString = numOfObjFunct.toString();
+        Container.numOfVariablesString = numOfVariables.toString();
+    }
+
+    public void load() {
+        frame.setContentPane(new FirstWindow().panel1);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.pack();
+        frame.setVisible(true);
+        this.numOfVariables.setText(Container.numOfVariablesString);
+        this.numOfObjFunct.setText(Container.numOfObjFunctString);
+    }
+
+    public static void main(String[] args) {
+        frame = new JFrame("jMetal GUI");
+        frame.setSize(500,300);
+        frame.setContentPane(new FirstWindow().panel1);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.pack();
         frame.setVisible(true);
     }
 }
