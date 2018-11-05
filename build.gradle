@@ -13,5 +13,17 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'jfree:jfreechart:1.0.9'
+    compile 'jfree:jcommon:1.0.9'
+    // https://mvnrepository.com/artifact/org.uma.jmetal/jmetal-core
+    compile group: 'org.uma.jmetal', name: 'jmetal-core', version: '5.6'
+    // https://mvnrepository.com/artifact/org.uma.jmetal/jmetal-problem
+    compile group: 'org.uma.jmetal', name: 'jmetal-problem', version: '5.6'
+    // https://mvnrepository.com/artifact/org.uma.jmetal/jmetal-algorithm
+    compile group: 'org.uma.jmetal', name: 'jmetal-algorithm', version: '5.6'
+    // https://mvnrepository.com/artifact/org.uma.jmetal/jmetal
+    compile group: 'org.uma.jmetal', name: 'jmetal', version: '5.6', ext: 'pom'
+    // https://mvnrepository.com/artifact/org.uma.jmetal/jmetal-exec
+    compile group: 'org.uma.jmetal', name: 'jmetal-exec', version: '5.6'
 }
 
