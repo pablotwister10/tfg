@@ -18,6 +18,9 @@ import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
+
+import gui.FirstWindow;
 
 /**
  * @author angel
@@ -26,6 +29,7 @@ import java.util.List;
 public class Jmetal_cst {
 
     public static long computingTime;
+    public static Vector<Double> scores;
 
     public void run() throws Exception{
         Algorithm<DoubleSolution> algorithm;
@@ -42,10 +46,12 @@ public class Jmetal_cst {
 
         //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
         algorithm = new GeneticAlgorithmBuilder<DoubleSolution>(problem, crossoverOperator, mutationOperator)
-                .setPopulationSize(2)
-                .setMaxEvaluations(25000)
+                .setPopulationSize(FirstWindow.getPopulationSizeInt()) // Set to 2
+                .setMaxEvaluations(FirstWindow.getMaxEvaluationsInt()) // Set to 25000
                 .setSelectionOperator(selectionOperator)
                 .build() ;
+
+        scores = new Vector<>(25000);
 
         //Ejecucion del algoritmo de optimizacion
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
