@@ -249,7 +249,7 @@ public class FirstWindow extends JFrame {
         frame = new JFrame("jMetal GUI");
         frame.setSize(500,300);
         FirstWindow activity = new FirstWindow();
-        frame.setContentPane(activity.panelFirst);
+        frame.setContentPane(activity.panel);
         //frame.pack();
 
         activity.panelSecond.setVisible(false);
