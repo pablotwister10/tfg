@@ -4,8 +4,11 @@ import example.Jmetal_cst;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Vector;
 
 public class FirstWindow extends JFrame {
+
+    // TODO: Get rid of duplication of memory
 
     static JFrame frame;
     private JPanel panel;
@@ -26,13 +29,20 @@ public class FirstWindow extends JFrame {
     private static String variableTypeFirstString;
 
     // SECOND WINDOW
+    private static boolean createSecondView = true;
     private JPanel panelSecond;
     private JPanel navigationPanelSecond;
     private JPanel parameterPanelSecond;
     private JButton nextSecond;
     private JButton previousSecond;
 
-    static String[] nameOfVariablesString;
+    private static final String NAME_OF_VARIABLES = "Name of Variables";
+    private static final String MIN_INTERVAL_OF_VARIABLES = "Min of Interval";
+    private static final String MAX_INTERVAL_OF_VARIABLES = "Max of Interval";
+    private static final String TYPE_OF_VARIABLE = "Variable type";
+    private static Vector<String> nameOfVariablesString = new Vector<String>(0);
+    private static Vector<Double> minIntervalOfVariablesDouble = new Vector<Double>(0);
+    private static Vector<Double> maxIntervalOfVariablesDouble = new Vector<Double>(0);
     //ArrayList<T> intervalOfVariablesType;
 
     // THIRD WINDOW
@@ -78,7 +88,10 @@ public class FirstWindow extends JFrame {
             }
             else {
                 saveFirstView();
-                loadSecondView();
+                if (createSecondView)
+                    createSecondView();
+                else
+                    loadSecondView();
                 //Chart chart = new Chart(null,null);
                 //chart.run();
             }
@@ -89,19 +102,14 @@ public class FirstWindow extends JFrame {
         });
 
         nextSecond.addActionListener(e -> {
-            /*
-            if (nameOfVariables0.getText().isEmpty()) { // TODO: Change with isBlank()
-                // Error
-                JOptionPane.showMessageDialog(null, "Enter Name of Variables");
-            }
-            else if (intervalOfVariables0.getText().isEmpty()) { // TODO: Change with isBlank()
-                // Error
-                JOptionPane.showMessageDialog(null,"Enter Interval of Variables");
-            }
-            else {*/
+            try {
                 saveSecondView();
                 loadThirdView();
-            //}
+            } catch (NumberFormatException n){
+                JOptionPane.showMessageDialog(null,
+                        "MAKE SURE EVERYTHING IS CORRECT");
+                // TODO: Implement better error handling
+            }
         });
 
         previousThird.addActionListener(e -> {
@@ -139,14 +147,17 @@ public class FirstWindow extends JFrame {
     }
 
 
+    public static Vector<Double> getMinIntervalOfVariablesDouble() {
+        return minIntervalOfVariablesDouble;
+    }
+    public static Vector<Double> getMaxIntervalOfVariablesDouble() {
+        return maxIntervalOfVariablesDouble;
+    }
     public static int getNumOfVariablesFirstInt() {
         return numOfVariablesFirstInt;
     }
     public static int getNumOfObjFunctFirstInt() {
         return numOfObjFunctFirstInt;
-    }
-    public static String[] getNameOfVariablesString() {
-        return nameOfVariablesString;
     }
     public static int getMaxEvaluationsInt() {
         return maxEvaluationsInt;
@@ -157,6 +168,9 @@ public class FirstWindow extends JFrame {
 
 
     private void saveFirstView() {
+        if (Integer.valueOf(numOfVariablesFirst.getText()) != numOfVariablesFirstInt)
+            createSecondView = true;
+
         numOfVariablesFirstInt = Integer.valueOf(numOfVariablesFirst.getText());
         numOfObjFunctFirstInt = Integer.valueOf(numOfObjFunctFirst.getText());
         algorithmTypeFirstString = algorithmTypeFirst.toString();
@@ -164,7 +178,48 @@ public class FirstWindow extends JFrame {
     }
 
     private void saveSecondView() {
+        Component[] components = parameterPanelSecond.getComponents();
 
+        // Clear vectors
+        nameOfVariablesString.removeAllElements();
+        minIntervalOfVariablesDouble.removeAllElements();
+        maxIntervalOfVariablesDouble.removeAllElements();
+
+        // Fill out vectors
+        for (int i=4; i<components.length; i=i+4) {
+                if (components[i] instanceof JTextField)
+                    nameOfVariablesString.add(((JTextField) components[i]).getText());
+                if (components[i+1] instanceof JTextField)
+                    minIntervalOfVariablesDouble.add(Double.valueOf(((JTextField) components[i+1]).getText()));
+                if (components[i+2] instanceof JTextField)
+                    maxIntervalOfVariablesDouble.add(Double.valueOf(((JTextField) components[i+2]).getText()));
+                //if (components[i+3] instanceof JTextField)
+                //type[j] = Double.valueOf(((JTextField) components[i+3]).getText());
+        }
+
+        // TODO: Error handling if don't come in order
+        /*
+        int saveName;
+        int saveMin;
+        int saveMax;
+        int saveType;
+
+        for (int i=0; i<components.length; i++) {
+            if (components[i] instanceof JLabel) {
+                String text = ((JLabel) components[i]).getText();
+                if (text.equalsIgnoreCase(NAME_OF_VARIABLES)) // STORE IN 0
+                    saveName = i;
+                if (text.equalsIgnoreCase(MIN_INTERVAL_OF_VARIABLES)) // STORE IN 1
+                    saveMin = i;
+                if (text.equalsIgnoreCase(MAX_INTERVAL_OF_VARIABLES)) // STORE IN 2
+                    saveMax = i;
+                if (text.equalsIgnoreCase(TYPE_OF_VARIABLE)) // STORE IN 3
+                    saveType = i;
+            } else if (components[i] instanceof JTextField) {
+                String text = ((JTextField) components[i]).getText();
+            }
+        }
+        */
     }
 
     private void saveThirdView() {
@@ -179,6 +234,30 @@ public class FirstWindow extends JFrame {
     }
 
     private void loadSecondView() {
+        panelFirst.setVisible(false);
+        panelSecond.setVisible(true);
+        panelThird.setVisible(false);
+    }
+    
+    private void loadThirdView() {
+        for (int i=0; i<nameOfVariablesString.size(); i++)
+            System.out.println(nameOfVariablesString.get(i));
+        for (int i=0; i<minIntervalOfVariablesDouble.size(); i++)
+            System.out.println(minIntervalOfVariablesDouble.get(i));
+
+        if (numOfObjFunctFirstInt < 4)
+            objectiveFunctionFour.setEditable(false);
+        if (numOfObjFunctFirstInt < 3)
+            objectiveFunctionThird.setEditable(false);
+        if (numOfObjFunctFirstInt < 2)
+            objectiveFunctionTwo.setEditable(false);
+
+        panelFirst.setVisible(false);
+        panelSecond.setVisible(false);
+        panelThird.setVisible(true);
+    }
+
+    private void createSecondView() {
         // Clearing out the setEditable for ThirdView
         objectiveFunctionFour.setEditable(true);
         objectiveFunctionThird.setEditable(true);
@@ -189,7 +268,7 @@ public class FirstWindow extends JFrame {
         panelThird.setVisible(false);
 
         // Clearing out panel
-        parameterPanelSecond.removeAll(); // TODO: Check if it's the first time executing loadSecondView because it clears user input
+        parameterPanelSecond.removeAll();
 
         // Setting grids as many as variables
         parameterPanelSecond.setLayout(new GridLayout(0,4)); // TODO: Set size to normal
@@ -198,18 +277,17 @@ public class FirstWindow extends JFrame {
         //parameterPanelSecond.add(horBar,BorderLayout.SOUTH);
 
         // Parameters
-        JLabel nameOfVariablesLabel = new JLabel("Name of Variables");
-        JLabel minIntervalOfVariablesLabel = new JLabel("Min of Interval");
-        JLabel maxIntervalOfVariablesLabel = new JLabel("Max of Interval");
-        JLabel typeVariablesLabel = new JLabel("Variable type");
+        JLabel nameOfVariablesLabel = new JLabel(NAME_OF_VARIABLES);
+        JLabel minIntervalOfVariablesLabel = new JLabel(MIN_INTERVAL_OF_VARIABLES);
+        JLabel maxIntervalOfVariablesLabel = new JLabel(MAX_INTERVAL_OF_VARIABLES);
+        JLabel typeVariablesLabel = new JLabel(TYPE_OF_VARIABLE);
 
         JTextField nameOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
         JTextField minIntervalOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
         JTextField maxIntervalOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
         String[] typeVariable = {"Double","Int"};
         JComboBox typesVariableCombo[] = new JComboBox[numOfVariablesFirstInt];
-
-
+        
         // Adding
         parameterPanelSecond.add(nameOfVariablesLabel);
         parameterPanelSecond.add(minIntervalOfVariablesLabel);
@@ -230,19 +308,8 @@ public class FirstWindow extends JFrame {
             parameterPanelSecond.add(typesVariableCombo[i]);
         }
 
-    }
+        createSecondView = false;
 
-    private void loadThirdView() {
-        if (numOfObjFunctFirstInt < 4)
-            objectiveFunctionFour.setEditable(false);
-        if (numOfObjFunctFirstInt < 3)
-            objectiveFunctionThird.setEditable(false);
-        if (numOfObjFunctFirstInt < 2)
-            objectiveFunctionTwo.setEditable(false);
-
-        panelFirst.setVisible(false);
-        panelSecond.setVisible(false);
-        panelThird.setVisible(true);
     }
 
     public static void main(String[] args) {

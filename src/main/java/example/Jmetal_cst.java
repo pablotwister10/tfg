@@ -33,13 +33,17 @@ public class Jmetal_cst {
     public static long computingTime;
     public static Vector<Double> scores;
 
-    public void run() throws Exception{
+    public void run() throws Exception {
+
         Algorithm<DoubleSolution> algorithm;
-        List<Double> lowerLimit = Arrays.asList(0.1, 0.1); //Limite inferior del rango de soluciones (2 variables de optimización en este caso)
-        List<Double> upperLimit = Arrays.asList(4.0, 4.0); //Límite superior del rango de soluciones
-        // TODO: implementar en GUI
+        ArrayList<Double> lowers = new ArrayList<>(FirstWindow.getNumOfVariablesFirstInt()); // 0.1
+        ArrayList<Double> uppers = new ArrayList<>(FirstWindow.getNumOfVariablesFirstInt()); // 4.0
+
+        lowers.addAll(FirstWindow.getMinIntervalOfVariablesDouble());
+        uppers.addAll(FirstWindow.getMaxIntervalOfVariablesDouble());
+
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt(2,lowerLimit,upperLimit,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new CST_opt(FirstWindow.getNumOfVariablesFirstInt(),lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0, 20.0) ;
@@ -53,7 +57,7 @@ public class Jmetal_cst {
                 .setSelectionOperator(selectionOperator)
                 .build() ;
 
-        scores = new Vector<>(25000);
+        scores = new Vector<>(FirstWindow.getMaxEvaluationsInt());
 
         //Ejecucion del algoritmo de optimizacion
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
