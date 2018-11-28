@@ -1,5 +1,6 @@
 package example; //Nombre de tu Package
 
+import guicode.Chart;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GeneticAlgorithmBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
@@ -11,7 +12,6 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
-import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 
@@ -20,7 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-import gui.FirstWindow;
+import guicode.FirstWindow;
+
+import javax.swing.*;
 
 /**
  * @author angel
@@ -63,6 +65,10 @@ public class Jmetal_cst {
         population.add(solution) ;
 
         computingTime = algorithmRunner.getComputingTime() ;
+
+        Chart chartJMetal = new Chart(null,null);
+        chartJMetal.run();
+        //chartJMetal.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         new SolutionListOutput(population)
                 .setSeparator("\t")

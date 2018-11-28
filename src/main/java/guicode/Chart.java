@@ -1,4 +1,4 @@
-package gui;
+package guicode;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -10,13 +10,15 @@ import org.jfree.ui.RefineryUtilities;
 
 import example.Jmetal_cst;
 
-public class Chart extends ApplicationFrame {
+import javax.swing.*;
+
+public class Chart extends JFrame {
 
     public Chart (String applicationTitle, String chartTitle) {
         super(applicationTitle);
         JFreeChart lineChart = ChartFactory.createLineChart(
                 chartTitle,
-                "Years","Number of Schools",
+                "iterations","cost",
                 createDataset(),
                 PlotOrientation.VERTICAL,
                 true,true,false);
@@ -28,23 +30,26 @@ public class Chart extends ApplicationFrame {
 
     private DefaultCategoryDataset createDataset( ) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
-        dataset.addValue( 15 , "schools" , "1970" );
-        dataset.addValue( 30 , "schools" , "1980" );
-        dataset.addValue( 60 , "schools" ,  "1990" );
-        dataset.addValue( 120 , "schools" , "2000" );
-        dataset.addValue( 240 , "schools" , "2010" );
-        dataset.addValue( 300 , "schools" , "2014" );
+
+        int iterations = 1;
+
+        for (int i=0; i<Jmetal_cst.scores.size(); i++) {
+            dataset.addValue(Jmetal_cst.scores.elementAt(i),"cost",Integer.toString(iterations));
+            iterations++;
+        }
+
         return dataset;
     }
 
     public static void run() {
         Chart chart = new Chart(
-                "School Vs Years" ,
-                "Numer of Schools vs years");
+                "JMetal Graph" ,
+                "Cost over iterations");
 
         chart.pack( );
         RefineryUtilities.centerFrameOnScreen( chart );
         chart.setVisible( true );
+        chart.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
 }

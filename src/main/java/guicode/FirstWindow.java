@@ -1,8 +1,9 @@
-package gui;
+package guicode;
 
 import example.Jmetal_cst;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class FirstWindow extends JFrame {
 
@@ -28,8 +29,6 @@ public class FirstWindow extends JFrame {
     private JPanel panelSecond;
     private JPanel navigationPanelSecond;
     private JPanel parameterPanelSecond;
-    private JTextField nameOfVariables;
-    private JTextField intervalOfVariables;
     private JButton nextSecond;
     private JButton previousSecond;
 
@@ -90,18 +89,19 @@ public class FirstWindow extends JFrame {
         });
 
         nextSecond.addActionListener(e -> {
-            if (nameOfVariables.getText().isEmpty()) { // TODO: Change with isBlank()
+            /*
+            if (nameOfVariables0.getText().isEmpty()) { // TODO: Change with isBlank()
                 // Error
                 JOptionPane.showMessageDialog(null, "Enter Name of Variables");
             }
-            else if (intervalOfVariables.getText().isEmpty()) { // TODO: Change with isBlank()
+            else if (intervalOfVariables0.getText().isEmpty()) { // TODO: Change with isBlank()
                 // Error
                 JOptionPane.showMessageDialog(null,"Enter Interval of Variables");
             }
-            else {
+            else {*/
                 saveSecondView();
                 loadThirdView();
-            }
+            //}
         });
 
         previousThird.addActionListener(e -> {
@@ -187,6 +187,49 @@ public class FirstWindow extends JFrame {
         panelFirst.setVisible(false);
         panelSecond.setVisible(true);
         panelThird.setVisible(false);
+
+        // Clearing out panel
+        parameterPanelSecond.removeAll(); // TODO: Check if it's the first time executing loadSecondView because it clears user input
+
+        // Setting grids as many as variables
+        parameterPanelSecond.setLayout(new GridLayout(0,4)); // TODO: Set size to normal
+
+        //JScrollBar horBar = new JScrollBar(JScrollBar.HORIZONTAL);
+        //parameterPanelSecond.add(horBar,BorderLayout.SOUTH);
+
+        // Parameters
+        JLabel nameOfVariablesLabel = new JLabel("Name of Variables");
+        JLabel minIntervalOfVariablesLabel = new JLabel("Min of Interval");
+        JLabel maxIntervalOfVariablesLabel = new JLabel("Max of Interval");
+        JLabel typeVariablesLabel = new JLabel("Variable type");
+
+        JTextField nameOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
+        JTextField minIntervalOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
+        JTextField maxIntervalOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
+        String[] typeVariable = {"Double","Int"};
+        JComboBox typesVariableCombo[] = new JComboBox[numOfVariablesFirstInt];
+
+
+        // Adding
+        parameterPanelSecond.add(nameOfVariablesLabel);
+        parameterPanelSecond.add(minIntervalOfVariablesLabel);
+        parameterPanelSecond.add(maxIntervalOfVariablesLabel);
+        parameterPanelSecond.add(typeVariablesLabel);
+
+        for (int i=0; i<numOfVariablesFirstInt; i++) {
+            nameOfVariablesText[i] = new JTextField();
+            minIntervalOfVariablesText[i] = new JTextField();
+            maxIntervalOfVariablesText[i] = new JTextField();
+            typesVariableCombo[i] = new JComboBox(typeVariable);
+            typesVariableCombo[i].setSelectedIndex(0);
+            typesVariableCombo[i].setEnabled(false); // TODO: check with previous window
+
+            parameterPanelSecond.add(nameOfVariablesText[i]);
+            parameterPanelSecond.add(minIntervalOfVariablesText[i]);
+            parameterPanelSecond.add(maxIntervalOfVariablesText[i]);
+            parameterPanelSecond.add(typesVariableCombo[i]);
+        }
+
     }
 
     private void loadThirdView() {
@@ -206,7 +249,7 @@ public class FirstWindow extends JFrame {
         frame = new JFrame("jMetal GUI");
         frame.setSize(500,300);
         FirstWindow activity = new FirstWindow();
-        frame.setContentPane(activity.panel);
+        frame.setContentPane(activity.panelFirst);
         //frame.pack();
 
         activity.panelSecond.setVisible(false);
@@ -214,5 +257,9 @@ public class FirstWindow extends JFrame {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }
