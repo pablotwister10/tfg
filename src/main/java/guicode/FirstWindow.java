@@ -1,6 +1,8 @@
 package guicode;
 
 import example.Jmetal_cst;
+import example.Jmetal_cst_Integer;
+import org.uma.jmetal.solution.DoubleSolution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,11 +41,15 @@ public class FirstWindow extends JFrame {
     private static final String NAME_OF_VARIABLES = "Name of Variables";
     private static final String MIN_INTERVAL_OF_VARIABLES = "Min of Interval";
     private static final String MAX_INTERVAL_OF_VARIABLES = "Max of Interval";
-    private static final String TYPE_OF_VARIABLE = "Variable type";
+    private static final String INCREMENT_OF_VARIABLE = "Paso";
     private static Vector<String> nameOfVariablesString = new Vector<String>(0);
     private static Vector<Double> minIntervalOfVariablesDouble = new Vector<Double>(0);
     private static Vector<Double> maxIntervalOfVariablesDouble = new Vector<Double>(0);
-    //ArrayList<T> intervalOfVariablesType;
+    private static Vector<Double> intervalOfVariablesType = new Vector<Double>(0);
+    // intervals to int
+    private static Vector<Integer> yMinOfVariables = new Vector<Integer>(0);
+    private static Vector<Integer> yMaxOfVariables = new Vector<Integer>(0);
+    private static Vector<Integer> yIntervalOfVariables = new Vector<Integer>(0);
 
     // THIRD WINDOW
     private JPanel panelThird;
@@ -59,9 +65,12 @@ public class FirstWindow extends JFrame {
     private JTextField objectiveFunctionFour;
     private JTextField maxEvaluations;
     private JTextField populationSize;
+    private JCheckBox checkGraph;
 
     private static int maxEvaluationsInt;
     private static int populationSizeInt;
+    private static Vector<String> costFunctionsString = new Vector<String>(0);
+    private static boolean doGraph;
 
 
     private FirstWindow() {
@@ -135,10 +144,18 @@ public class FirstWindow extends JFrame {
                     Jmetal_cst cst = new Jmetal_cst();
                     cst.run();
                     // show message dialog
-                    JOptionPane.showMessageDialog(null,"Hello jMetal\n" +
-                            "Algorithm executed\n" +
-                            "Computing time took: " + Long.toString(cst.computingTime)
+                    JOptionPane.showMessageDialog(null,
+                            "Algorithm executed!\n\n" +
+                            "Computing time took: " + Long.toString(cst.computingTime) + " ms\n" +
+                            "Solution: " + cst.sol
                     );
+
+                    Jmetal_cst_Integer cstInteger = new Jmetal_cst_Integer();
+                    cstInteger.run();
+                    JOptionPane.showMessageDialog(null,
+                            "Algorithm executed!\n\n" +
+                            "Computing time took: " + Long.toString(cstInteger.computingTime) + " ms\n" +
+                            "Solution: " + cstInteger.sol);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -147,11 +164,23 @@ public class FirstWindow extends JFrame {
     }
 
 
+    public static Vector<String> getNameOfVariablesString() {
+        return nameOfVariablesString;
+    }
     public static Vector<Double> getMinIntervalOfVariablesDouble() {
         return minIntervalOfVariablesDouble;
     }
     public static Vector<Double> getMaxIntervalOfVariablesDouble() {
         return maxIntervalOfVariablesDouble;
+    }
+    public static Vector<Integer> getYMinOfVariables() {
+        return yMinOfVariables;
+    }
+    public static Vector<Integer> getYMaxOfVariables() {
+        return yMaxOfVariables;
+    }
+    public static Vector<Integer> getYIntervalOfVariables() {
+        return yIntervalOfVariables;
     }
     public static int getNumOfVariablesFirstInt() {
         return numOfVariablesFirstInt;
@@ -165,6 +194,10 @@ public class FirstWindow extends JFrame {
     public static int getPopulationSizeInt() {
         return populationSizeInt;
     }
+    public static Vector<String> getCostFunctionsString() {
+        return costFunctionsString;
+    }
+    public static boolean getDoGraph() { return doGraph; }
 
 
     private void saveFirstView() {
@@ -184,17 +217,35 @@ public class FirstWindow extends JFrame {
         nameOfVariablesString.removeAllElements();
         minIntervalOfVariablesDouble.removeAllElements();
         maxIntervalOfVariablesDouble.removeAllElements();
+        intervalOfVariablesType.removeAllElements();
+
+        yMinOfVariables.removeAllElements();
+        yMaxOfVariables.removeAllElements();
+        yIntervalOfVariables.removeAllElements();
 
         // Fill out vectors
         for (int i=4; i<components.length; i=i+4) {
-                if (components[i] instanceof JTextField)
-                    nameOfVariablesString.add(((JTextField) components[i]).getText());
-                if (components[i+1] instanceof JTextField)
-                    minIntervalOfVariablesDouble.add(Double.valueOf(((JTextField) components[i+1]).getText()));
-                if (components[i+2] instanceof JTextField)
-                    maxIntervalOfVariablesDouble.add(Double.valueOf(((JTextField) components[i+2]).getText()));
-                //if (components[i+3] instanceof JTextField)
-                //type[j] = Double.valueOf(((JTextField) components[i+3]).getText());
+            if (components[i] instanceof JTextField)
+                nameOfVariablesString.add(((JTextField) components[i]).getText());
+            if (components[i+1] instanceof JTextField)
+                minIntervalOfVariablesDouble.add(Double.valueOf(((JTextField) components[i+1]).getText()));
+            if (components[i+2] instanceof JTextField)
+                maxIntervalOfVariablesDouble.add(Double.valueOf(((JTextField) components[i+2]).getText()));
+            if (components[i+3] instanceof JTextField)
+                intervalOfVariablesType.add(Double.valueOf(((JTextField) components[i+3]).getText()));
+        }
+
+        // Integer transform for intervals
+        for (int i=0; i<nameOfVariablesString.size(); i++) {
+            Integer paso = (int) Math.ceil((maxIntervalOfVariablesDouble.elementAt(i)-minIntervalOfVariablesDouble.elementAt(i))
+                    /intervalOfVariablesType.elementAt(i)+0.0000000001);
+            Integer min = (int) Math.ceil(minIntervalOfVariablesDouble.elementAt(i)/intervalOfVariablesType.elementAt(i)*paso);
+            Integer max = min+paso*(paso-1);
+
+            yIntervalOfVariables.add(paso);
+            yMinOfVariables.add(1);
+            yMaxOfVariables.add(paso);
+            System.out.println("s");
         }
 
         // TODO: Error handling if don't come in order
@@ -220,11 +271,26 @@ public class FirstWindow extends JFrame {
             }
         }
         */
+
     }
 
     private void saveThirdView() {
         maxEvaluationsInt = Integer.valueOf(maxEvaluations.getText());
         populationSizeInt = Integer.valueOf(populationSize.getText());
+        doGraph = checkGraph.isSelected();
+
+        // Clear vectors
+        costFunctionsString.removeAllElements();
+
+        // Fill out vectors
+        costFunctionsString.add(objectiveFunctionOne.getText());
+        if (numOfObjFunctFirstInt > 1)
+            costFunctionsString.add(objectiveFunctionTwo.getText());
+        if (numOfObjFunctFirstInt > 2)
+            costFunctionsString.add(objectiveFunctionThird.getText());
+        if (numOfObjFunctFirstInt > 3)
+            costFunctionsString.add(objectiveFunctionFour.getText());
+
     }
 
     private void loadFirstView() {
@@ -240,10 +306,9 @@ public class FirstWindow extends JFrame {
     }
     
     private void loadThirdView() {
-        for (int i=0; i<nameOfVariablesString.size(); i++)
-            System.out.println(nameOfVariablesString.get(i));
-        for (int i=0; i<minIntervalOfVariablesDouble.size(); i++)
-            System.out.println(minIntervalOfVariablesDouble.get(i));
+        objectiveFunctionTwo.setEditable(true);
+        objectiveFunctionThird.setEditable(true);
+        objectiveFunctionFour.setEditable(true);
 
         if (numOfObjFunctFirstInt < 4)
             objectiveFunctionFour.setEditable(false);
@@ -280,13 +345,12 @@ public class FirstWindow extends JFrame {
         JLabel nameOfVariablesLabel = new JLabel(NAME_OF_VARIABLES);
         JLabel minIntervalOfVariablesLabel = new JLabel(MIN_INTERVAL_OF_VARIABLES);
         JLabel maxIntervalOfVariablesLabel = new JLabel(MAX_INTERVAL_OF_VARIABLES);
-        JLabel typeVariablesLabel = new JLabel(TYPE_OF_VARIABLE);
+        JLabel typeVariablesLabel = new JLabel(INCREMENT_OF_VARIABLE);
 
         JTextField nameOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
         JTextField minIntervalOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
         JTextField maxIntervalOfVariablesText[] = new JTextField[numOfVariablesFirstInt];
-        String[] typeVariable = {"Double","Int"};
-        JComboBox typesVariableCombo[] = new JComboBox[numOfVariablesFirstInt];
+        JTextField incrementVariableText[] = new JTextField[numOfVariablesFirstInt];
         
         // Adding
         parameterPanelSecond.add(nameOfVariablesLabel);
@@ -298,14 +362,13 @@ public class FirstWindow extends JFrame {
             nameOfVariablesText[i] = new JTextField();
             minIntervalOfVariablesText[i] = new JTextField();
             maxIntervalOfVariablesText[i] = new JTextField();
-            typesVariableCombo[i] = new JComboBox(typeVariable);
-            typesVariableCombo[i].setSelectedIndex(0);
-            typesVariableCombo[i].setEnabled(false); // TODO: check with previous window
+            incrementVariableText[i] = new JTextField();
+            //incrementVariableText[i].setEnabled(false); // TODO: check with previous window
 
             parameterPanelSecond.add(nameOfVariablesText[i]);
             parameterPanelSecond.add(minIntervalOfVariablesText[i]);
             parameterPanelSecond.add(maxIntervalOfVariablesText[i]);
-            parameterPanelSecond.add(typesVariableCombo[i]);
+            parameterPanelSecond.add(incrementVariableText[i]);
         }
 
         createSecondView = false;
@@ -314,7 +377,7 @@ public class FirstWindow extends JFrame {
 
     public static void main(String[] args) {
         frame = new JFrame("jMetal GUI");
-        frame.setSize(500,300);
+        frame.setSize(500,325);
         FirstWindow activity = new FirstWindow();
         frame.setContentPane(activity.panel);
         //frame.pack();
@@ -326,7 +389,4 @@ public class FirstWindow extends JFrame {
         frame.setVisible(true);
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }

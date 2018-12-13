@@ -1,6 +1,5 @@
 .gradle
 .idea
-gradle
 out
 *.tsv
 gradlew

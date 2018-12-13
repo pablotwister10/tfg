@@ -1,23 +1,14 @@
 package example;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
-
 import guicode.FirstWindow;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 
-
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 
 /**
  * @author angel
@@ -101,9 +92,22 @@ public class CST_opt extends AbstractDoubleProblem {
       S11_data[i] = MS11[i][1] ;
     }
     */
-        //
+
         //Funcion de coste (muy sencilla) es una función que el optimizador va a minimizar
-        double fcost = -x[0]*5 +x[1]*20;
+        /*double fcost = -x[0]*5 +x[1]*20;*/
+        // TODO: Do this for every fcost
+        Map<String, Double> vars = new HashMap<String, Double>();
+        for (int i=0; i<FirstWindow.getNumOfVariablesFirstInt(); i++) {
+            vars.put(FirstWindow.getNameOfVariablesString().elementAt(i),x[i]);
+        }
+        Expression e = new ExpressionBuilder(FirstWindow.getCostFunctionsString().elementAt(0))
+                .build()
+                .variables(vars);
+        double fcost = e.evaluate();
+
+        System.out.println(solution.getObjective(0));
+        System.out.println(x[0]);
+
         /*
         for (int i = 0; i < S11_data.length; i++) {
         if(S11_data[i]<-30){

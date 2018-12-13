@@ -6,11 +6,15 @@ import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GeneticAlgorith
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.operator.impl.crossover.IntegerSBXCrossover;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.problem.DoubleProblem;
+import org.uma.jmetal.problem.IntegerProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
@@ -32,11 +36,12 @@ public class Jmetal_cst {
 
     public static long computingTime;
     public static Vector<Double> scores;
+    public static DoubleSolution sol;
 
     public void run() throws Exception {
 
         Algorithm<DoubleSolution> algorithm;
-        ArrayList<Double> lowers = new ArrayList<>(FirstWindow.getNumOfVariablesFirstInt()); // 0.1
+        ArrayList<Double> lowers = new ArrayList<>(FirstWindow.getNumOfVariablesFirstInt()); // 0.1 INTEGER
         ArrayList<Double> uppers = new ArrayList<>(FirstWindow.getNumOfVariablesFirstInt()); // 4.0
 
         lowers.addAll(FirstWindow.getMinIntervalOfVariablesDouble());
@@ -55,6 +60,7 @@ public class Jmetal_cst {
                 .setPopulationSize(FirstWindow.getPopulationSizeInt()) // Set to 2
                 .setMaxEvaluations(FirstWindow.getMaxEvaluationsInt()) // Set to 25000
                 .setSelectionOperator(selectionOperator)
+                //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
                 .build() ;
 
         scores = new Vector<>(FirstWindow.getMaxEvaluationsInt());
@@ -69,10 +75,17 @@ public class Jmetal_cst {
         population.add(solution) ;
 
         computingTime = algorithmRunner.getComputingTime() ;
+        sol = solution;
 
-        Chart chartJMetal = new Chart(null,null);
-        chartJMetal.run();
-        //chartJMetal.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        //for (int i=0; i<solution.getObjectives().length; i++) {
+        //    Jmetal_cst.scores.add(solution.getObjective(i));
+        //}
+
+        if (FirstWindow.getDoGraph()) {
+            Chart chartJMetal = new Chart(null,null);
+            chartJMetal.run();
+            //chartJMetal.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        }
 
         new SolutionListOutput(population)
                 .setSeparator("\t")
