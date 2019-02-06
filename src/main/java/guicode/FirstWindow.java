@@ -2,7 +2,6 @@ package guicode;
 
 import example.Jmetal_cst;
 import example.Jmetal_cst_Integer;
-import org.uma.jmetal.solution.DoubleSolution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +20,7 @@ public class FirstWindow extends JFrame {
     private JPanel parameterPanelFirst;
     private JButton nextFirst;
     private JTextField numOfVariablesFirst;
-    private JTextField numOfObjFunctFirst;
+    private JTextField numOfObjFunctFirst; // TODO:
     private JComboBox algorithmTypeFirst;
     private JComboBox variableTypeFirst;
 
@@ -140,30 +139,43 @@ public class FirstWindow extends JFrame {
             }
             else {
                 saveThirdView();
-                try {
-                    Jmetal_cst cst = new Jmetal_cst();
-                    cst.run();
-                    // show message dialog
-                    JOptionPane.showMessageDialog(null,
-                            "Algorithm executed!\n\n" +
-                            "Computing time took: " + Long.toString(cst.computingTime) + " ms\n" +
-                            "Solution: " + cst.sol
-                    );
 
-                    Jmetal_cst_Integer cstInteger = new Jmetal_cst_Integer();
-                    cstInteger.run();
-                    JOptionPane.showMessageDialog(null,
-                            "Algorithm executed!\n\n" +
-                            "Computing time took: " + Long.toString(cstInteger.computingTime) + " ms\n" +
-                            "Solution: " + cstInteger.sol);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
+                if (getVariableTypeFirstString() == "Double") {
+                    try {
+                        Jmetal_cst cst = new Jmetal_cst();
+                        cst.run();
+                        // show message dialog
+                        JOptionPane.showMessageDialog(null,
+                                "Algorithm executed!\n\n" +
+                                        "Computing time took: " + Long.toString(cst.computingTime) + " ms\n" +
+                                        "Solution: " + cst.sol
+                        );
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                } else if (getVariableTypeFirstString() == "Int") {
+                    try {
+                        Jmetal_cst_Integer cstInteger = new Jmetal_cst_Integer();
+                        cstInteger.run();
+                        JOptionPane.showMessageDialog(null,
+                                "Algorithm executed!\n\n" +
+                                        "Computing time took: " + Long.toString(cstInteger.computingTime) + " ms\n" +
+                                        "Solution: " + cstInteger.sol);
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
                 }
             }
         });
     }
 
 
+    public static String getVariableTypeFirstString() {
+        return variableTypeFirstString;
+    }
+    public static String getAlgorithmTypeFirstString() {
+        return algorithmTypeFirstString;
+    }
     public static Vector<String> getNameOfVariablesString() {
         return nameOfVariablesString;
     }
@@ -172,6 +184,9 @@ public class FirstWindow extends JFrame {
     }
     public static Vector<Double> getMaxIntervalOfVariablesDouble() {
         return maxIntervalOfVariablesDouble;
+    }
+    public static Vector<Double> getIntervalOfVariablesType() {
+        return intervalOfVariablesType;
     }
     public static Vector<Integer> getYMinOfVariables() {
         return yMinOfVariables;
@@ -206,8 +221,8 @@ public class FirstWindow extends JFrame {
 
         numOfVariablesFirstInt = Integer.valueOf(numOfVariablesFirst.getText());
         numOfObjFunctFirstInt = Integer.valueOf(numOfObjFunctFirst.getText());
-        algorithmTypeFirstString = algorithmTypeFirst.toString();
-        variableTypeFirstString = variableTypeFirst.toString();
+        algorithmTypeFirstString = (String) algorithmTypeFirst.getSelectedItem();
+        variableTypeFirstString = (String) variableTypeFirst.getSelectedItem();
     }
 
     private void saveSecondView() {
@@ -239,12 +254,12 @@ public class FirstWindow extends JFrame {
         for (int i=0; i<nameOfVariablesString.size(); i++) {
             Integer paso = (int) Math.ceil((maxIntervalOfVariablesDouble.elementAt(i)-minIntervalOfVariablesDouble.elementAt(i))
                     /intervalOfVariablesType.elementAt(i)+0.0000000001);
-            Integer min = (int) Math.ceil(minIntervalOfVariablesDouble.elementAt(i)/intervalOfVariablesType.elementAt(i)*paso);
-            Integer max = min+paso*(paso-1);
+            Integer min = (int) 1;
+            Integer max = paso;
 
             yIntervalOfVariables.add(paso);
-            yMinOfVariables.add(1);
-            yMaxOfVariables.add(paso);
+            yMinOfVariables.add(min);
+            yMaxOfVariables.add(max);
             System.out.println("s");
         }
 
