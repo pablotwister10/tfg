@@ -1,6 +1,6 @@
 package example; //Nombre de tu Package
 
-import guicode.Chart;
+import chart.Chart;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GeneticAlgorithmBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import guicode.FirstWindow;
+import chart.FirstWindow;
 
 /**
  * @author angel

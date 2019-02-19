@@ -1,6 +1,6 @@
 package example;
 
-import guicode.FirstWindow;
+import chart.FirstWindow;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;

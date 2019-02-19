@@ -27,12 +27,12 @@ public class MetalView extends JFrame {
     private JLabel numOfVariablesLabel = new JLabel("Number of variables (introduce an integer): ", JLabel.TRAILING);
     private JLabel variableTypeLabel = new JLabel("Variable type: ", JLabel.TRAILING);
     private JLabel algorithmTypeLabel = new JLabel("Algorithm type: ", JLabel.TRAILING);
-    private JLabel numOfObjFunctLabel = new JLabel("Number of objective functions (from 1 to 4): ", JLabel.TRAILING);
+    private JLabel numOfObjFunctsLabel = new JLabel("Number of objective functions (from 1 to 4): ", JLabel.TRAILING);
 
     private JTextField numOfVariablesText = new JTextField(10);
     private JComboBox variableTypeBox = new JComboBox();
     private JComboBox algorithmTypeBox = new JComboBox();
-    private JTextField numOfObjFunctText = new JTextField(10); // TODO:
+    private JTextField numOfObjFunctsText = new JTextField(10); // TODO:
 
     private ComboItem doubleVarTypeComboBox = new ComboItem("Double",1);
     private ComboItem intVarTypeComboBox = new ComboItem("Integer",2);
@@ -164,9 +164,9 @@ public class MetalView extends JFrame {
         parameterPanelFirst.add(algorithmTypeBox);
         algorithmTypeBox.addItem(geneticAlgorithmComboBox);
 
-        parameterPanelFirst.add(numOfObjFunctLabel);
-        numOfObjFunctLabel.setLabelFor(numOfObjFunctText);
-        parameterPanelFirst.add(numOfObjFunctText);
+        parameterPanelFirst.add(numOfObjFunctsLabel);
+        numOfObjFunctsLabel.setLabelFor(numOfObjFunctsText);
+        parameterPanelFirst.add(numOfObjFunctsText);
 
         SpringUtilities.makeCompactGrid(parameterPanelFirst,
                 4, 2, //rows, cols
@@ -202,21 +202,25 @@ public class MetalView extends JFrame {
         objFunctPanel.add(objFunctOneLabel);
         objFunctOneLabel.setLabelFor(objFunctOneText);
         objFunctPanel.add(objFunctOneText);
+        objFunctOneText.setEditable(false);
         objFunctPanel.add(graphOneCheck);
 
         objFunctPanel.add(objFunctTwoLabel);
         objFunctTwoLabel.setLabelFor(objFunctTwoText);
         objFunctPanel.add(objFunctTwoText);
+        objFunctTwoText.setEditable(false);
         objFunctPanel.add(graphTwoCheck);
 
         objFunctPanel.add(objFunctThreeLabel);
         objFunctThreeLabel.setLabelFor(objFunctThreeText);
         objFunctPanel.add(objFunctThreeText);
+        objFunctThreeText.setEditable(false);
         objFunctPanel.add(graphThreeCheck);
 
         objFunctPanel.add(objFunctFourLabel);
         objFunctFourLabel.setLabelFor(objFunctFourText);
         objFunctPanel.add(objFunctFourText);
+        objFunctFourText.setEditable(false);
         objFunctPanel.add(graphFourCheck);
 
         SpringUtilities.makeCompactGrid(objFunctPanel,
@@ -282,27 +286,35 @@ public class MetalView extends JFrame {
         updateViewSecondCard(model);
     }
 
-    void updateView(String cardIdentifier, MetalModel model) {
+    void updateView(MetalModel model, String cardIdentifier) {
         if (cardIdentifier.equalsIgnoreCase(CARD_FIRST)) {
 
         } else if (cardIdentifier.equalsIgnoreCase(CARD_SECOND)) {
             updateViewSecondCard(model);
         } else if (cardIdentifier.equalsIgnoreCase(CARD_THIRD)) {
-
+            updateViewThirdCard(model);
         }
     }
 
     void updateViewPanelNav() {
-        if (getCardIdentifier().equalsIgnoreCase(CARD_FIRST)) {
+        updateViewPanelNav("");
+    }
+
+    void updateViewPanelNav(String cardIdentifier) {
+        if (cardIdentifier.equalsIgnoreCase(CARD_FIRST) || getCardIdentifier().equalsIgnoreCase(CARD_FIRST)) {
             previousBtn.setEnabled(false);
-        } else {
+        }
+        // This statement overwrites the previous one in case the card identifier is different from CARD_FIRST even if
+        // the current card is CARD_FIRST
+        // TODO: should be avoided (figure out way) BUG BC UPDATES BEFORE NEXT CARD IS SHOWN !!!
+        if (cardIdentifier.equalsIgnoreCase(CARD_SECOND) || cardIdentifier.equalsIgnoreCase(CARD_THIRD)) {
             previousBtn.setEnabled(true);
         }
     }
 
     void updateViewSecondCard(MetalModel model) {
 
-        int numOfVariablesFirstInt = model.getNumOfVariables();
+        int numOfVars = model.getNumOfVariables();
 
         // Clearing out panel
         parameterPanelSecond.removeAll(); // TODO: Check if not needed to be deleted
@@ -316,7 +328,7 @@ public class MetalView extends JFrame {
         parameterPanelSecond.add(maxIntervalOfVariablesLabel);
         parameterPanelSecond.add(stepVariablesLabel);
 
-        for (int i=0; i<numOfVariablesFirstInt; i++) {
+        for (int i=0; i<numOfVars; i++) {
             nameOfVariablesText[i] = new JTextField();
             minIntervalOfVariablesText[i] = new JTextField();
             maxIntervalOfVariablesText[i] = new JTextField();
@@ -330,11 +342,25 @@ public class MetalView extends JFrame {
         }
 
         SpringUtilities.makeCompactGrid(parameterPanelSecond,
-                numOfVariablesFirstInt+1,4, //rows, cols
+                numOfVars+1,4, //rows, cols
                 6,6, //initX, initY
                 6,6); //xPad, yPad
 
+        updateViewPanelNav("Card 2");
 
+    }
+
+    void updateViewThirdCard(MetalModel model) {
+        int numOfObjFuncts = model.getnumOfObjFuncts();
+
+        if (numOfObjFuncts == 1)
+            objFunctOneText.setEditable(true);
+        if (numOfObjFuncts > 1)
+            objFunctTwoText.setEditable(true);
+        if (numOfObjFuncts > 2)
+            objFunctThreeText.setEditable(true);
+        if (numOfObjFuncts > 3)
+            objFunctFourText.setEditable(true);
     }
 
 
@@ -358,11 +384,11 @@ public class MetalView extends JFrame {
         return algorithmTypeBox.getSelectedItem().toString();
     }
 
-    int getNumOfObjFunct() {
+    int getnumOfObjFuncts() {
         int numFuncts = 0;
 
         if (!numOfVariablesText.getText().isEmpty())
-            numFuncts = Integer.valueOf(numOfObjFunctText.getText());
+            numFuncts = Integer.valueOf(numOfObjFunctsText.getText());
 
         return numFuncts;
     }
@@ -467,11 +493,11 @@ public class MetalView extends JFrame {
         Vector<String> objFuncts = new Vector<String>(0);
 
         objFuncts.add(objFunctOneText.getText());
-        if (getNumOfObjFunct() > 1)
+        if (getnumOfObjFuncts() > 1)
             objFuncts.add(objFunctTwoText.getText());
-        if (getNumOfObjFunct() > 2)
+        if (getnumOfObjFuncts() > 2)
             objFuncts.add(objFunctThreeText.getText());
-        if (getNumOfObjFunct() > 3)
+        if (getnumOfObjFuncts() > 3)
             objFuncts.add(objFunctFourText.getText());
 
         return objFuncts;

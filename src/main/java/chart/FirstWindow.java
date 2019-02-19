@@ -1,4 +1,4 @@
-package guicode;
+package chart;
 
 import example.Jmetal_cst;
 import example.Jmetal_cst_Integer;

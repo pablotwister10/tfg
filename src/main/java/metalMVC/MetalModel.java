@@ -10,7 +10,7 @@ public class MetalModel {
     private static int numOfVariables;
     private static String variableType;
     private static String algorithmType;
-    private static int numOfObjFunct;
+    private static int numOfObjFuncts;
 
     /* SECOND CARD */
 
@@ -42,7 +42,7 @@ public class MetalModel {
         numOfVariables = 0;
         variableType = null;
         algorithmType = null;
-        numOfObjFunct = 0;
+        numOfObjFuncts = 0;
 
         // SECOND CARD
         nameOfVariables = new Vector<String>(0);
@@ -62,35 +62,116 @@ public class MetalModel {
 
     /* SAVE CARDS */
     boolean saveFirstCard(MetalView view) {
-        numOfVariables = view.getNumOfVariables();
-        variableType = view.getVariableType();
-        algorithmType = view.getAlgorithmType();
-        numOfObjFunct = view.getNumOfObjFunct();
+        boolean upView = false;
 
-        return (numOfVariables != 0 || !variableType.isEmpty() || !algorithmType.isEmpty() || numOfObjFunct != 0);
+        if (numOfVariables != view.getNumOfVariables()) {
+            numOfVariables = view.getNumOfVariables();
+            upView = true;
+        }
+        if (variableType == null || !variableType.equalsIgnoreCase(view.getVariableType())) {
+            variableType = view.getVariableType();
+            upView = true;
+        }
+        if (algorithmType == null || algorithmType.equalsIgnoreCase(view.getAlgorithmType())) {
+            algorithmType = view.getAlgorithmType();
+            upView = true;
+        }
+        if (numOfObjFuncts != view.getnumOfObjFuncts()) {
+            numOfObjFuncts = view.getnumOfObjFuncts();
+            upView = true;
+        }
+
+        // Card 1 affects View of Cards 2 and 3
+        if (upView) {
+            view.updateView(this,"Card 2");
+            view.updateView(this,"Card 3");
+        }
+
+        return (numOfVariables != 0 || !variableType.isEmpty() || !algorithmType.isEmpty() || numOfObjFuncts != 0);
     }
 
     boolean saveSecondCard(MetalView view) {
-        nameOfVariables = view.getNameOfVariables();
-        minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
-        maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
-        stepVariablesDouble = view.getStepVariablesDouble();
+
+        if (nameOfVariables.isEmpty() || !nameOfVariables.equals(view.getNameOfVariables()))
+            nameOfVariables = view.getNameOfVariables();
+        if (minIntervalOfVariablesDouble.isEmpty() || !minIntervalOfVariablesDouble.equals(view.getMinIntervalOfVariablesDouble()))
+            minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
+        if (maxIntervalOfVariablesDouble.isEmpty() || maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
+            maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
+        if (stepVariablesDouble.isEmpty() || stepVariablesDouble.equals(view.getStepVariablesDouble()))
+            stepVariablesDouble = view.getStepVariablesDouble();
 
         return (!nameOfVariables.isEmpty() || !minIntervalOfVariablesDouble.isEmpty()
                 || !maxIntervalOfVariablesDouble.isEmpty() || !stepVariablesDouble.isEmpty());
     }
 
     boolean saveThirdCard(MetalView view) {
-        objFuncts = view.getObjFunctions();
-        evaluations = view.getEvaluations();
-        populationSize = view.getPopulationSize();
+
+        if (objFuncts.equals(view.getObjFunctions()))
+            objFuncts = view.getObjFunctions();
+        if (evaluations != view.getEvaluations())
+            evaluations = view.getEvaluations();
+        if (populationSize != view.getPopulationSize())
+            populationSize = view.getPopulationSize();
 
         return (!objFuncts.isEmpty() || evaluations != 0 || populationSize != 0);
     }
 
-    /* GET NUMBER OF VARIABLES */
+    /* GETTERS */
     public static int getNumOfVariables() {
         return numOfVariables;
+    }
+
+    public static String getVariableType() {
+        return variableType;
+    }
+
+    public static String getAlgorithmType() {
+        return algorithmType;
+    }
+
+    public static int getnumOfObjFuncts() {
+        return numOfObjFuncts;
+    }
+
+    public static Vector<String> getNameOfVariables() {
+        return nameOfVariables;
+    }
+
+    public static Vector<Double> getMinIntervalOfVariablesDouble() {
+        return minIntervalOfVariablesDouble;
+    }
+
+    public static Vector<Double> getMaxIntervalOfVariablesDouble() {
+        return maxIntervalOfVariablesDouble;
+    }
+
+    public static Vector<Double> getStepVariablesDouble() {
+        return stepVariablesDouble;
+    }
+
+    public static Vector<Integer> getMinIntervalOfVariablesInteger() {
+        return minIntervalOfVariablesInteger;
+    }
+
+    public static Vector<Integer> getMaxIntervalOfVariablesInteger() {
+        return maxIntervalOfVariablesInteger;
+    }
+
+    public static Vector<Integer> getStepVariablesInteger() {
+        return stepVariablesInteger;
+    }
+
+    public static Vector<String> getObjFuncts() {
+        return objFuncts;
+    }
+
+    public static int getEvaluations() {
+        return evaluations;
+    }
+
+    public static int getPopulationSize() {
+        return populationSize;
     }
 
 

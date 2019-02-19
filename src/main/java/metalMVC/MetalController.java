@@ -31,20 +31,19 @@ public class MetalController {
                     saved = mModel.saveFirstCard(mView);
                     if (saved) {
                         mView.cards.next(mView.panelCards);
-                        mView.updateView(mModel); // TODO: UPDATE VIEW NEEDS TO BE IN MODEL WHEN DATA CHANGES
                     } else
                         mView.showError("INSERT DATA");
                 } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 2")) {
                     saved = mModel.saveSecondCard(mView);
                     if (saved) {
-                        mView.updateView(mModel); // TODO: UPDATE VIEW NEEDS TO BE IN MODEL WHEN DATA CHANGES
                         mView.cards.next(mView.panelCards);
                     } else
                         mView.showError("INSERT DATA");
                 } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 3")) {
-                    mModel.saveSecondCard(mView);
+                    saved = mModel.saveSecondCard(mView);
                     if (saved) {
-                        mView.updateView(mModel); // TODO: UPDATE VIEW NEEDS TO BE IN MODEL WHEN DATA CHANGES
+                        // TODO: execute algorithm
+                        System.out.println("EXECUTE");
                     } else
                         mView.showError("INSERT DATA");
                 }
