@@ -1,0 +1,515 @@
+package metalMVC;
+
+import layout.ComboItem;
+import layout.SpringUtilities;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+// MetalView Class implementing GUI
+public class MetalView extends JFrame {
+
+    // Main Panel (using CardLayout for navigation of different windows)
+    private JPanel panelMain = new JPanel();
+    JPanel panelCards = new JPanel();
+    CardLayout cards = new CardLayout();
+
+
+    /* FIRST CARD */
+
+    JPanel cardFirst = new JPanel();
+    final String CARD_FIRST = "Card 1";
+
+    private JPanel parameterPanelFirst = new JPanel(new SpringLayout());
+
+    private JLabel numOfVariablesLabel = new JLabel("Number of variables (introduce an integer): ", JLabel.TRAILING);
+    private JLabel variableTypeLabel = new JLabel("Variable type: ", JLabel.TRAILING);
+    private JLabel algorithmTypeLabel = new JLabel("Algorithm type: ", JLabel.TRAILING);
+    private JLabel numOfObjFunctLabel = new JLabel("Number of objective functions (from 1 to 4): ", JLabel.TRAILING);
+
+    private JTextField numOfVariablesText = new JTextField(10);
+    private JComboBox variableTypeBox = new JComboBox();
+    private JComboBox algorithmTypeBox = new JComboBox();
+    private JTextField numOfObjFunctText = new JTextField(10); // TODO:
+
+    private ComboItem doubleVarTypeComboBox = new ComboItem("Double",1);
+    private ComboItem intVarTypeComboBox = new ComboItem("Integer",2);
+    private ComboItem geneticAlgorithmComboBox = new ComboItem("Genetic Algorithm",1);
+
+
+    /* SECOND CARD */
+
+    JPanel cardSecond = new JPanel();
+    final String CARD_SECOND = "Card 2";
+
+    private JPanel parameterPanelSecond = new JPanel();
+
+    private JLabel nameOfVariablesLabel = new JLabel("Name of Variables");
+    private JLabel minIntervalOfVariablesLabel = new JLabel("Min of Interval");
+    private JLabel maxIntervalOfVariablesLabel = new JLabel("Max of Interval");
+    private JLabel stepVariablesLabel = new JLabel("Step");
+
+    private JTextField nameOfVariablesText[] = new JTextField[100]; // reserving for 100 variables
+    private JTextField minIntervalOfVariablesText[] = new JTextField[100];
+    private JTextField maxIntervalOfVariablesText[] = new JTextField[100];
+    private JTextField stepVariablesText[] = new JTextField[100];
+
+
+
+    /* THIRD CARD */
+
+    JPanel cardThird = new JPanel();
+    final String CARD_THIRD = "Card 3";
+
+    private JPanel objFunctPanel = new JPanel(new SpringLayout());
+
+    private JLabel objFunctOneLabel = new JLabel("Objective function 1: ");
+    private JLabel objFunctTwoLabel = new JLabel("Objective function 2: ");
+    private JLabel objFunctThreeLabel = new JLabel("Objective function 3: ");
+    private JLabel objFunctFourLabel = new JLabel("Objective function 4: ");
+
+    private JTextField objFunctOneText = new JTextField(30);
+    private JTextField objFunctTwoText = new JTextField(30);
+    private JTextField objFunctThreeText = new JTextField(30);
+    private JTextField objFunctFourText = new JTextField(30);
+
+    private JCheckBox graphOneCheck = new JCheckBox("Do Graph f1");
+    private JCheckBox graphTwoCheck = new JCheckBox("Do Graph f2");
+    private JCheckBox graphThreeCheck = new JCheckBox("Do Graph f3");
+    private JCheckBox graphFourCheck = new JCheckBox("Do Graph f4");
+
+    private JPanel populationPanel = new JPanel(new SpringLayout());
+
+    private JLabel evaluationsLabel = new JLabel("Maximum evaluations: ");
+    private JLabel populationSizeLabel = new JLabel("Population size: ");
+    private JTextField evaluationsText = new JTextField(10);
+    private JTextField populationSizeText = new JTextField(10);
+
+
+    /* NAVIGATION PANEL */
+
+    private JPanel panelNav = new JPanel();
+    private JButton previousBtn = new JButton("Previous");
+    private JButton nextBtn = new JButton("Next");
+    final Dimension BTN_DIM = new Dimension(20,5); // TODO: SET FIXED DIMENSIONS TO BUTTONS
+
+
+    /** CONSTRUCTOR */
+    public MetalView(MetalModel model) {
+
+        // Main Panel Layout in two panels, one with cards and another with navigation panel
+        panelMain.setLayout(new BoxLayout(panelMain,BoxLayout.Y_AXIS));
+
+        // Adding both panels
+        panelMain.add(panelCards);
+        panelMain.add(panelNav);
+
+        // Setting cards as layout in cards' panel
+        panelCards.setLayout(cards);
+
+        // Making cards
+        makeFirstCard();
+        makeSecondCard();
+        makeThirdCard();
+
+        // Making navigation panel
+        makePanelNav();
+
+        // Arranging cards
+        panelCards.add(cardFirst,"1");  // 1 for first
+        panelCards.add(cardSecond,"2"); // 2 for second
+        panelCards.add(cardThird,"3");  // 3 for third
+
+        // Showing first card by default
+        cards.show(panelCards,"1");
+
+        // Navigation panel view
+        updateViewPanelNav();
+
+        // Last touches
+        this.setTitle("Main Application");
+        this.setContentPane(panelMain);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.pack();
+
+    }
+
+
+    /* METHODS FOR CONSTRUCTION */
+    public void makeFirstCard() {
+        // FIRST CARD
+
+        cardFirst.setLayout(new BoxLayout(cardFirst,BoxLayout.Y_AXIS));
+
+        cardFirst.setName(CARD_FIRST);
+
+        // Parameter panel
+
+        cardFirst.add(parameterPanelFirst);
+
+        parameterPanelFirst.add(numOfVariablesLabel);
+        numOfVariablesLabel.setLabelFor(numOfVariablesText);
+        parameterPanelFirst.add(numOfVariablesText);
+
+        parameterPanelFirst.add(variableTypeLabel);
+        variableTypeLabel.setLabelFor(variableTypeBox);
+        parameterPanelFirst.add(variableTypeBox);
+        variableTypeBox.addItem(doubleVarTypeComboBox);
+        variableTypeBox.addItem(intVarTypeComboBox);
+
+        parameterPanelFirst.add(algorithmTypeLabel);
+        algorithmTypeLabel.setLabelFor(algorithmTypeBox);
+        parameterPanelFirst.add(algorithmTypeBox);
+        algorithmTypeBox.addItem(geneticAlgorithmComboBox);
+
+        parameterPanelFirst.add(numOfObjFunctLabel);
+        numOfObjFunctLabel.setLabelFor(numOfObjFunctText);
+        parameterPanelFirst.add(numOfObjFunctText);
+
+        SpringUtilities.makeCompactGrid(parameterPanelFirst,
+                4, 2, //rows, cols
+                6, 6, //initX, initY
+                6, 6); //xPad, yPad
+
+    }
+
+    public void makeSecondCard() {
+        // SECOND CARD
+
+        cardSecond.setLayout(new BoxLayout(cardSecond, BoxLayout.Y_AXIS));
+
+        cardSecond.setName(CARD_SECOND);
+
+        // Parameter panel
+
+        cardSecond.add(parameterPanelSecond); // TODO: add parameters
+
+    }
+
+    public void makeThirdCard() {
+        // THIRD CARD
+
+        cardThird.setLayout(new BoxLayout(cardThird, BoxLayout.Y_AXIS));
+
+        cardThird.setName(CARD_THIRD);
+
+        // Objective panel
+
+        cardThird.add(objFunctPanel);
+
+        objFunctPanel.add(objFunctOneLabel);
+        objFunctOneLabel.setLabelFor(objFunctOneText);
+        objFunctPanel.add(objFunctOneText);
+        objFunctPanel.add(graphOneCheck);
+
+        objFunctPanel.add(objFunctTwoLabel);
+        objFunctTwoLabel.setLabelFor(objFunctTwoText);
+        objFunctPanel.add(objFunctTwoText);
+        objFunctPanel.add(graphTwoCheck);
+
+        objFunctPanel.add(objFunctThreeLabel);
+        objFunctThreeLabel.setLabelFor(objFunctThreeText);
+        objFunctPanel.add(objFunctThreeText);
+        objFunctPanel.add(graphThreeCheck);
+
+        objFunctPanel.add(objFunctFourLabel);
+        objFunctFourLabel.setLabelFor(objFunctFourText);
+        objFunctPanel.add(objFunctFourText);
+        objFunctPanel.add(graphFourCheck);
+
+        SpringUtilities.makeCompactGrid(objFunctPanel,
+                4, 3,
+                6, 6,
+                6, 6);
+
+        // Population panel
+
+        cardThird.add(populationPanel);
+
+        populationPanel.add(evaluationsLabel);
+        evaluationsLabel.setLabelFor(evaluationsText);
+        populationPanel.add(evaluationsText);
+
+        populationPanel.add(populationSizeLabel);
+        populationSizeLabel.setLabelFor(populationSizeText);
+        populationPanel.add(populationSizeText);
+
+        SpringUtilities.makeCompactGrid(populationPanel,
+                2, 2,
+                6, 6,
+                6, 6);
+
+    }
+
+    public void makePanelNav() {
+        panelNav.add(previousBtn);
+        panelNav.add(nextBtn);
+    }
+
+
+    /* METHODS FOR LISTENERS */
+    void addNextBtnListener(ActionListener next) {
+        nextBtn.addActionListener(next);
+    }
+
+    void addPreviousBtnListener(ActionListener previous) {
+        previousBtn.addActionListener(previous);
+    }
+
+
+    /* METHOD FOR GETTING CARD IDENTIFIER */
+    public String getCardIdentifier() {
+        //now we want to get the String identifier of the top card:
+        JPanel card = null;
+        for (Component comp : this.panelCards.getComponents()) {
+            if (comp.isVisible() == true) {
+                card = (JPanel) comp;
+            }
+        }
+        return card.getName();
+    }
+
+
+    /* METHODS FOR UPDATING VIEW */
+    void updateView() {
+        updateViewPanelNav();
+    }
+
+    void updateView(MetalModel model) {
+        updateView();
+        updateViewSecondCard(model);
+    }
+
+    void updateView(String cardIdentifier, MetalModel model) {
+        if (cardIdentifier.equalsIgnoreCase(CARD_FIRST)) {
+
+        } else if (cardIdentifier.equalsIgnoreCase(CARD_SECOND)) {
+            updateViewSecondCard(model);
+        } else if (cardIdentifier.equalsIgnoreCase(CARD_THIRD)) {
+
+        }
+    }
+
+    void updateViewPanelNav() {
+        if (getCardIdentifier().equalsIgnoreCase(CARD_FIRST)) {
+            previousBtn.setEnabled(false);
+        } else {
+            previousBtn.setEnabled(true);
+        }
+    }
+
+    void updateViewSecondCard(MetalModel model) {
+
+        int numOfVariablesFirstInt = model.getNumOfVariables();
+
+        // Clearing out panel
+        parameterPanelSecond.removeAll(); // TODO: Check if not needed to be deleted
+
+        // Setting grids as many as variables
+        parameterPanelSecond.setLayout(new SpringLayout());
+
+        // Adding
+        parameterPanelSecond.add(nameOfVariablesLabel);
+        parameterPanelSecond.add(minIntervalOfVariablesLabel);
+        parameterPanelSecond.add(maxIntervalOfVariablesLabel);
+        parameterPanelSecond.add(stepVariablesLabel);
+
+        for (int i=0; i<numOfVariablesFirstInt; i++) {
+            nameOfVariablesText[i] = new JTextField();
+            minIntervalOfVariablesText[i] = new JTextField();
+            maxIntervalOfVariablesText[i] = new JTextField();
+            stepVariablesText[i] = new JTextField();
+            //stepVariablesText[i].setEnabled(false); // TODO: check with previous window
+
+            parameterPanelSecond.add(nameOfVariablesText[i]);
+            parameterPanelSecond.add(minIntervalOfVariablesText[i]);
+            parameterPanelSecond.add(maxIntervalOfVariablesText[i]);
+            parameterPanelSecond.add(stepVariablesText[i]);
+        }
+
+        SpringUtilities.makeCompactGrid(parameterPanelSecond,
+                numOfVariablesFirstInt+1,4, //rows, cols
+                6,6, //initX, initY
+                6,6); //xPad, yPad
+
+
+    }
+
+
+    /* METHODS FOR UPDATING MODEL */
+
+    // CARD 1
+    int getNumOfVariables() {
+        int numVars = 0;
+
+        if (!numOfVariablesText.getText().isEmpty())
+            numVars = Integer.valueOf(numOfVariablesText.getText());
+
+        return numVars;
+    }
+
+    String getVariableType() {
+        return variableTypeBox.getSelectedItem().toString();
+    }
+
+    String getAlgorithmType() {
+        return algorithmTypeBox.getSelectedItem().toString();
+    }
+
+    int getNumOfObjFunct() {
+        int numFuncts = 0;
+
+        if (!numOfVariablesText.getText().isEmpty())
+            numFuncts = Integer.valueOf(numOfObjFunctText.getText());
+
+        return numFuncts;
+    }
+
+    // CARD 2
+    Vector<String> getNameOfVariables() {
+        Component[] components = parameterPanelSecond.getComponents();
+        Vector<String> nameVars = new Vector<String>(0);
+
+        // Fill out vectors
+        for (int i=4; i<components.length; i=i+4) {
+            if (components[i] instanceof JTextField && components[i] != null)
+                nameVars.add(((JTextField) components[i]).getText());
+        }
+
+        return nameVars;
+    }
+
+    Vector<Double> getMinIntervalOfVariablesDouble() {
+        return getIntervalsDouble("minDouble");
+    }
+
+    Vector<Double> getMaxIntervalOfVariablesDouble() {
+        return getIntervalsDouble("maxDouble");
+    }
+
+    Vector<Double> getStepVariablesDouble() {
+        return getIntervalsDouble("stepDouble");
+    }
+
+    Vector<Double> getIntervalsDouble(String type) {
+        Component[] components = parameterPanelSecond.getComponents();
+        Vector<Double> minIntervalVarsDouble = new Vector<Double>(0);
+        Vector<Double> maxIntervalVarsDouble = new Vector<Double>(0);
+        Vector<Double> stepVarsDouble = new Vector<Double>(0);
+
+        for (int i=4; i<components.length; i=i+4) {
+            if (components[i+1] instanceof JTextField && !((JTextField) components[i+1]).getText().isEmpty())
+                minIntervalVarsDouble.add(Double.valueOf(((JTextField) components[i+1]).getText()));
+            if (components[i+2] instanceof JTextField && !((JTextField) components[i+2]).getText().isEmpty())
+                maxIntervalVarsDouble.add(Double.valueOf(((JTextField) components[i+2]).getText()));
+            if (components[i+3] instanceof JTextField && !((JTextField) components[i+3]).getText().isEmpty())
+                stepVarsDouble.add(Double.valueOf(((JTextField) components[i+3]).getText()));
+        }
+
+        if (type.equalsIgnoreCase("minDouble"))
+            return minIntervalVarsDouble;
+        else if (type.equalsIgnoreCase("maxDouble"))
+            return maxIntervalVarsDouble;
+        else if (type.equalsIgnoreCase("stepDouble"))
+            return stepVarsDouble;
+        else
+            return null;
+    }
+
+    Vector<Integer> getMinIntervalOfVariablesInteger() {
+        return getIntervalsInteger("minInteger");
+    }
+
+    Vector<Integer> getMaxIntervalOfVariablesInteger() {
+        return getIntervalsInteger("maxInteger");
+    }
+
+    Vector<Integer> getStepVariablesInteger() {
+        return getIntervalsInteger("stepInteger");
+    }
+
+    Vector<Integer> getIntervalsInteger(String type) {
+        Vector<String> nameVars = getNameOfVariables();
+        Vector<Double> minIntervalVarsDouble = getMinIntervalOfVariablesDouble();
+        Vector<Double> maxIntervalVarsDouble = getMaxIntervalOfVariablesDouble();
+        Vector<Double> stepVarsDouble = getStepVariablesDouble();
+
+        Vector<Integer> minIntervalVarsInteger = new Vector<Integer>(0);
+        Vector<Integer> maxIntervalVarsInteger = new Vector<Integer>(0);
+        Vector<Integer> stepVarsInteger = new Vector<Integer>(0);
+
+        // Integer transform for intervals
+        for (int i=0; i<nameVars.size(); i++) {
+            Integer yStep = (int) Math.ceil((maxIntervalVarsDouble.elementAt(i)-minIntervalVarsDouble.elementAt(i))
+                    /stepVarsDouble.elementAt(i)+0.0000000001);
+            Integer yMin = (int) 1;
+            Integer yMax = yStep;
+
+            minIntervalVarsInteger.add(yStep);
+            maxIntervalVarsInteger.add(yMin);
+            stepVarsInteger.add(yMax);
+        }
+
+        if (type.equalsIgnoreCase("minInteger"))
+            return minIntervalVarsInteger;
+        else if (type.equalsIgnoreCase("maxInteger"))
+            return maxIntervalVarsInteger;
+        else if (type.equalsIgnoreCase("stepInteger"))
+            return stepVarsInteger;
+        else
+            return null;
+    }
+
+    // CARD 3
+    Vector<String> getObjFunctions() {
+        Vector<String> objFuncts = new Vector<String>(0);
+
+        objFuncts.add(objFunctOneText.getText());
+        if (getNumOfObjFunct() > 1)
+            objFuncts.add(objFunctTwoText.getText());
+        if (getNumOfObjFunct() > 2)
+            objFuncts.add(objFunctThreeText.getText());
+        if (getNumOfObjFunct() > 3)
+            objFuncts.add(objFunctFourText.getText());
+
+        return objFuncts;
+    }
+
+    boolean[] getGraphChecks() {
+        boolean[] graphs = new boolean[4];
+
+        graphs[0] = graphOneCheck.isSelected();
+        graphs[1] = graphTwoCheck.isSelected();
+        graphs[2] = graphThreeCheck.isSelected();
+        graphs[3] = graphFourCheck.isSelected();
+
+        return graphs;
+    }
+
+    int getEvaluations() {
+        int evals = 0;
+
+        if (!evaluationsText.getText().isEmpty())
+            evals = Integer.valueOf(evaluationsText.getText());
+
+        return evals;
+    }
+
+    int getPopulationSize() {
+        int popSize = 0;
+
+        if (!populationSizeText.getText().isEmpty())
+            popSize = Integer.valueOf(populationSizeText.getText());
+
+        return popSize;
+    }
+
+
+    /* METHOD FOR ERRORS */
+    void showError(String errMessage) {
+        JOptionPane.showMessageDialog(this, errMessage);
+    }
+
+}

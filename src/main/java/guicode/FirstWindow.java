@@ -16,7 +16,7 @@ public class FirstWindow extends JFrame {
 
     // FIRST WINDOW
     private JPanel panelFirst;
-    private JPanel navigationPanelFirst;
+    private JPanel panelNavFirst;
     private JPanel parameterPanelFirst;
     private JButton nextFirst;
     private JTextField numOfVariablesFirst;
@@ -32,7 +32,7 @@ public class FirstWindow extends JFrame {
     // SECOND WINDOW
     private static boolean createSecondView = true;
     private JPanel panelSecond;
-    private JPanel navigationPanelSecond;
+    private JPanel panelNavSecond;
     private JPanel parameterPanelSecond;
     private JButton nextSecond;
     private JButton previousSecond;
@@ -53,7 +53,7 @@ public class FirstWindow extends JFrame {
     // THIRD WINDOW
     private JPanel panelThird;
     private JPanel parameterPanelThird;
-    private JPanel navigationPanelThird;
+    private JPanel panelNavThird;
     private JPanel objectiveFunctPanelThird;
     private JPanel populationPanelThird;
     private JButton previousThird;
