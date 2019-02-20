@@ -40,10 +40,10 @@ public class MetalController {
                     } else
                         mView.showError("INSERT DATA");
                 } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 3")) {
-                    saved = mModel.saveSecondCard(mView);
+                    saved = mModel.saveThirdCard(mView);
                     if (saved) {
                         // TODO: execute algorithm
-                        System.out.println("EXECUTE");
+                        boolean executed = mModel.execute();
                     } else
                         mView.showError("INSERT DATA");
                 }

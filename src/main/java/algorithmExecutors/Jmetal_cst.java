@@ -1,6 +1,6 @@
-package example; //Nombre de tu Package
+package algorithmExecutors; //Nombre de tu Package
 
-import chart.Chart;
+import metalMVC.MetalModel;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GeneticAlgorithmBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
@@ -19,29 +19,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import chart.FirstWindow;
-
 /**
  * @author angel
  */
 
 public class Jmetal_cst {
 
-    public static long computingTime;
-    public static Vector<Double> scores;
-    public static DoubleSolution sol;
+    private static long computingTime;
+    protected static Vector<Double> scores;
+    private static DoubleSolution sol;
+    private MetalModel model;
+
+    public Jmetal_cst() {
+        computingTime = (long) 0;
+        scores = null;
+        sol = null;
+        model = null;
+    }
+
+    public Jmetal_cst(MetalModel model) {
+        computingTime = (long) 0;
+        scores = null;
+        sol = null;
+        this.model = model;
+    }
 
     public void run() throws Exception {
 
         Algorithm<DoubleSolution> algorithm;
-        ArrayList<Double> lowers = new ArrayList<>(FirstWindow.getNumOfVariablesFirstInt()); // 0.1 INTEGER
-        ArrayList<Double> uppers = new ArrayList<>(FirstWindow.getNumOfVariablesFirstInt()); // 4.0
+        ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
+        ArrayList<Double> uppers = new ArrayList<>(model.getNumOfVariables()); // 4.0
 
-        lowers.addAll(FirstWindow.getMinIntervalOfVariablesDouble());
-        uppers.addAll(FirstWindow.getMaxIntervalOfVariablesDouble());
+        lowers.addAll(model.getMinIntervalOfVariablesDouble());
+        uppers.addAll(model.getMaxIntervalOfVariablesDouble());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt(FirstWindow.getNumOfVariablesFirstInt(),lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new CST_opt(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0, 20.0) ;
@@ -50,35 +63,34 @@ public class Jmetal_cst {
 
         //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
         algorithm = new GeneticAlgorithmBuilder<DoubleSolution>(problem, crossoverOperator, mutationOperator)
-                .setPopulationSize(FirstWindow.getPopulationSizeInt()) // Set to 2
-                .setMaxEvaluations(FirstWindow.getMaxEvaluationsInt()) // Set to 25000
+                .setPopulationSize(model.getPopulationSize()) // Set to 2
+                .setMaxEvaluations(model.getEvaluations()) // Set to 25000
                 .setSelectionOperator(selectionOperator)
                 //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
-                .build() ;
+                .build();
 
-        scores = new Vector<>(FirstWindow.getMaxEvaluationsInt());
+        scores = new Vector<>(model.getEvaluations());
 
         //Ejecucion del algoritmo de optimizacion
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
-                .execute() ;
+                .execute();
+
+        model.setSolution(scores);
 
         //Obtención de la mejor solución alcanzada por el optimizador
-        DoubleSolution solution = algorithm.getResult() ;
-        List<DoubleSolution> population = new ArrayList<>(1) ;
-        population.add(solution) ;
+        DoubleSolution solution = algorithm.getResult();
+        List<DoubleSolution> population = new ArrayList<>(1);
+        population.add(solution);
 
-        computingTime = algorithmRunner.getComputingTime() ;
+        computingTime = algorithmRunner.getComputingTime();
         sol = solution;
+
+        model.setSolution(computingTime);
+        model.setSolution(sol);
 
         //for (int i=0; i<solution.getObjectives().length; i++) {
         //    Jmetal_cst.scores.add(solution.getObjective(i));
         //}
-
-        if (FirstWindow.getDoGraph()) {
-            Chart chartJMetal = new Chart(null,null,null);
-            chartJMetal.run(scores);
-            //chartJMetal.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        }
 
         new SolutionListOutput(population)
                 .setSeparator("\t")
@@ -92,5 +104,10 @@ public class Jmetal_cst {
 
     }
     // TODO code application logic here
+
+    protected MetalModel getMetalModel() {
+        return model;
+    }
+
 }
     

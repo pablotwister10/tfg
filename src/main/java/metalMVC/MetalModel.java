@@ -1,5 +1,8 @@
 package metalMVC;
 
+import algorithmExecutors.Jmetal_cst;
+import org.uma.jmetal.solution.DoubleSolution;
+
 import java.util.Vector;
 
 // MetalModel Class for data structuration
@@ -28,6 +31,9 @@ public class MetalModel {
     private static Vector<String> objFuncts = new Vector<String>(0);
     private static int evaluations;
     private static int populationSize;
+
+    /* JMETAL */
+    private Solution solution = new Solution();
 
 
     /** CONSTRUCTOR */
@@ -76,8 +82,8 @@ public class MetalModel {
             algorithmType = view.getAlgorithmType();
             upView = true;
         }
-        if (numOfObjFuncts != view.getnumOfObjFuncts()) {
-            numOfObjFuncts = view.getnumOfObjFuncts();
+        if (numOfObjFuncts != view.getNumOfObjFuncts()) {
+            numOfObjFuncts = view.getNumOfObjFuncts();
             upView = true;
         }
 
@@ -107,7 +113,7 @@ public class MetalModel {
 
     boolean saveThirdCard(MetalView view) {
 
-        if (objFuncts.equals(view.getObjFunctions()))
+        if (!objFuncts.equals(view.getObjFunctions()))
             objFuncts = view.getObjFunctions();
         if (evaluations != view.getEvaluations())
             evaluations = view.getEvaluations();
@@ -118,64 +124,150 @@ public class MetalModel {
     }
 
     /* GETTERS */
-    public static int getNumOfVariables() {
+    public int getNumOfVariables() {
         return numOfVariables;
     }
 
-    public static String getVariableType() {
+    public String getVariableType() {
         return variableType;
     }
 
-    public static String getAlgorithmType() {
+    public String getAlgorithmType() {
         return algorithmType;
     }
 
-    public static int getnumOfObjFuncts() {
+    public int getNumOfObjFuncts() {
         return numOfObjFuncts;
     }
 
-    public static Vector<String> getNameOfVariables() {
+    public Vector<String> getNameOfVariables() {
         return nameOfVariables;
     }
 
-    public static Vector<Double> getMinIntervalOfVariablesDouble() {
+    public Vector<Double> getMinIntervalOfVariablesDouble() {
         return minIntervalOfVariablesDouble;
     }
 
-    public static Vector<Double> getMaxIntervalOfVariablesDouble() {
+    public Vector<Double> getMaxIntervalOfVariablesDouble() {
         return maxIntervalOfVariablesDouble;
     }
 
-    public static Vector<Double> getStepVariablesDouble() {
+    public Vector<Double> getStepVariablesDouble() {
         return stepVariablesDouble;
     }
 
-    public static Vector<Integer> getMinIntervalOfVariablesInteger() {
+    public Vector<Integer> getMinIntervalOfVariablesInteger() {
         return minIntervalOfVariablesInteger;
     }
 
-    public static Vector<Integer> getMaxIntervalOfVariablesInteger() {
+    public Vector<Integer> getMaxIntervalOfVariablesInteger() {
         return maxIntervalOfVariablesInteger;
     }
 
-    public static Vector<Integer> getStepVariablesInteger() {
+    public Vector<Integer> getStepVariablesInteger() {
         return stepVariablesInteger;
     }
 
-    public static Vector<String> getObjFuncts() {
+    public Vector<String> getObjFuncts() {
         return objFuncts;
     }
 
-    public static int getEvaluations() {
+    public String getObjFuncts(int functNumber) {
+        return objFuncts.elementAt(functNumber-1); // elements start at 0
+    }
+
+    public int getEvaluations() {
         return evaluations;
     }
 
-    public static int getPopulationSize() {
+    public int getPopulationSize() {
         return populationSize;
     }
 
+    public Solution getSolution() {
+        return solution;
+    }
+
+    public MetalModel getMetalModel() {
+        return this;
+    }
+
+    /* SETTERS */
+    public void setSolution(long computingTime) {
+        solution.setComputingTime(computingTime);
+    }
+
+    public void setSolution(Vector<Double> scores) {
+        solution.setScores(scores);
+    }
+
+    public void setSolution(DoubleSolution algorithmSolution) {
+        solution.setAlgorithmSolution(algorithmSolution);
+    }
 
     /* UPDATE MODEL */
 
+
+    /* EXECUTION OF ALGORITHM */
+    boolean execute() {
+        boolean done = false;
+
+        switch (algorithmType) {
+            case "Genetic Algorithm": {
+                Jmetal_cst metal = new Jmetal_cst(getMetalModel());
+                try {
+                    metal.run();
+                    //MetalView.enableGraph(this);
+                    done = true;
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            }
+        }
+
+        return done;
+    }
+
+}
+
+
+class Solution {
+
+    private long computingTime;
+    private Vector<Double> scores;
+    private DoubleSolution algorithmSolution;
+
+
+    Solution() {
+        computingTime = (long) 0;
+        scores = null;
+        algorithmSolution = null;
+    }
+
+    /* GETTERS */
+    public long getComputingTime() {
+        return computingTime;
+    }
+
+    public Vector<Double> getScores() {
+        return scores;
+    }
+
+    public DoubleSolution getAlgorithmSolution() {
+        return algorithmSolution;
+    }
+
+    /* SETTERS */
+    void setComputingTime(long computingTime) {
+        this.computingTime = computingTime;
+    }
+
+    void setScores(Vector<Double> scores) {
+        this.scores = scores;
+    }
+
+    void setAlgorithmSolution(DoubleSolution algorithmSolution) {
+        this.algorithmSolution = algorithmSolution;
+    }
 
 }

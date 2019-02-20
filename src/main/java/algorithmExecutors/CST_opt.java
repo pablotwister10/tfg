@@ -1,22 +1,30 @@
-package example;
+package algorithmExecutors;
 
-import chart.FirstWindow;
+import metalMVC.Metal;
+import metalMVC.MetalModel;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
-import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
+import org.uma.jmetal.solution.DoubleSolution;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
-public class CST_opt_Integer extends AbstractIntegerProblem {
+/**
+ * @author angel
+ */
+@SuppressWarnings("serial")
+public class CST_opt extends AbstractDoubleProblem {
     private String ProjectPath;
+    private MetalModel model;
 
 
     // Constructor de la clase DoubleProblem
-    public CST_opt_Integer(Integer numberOfVariables, List<Integer> lowerbounds, List<Integer> upperbounds, String ProjectPath)  {
-        setNumberOfVariables(numberOfVariables);
+    public CST_opt(MetalModel model, List<Double> lowerbounds, List<Double> upperbounds, String ProjectPath)  {
+        this.model = model;
+        setNumberOfVariables(model.getNumOfVariables());
         setNumberOfObjectives(1);
         setNumberOfConstraints(0) ;
         setName("prueba_GA");
@@ -32,7 +40,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
 
     // Método que evalua la función de coste a partir de una entrada (solution)
     @Override
-    public void evaluate(IntegerSolution solution) {
+    public void evaluate(DoubleSolution solution) {
 
         int numberOfVariables = getNumberOfVariables();
 
@@ -53,7 +61,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         } catch (IOException ex) {
             Logger.getLogger(CST_opt.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+    
     //Lanzar CST (poner timers)
     String CST_path = "\"C:\\Program Files (x86)\\CST STUDIO SUITE 2015\\CST DESIGN ENVIRONMENT.exe\"";
     String macroCST = "\"" + ProjectPath + "\\macro.bas\"";
@@ -65,7 +73,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         } catch (InterruptedException ex) {
             Logger.getLogger(CST_opt.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+    
     //Lectura de los resultados
     String path_results =ProjectPath + "\\Results.txt";
     double[][] MS11=null;
@@ -74,16 +82,16 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         } catch (IOException ex) {
             Logger.getLogger(CST_opt.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+    
     //EvaluaciÃ³n de los resultados en la funciÃ³n de coste
     double fcost;
     double[] frequency = new double [MS11.length];
     double[] S11_data = new double [MS11.length];
-
+    
     for (int i = 0; i < MS11.length ; i++) {
       frequency[i] = MS11[i][0] ;
     }
-
+    
     for (int i = 0; i < MS11.length ; i++) {
       S11_data[i] = MS11[i][1] ;
     }
@@ -93,13 +101,10 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         /*double fcost = -x[0]*5 +x[1]*20;*/
         // TODO: Do this for every fcost
         Map<String, Double> vars = new HashMap<String, Double>();
-        for (int i = 0; i< FirstWindow.getNumOfVariablesFirstInt(); i++) {
-            Double min = FirstWindow.getMinIntervalOfVariablesDouble().elementAt(i);
-            Double paso = FirstWindow.getIntervalOfVariablesType().elementAt(i);
-            Double varInDouble = min+paso*(x[i]-1);
-            vars.put(FirstWindow.getNameOfVariablesString().elementAt(i),varInDouble);
+        for (int i = 0; i< model.getNumOfVariables(); i++) {
+            vars.put(model.getNameOfVariables().elementAt(i),x[i]);
         }
-        Expression e = new ExpressionBuilder(FirstWindow.getCostFunctionsString().elementAt(0))
+        Expression e = new ExpressionBuilder(model.getObjFuncts(1))
                 .build()
                 .variables(vars);
         double fcost = e.evaluate();
@@ -121,19 +126,19 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         fcost=fcost+10000;
         }*/
 
-        Jmetal_cst_Integer.scores.add(fcost);
+        Jmetal_cst.scores.add(fcost);
 
         solution.setObjective(0, fcost);
     }
 
     //////// El resto de código son métodos que utilizaba para llamar al programa externo, estos también te lo explicaré
     //////// más adelante
-   /*
+   /* 
   public static void Write(double array[],String path) throws FileNotFoundException, IOException{
         //path = "C:\\Users\\angel\\Desktop\\PruebasJava\\macro.bas";
         File file =new File(path);
         RandomAccessFile raf = new RandomAccessFile(file, "rw");
-
+       
         //Variables que se van modificar
         String[] name_variables=new String[array.length];
         name_variables[0]="wc";
@@ -142,14 +147,14 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         double[] value_variables=new double[array.length];
         value_variables[0]=array[0];
         value_variables[1]=array[1];
-
+        
         for (int index=0; index<array.length; index++){
         String lineref;
         String line;
-
+        
         lineref = raf.readLine();
 
-
+        
          while(lineref != null)
         {
            String[] temp=lineref.split("=");
@@ -160,43 +165,43 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
                while((line=raf.readLine()) != null){
                    oldMacro+=line+"\r\n";
                }
-               String newasignation=oldMacro.replaceAll(lineref,newline);
+               String newasignation=oldMacro.replaceAll(lineref,newline); 
                FileWriter writer = new FileWriter(path);
                writer.write(newasignation);
                writer.close();
                break;
            }
-
-           lineref = raf.readLine();
+           
+           lineref = raf.readLine(); 
         }
-
+      
         raf.close();
         raf=new RandomAccessFile(file, "rw");
-
+                
         }
         raf.close();
 
     }
-
+  
   public static String executeCommand(String command) throws InterruptedException {
 
 		String s = null;
 
         try {
-
+            
             // using the Runtime exec method:
             Process p = Runtime.getRuntime().exec(command);
-
+            
             int timeout = 30;//En minutos
             if(!p.waitFor(timeout, TimeUnit.MINUTES)) {
-            //timeout - kill the process.
+            //timeout - kill the process. 
             p.destroy(); // consider using destroyForcibly instead
             }
-
-            BufferedReader stdInput = new BufferedReader(new
+            
+            BufferedReader stdInput = new BufferedReader(new 
                  InputStreamReader(p.getInputStream()));
 
-            BufferedReader stdError = new BufferedReader(new
+            BufferedReader stdError = new BufferedReader(new 
                  InputStreamReader(p.getErrorStream()));
 
             // read the output from the command
@@ -204,13 +209,13 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
             while ((s = stdInput.readLine()) != null) {
                 //System.out.println(s);
             }
-
+            
             // read any errors from the attempted command
             System.out.println("Here is the standard error of the command (if any):\n");
             while ((s = stdError.readLine()) != null) {
                 System.out.println(s);
             }
-
+            
             //System.exit(0);
         }
         catch (IOException e) {
@@ -220,24 +225,24 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         }
         return null;
 }
-
+  
   public static double[][] ReadResults(String path_results) throws FileNotFoundException, IOException {
         //path_results = "C:\\Users\\angel\\Desktop\\PruebasJava\\Results.txt";
-
+        
         BufferedReader br;
         FileReader fr = new FileReader(path_results);
         br = new BufferedReader(fr);
-
+        
         String line;
-
+        
         //Salto las dos primeras lÃ­neas
         line = br.readLine();
         line = br.readLine();
         line = br.readLine();
-
+        
         int index=0;
         double Results[][]=new double [1001][2];
-
+      
         while(line != null)
         {
             String[] lines=line.trim().split(" ");
@@ -249,15 +254,15 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
                 Results[index][1]=Double.parseDouble(magnitude);//Magnitud
                 index++;
             }
-
+            
             //System.out.println(Results[index]);
             line = br.readLine();
-
+           
         }
         //System.out.println(Arrays.deepToString(Results));
         fr.close();
-
+        
         return Results;
-  }
+  } 
  */
 }

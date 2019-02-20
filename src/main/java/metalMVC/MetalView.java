@@ -1,7 +1,14 @@
 package metalMVC;
 
+import layout.ChartUtilities;
 import layout.ComboItem;
 import layout.SpringUtilities;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -351,7 +358,7 @@ public class MetalView extends JFrame {
     }
 
     void updateViewThirdCard(MetalModel model) {
-        int numOfObjFuncts = model.getnumOfObjFuncts();
+        int numOfObjFuncts = model.getNumOfObjFuncts();
 
         if (numOfObjFuncts == 1)
             objFunctOneText.setEditable(true);
@@ -384,7 +391,7 @@ public class MetalView extends JFrame {
         return algorithmTypeBox.getSelectedItem().toString();
     }
 
-    int getnumOfObjFuncts() {
+    int getNumOfObjFuncts() {
         int numFuncts = 0;
 
         if (!numOfVariablesText.getText().isEmpty())
@@ -493,11 +500,12 @@ public class MetalView extends JFrame {
         Vector<String> objFuncts = new Vector<String>(0);
 
         objFuncts.add(objFunctOneText.getText());
-        if (getnumOfObjFuncts() > 1)
+        System.out.println(objFunctOneText.getText());
+        if (getNumOfObjFuncts() > 1)
             objFuncts.add(objFunctTwoText.getText());
-        if (getnumOfObjFuncts() > 2)
+        if (getNumOfObjFuncts() > 2)
             objFuncts.add(objFunctThreeText.getText());
-        if (getnumOfObjFuncts() > 3)
+        if (getNumOfObjFuncts() > 3)
             objFuncts.add(objFunctFourText.getText());
 
         return objFuncts;
@@ -532,6 +540,30 @@ public class MetalView extends JFrame {
         return popSize;
     }
 
+
+    /* METHODS FOR ENABLING GRAPHS */
+    void enableGraph(MetalModel model) {
+        JFreeChart lineChart = ChartFactory.createLineChart(
+                "Graph",
+                "iterations","cost", //TODO: best cost with value
+                ChartUtilities.createDataset(model.getSolution().getScores()),
+                PlotOrientation.VERTICAL,
+                true,true,false);
+
+        ChartPanel chartPanel = new ChartPanel(lineChart);
+        chartPanel.setPreferredSize(new java.awt.Dimension(560 ,367));
+        setContentPane(chartPanel);
+
+        chart.Chart chart = new chart.Chart(
+                "JMetal Graph" ,
+                "Cost over iterations",
+                model.getSolution().getScores());
+
+        chart.pack();
+        RefineryUtilities.centerFrameOnScreen(chart);
+        chart.setVisible(true);
+        chart.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
 
     /* METHOD FOR ERRORS */
     void showError(String errMessage) {
