@@ -146,7 +146,7 @@ public class MetalView extends JFrame {
 
     /* METHODS FOR CONSTRUCTION */
     public void makeFirstCard() {
-        // FIRST CARD
+        // TODO: Set fix height to text fields and combo boxes
 
         cardFirst.setLayout(new BoxLayout(cardFirst,BoxLayout.Y_AXIS));
 
@@ -183,7 +183,7 @@ public class MetalView extends JFrame {
     }
 
     public void makeSecondCard() {
-        // SECOND CARD
+        // TODO: Scroll bar if too many
 
         cardSecond.setLayout(new BoxLayout(cardSecond, BoxLayout.Y_AXIS));
 
@@ -191,12 +191,12 @@ public class MetalView extends JFrame {
 
         // Parameter panel
 
-        cardSecond.add(parameterPanelSecond); // TODO: add parameters
+        cardSecond.add(parameterPanelSecond);
 
     }
 
     public void makeThirdCard() {
-        // THIRD CARD
+        // TODO: Set fix height to text fields and combo boxes
 
         cardThird.setLayout(new BoxLayout(cardThird, BoxLayout.Y_AXIS));
 
@@ -209,26 +209,30 @@ public class MetalView extends JFrame {
         objFunctPanel.add(objFunctOneLabel);
         objFunctOneLabel.setLabelFor(objFunctOneText);
         objFunctPanel.add(objFunctOneText);
-        objFunctOneText.setEditable(false);
+        objFunctOneText.setEnabled(false);
         objFunctPanel.add(graphOneCheck);
+        graphOneCheck.setEnabled(false);
 
         objFunctPanel.add(objFunctTwoLabel);
         objFunctTwoLabel.setLabelFor(objFunctTwoText);
         objFunctPanel.add(objFunctTwoText);
-        objFunctTwoText.setEditable(false);
+        objFunctTwoText.setEnabled(false);
         objFunctPanel.add(graphTwoCheck);
+        graphTwoCheck.setEnabled(false);
 
         objFunctPanel.add(objFunctThreeLabel);
         objFunctThreeLabel.setLabelFor(objFunctThreeText);
         objFunctPanel.add(objFunctThreeText);
-        objFunctThreeText.setEditable(false);
+        objFunctThreeText.setEnabled(false);
         objFunctPanel.add(graphThreeCheck);
+        graphThreeCheck.setEnabled(false);
 
         objFunctPanel.add(objFunctFourLabel);
         objFunctFourLabel.setLabelFor(objFunctFourText);
         objFunctPanel.add(objFunctFourText);
-        objFunctFourText.setEditable(false);
+        objFunctFourText.setEnabled(false);
         objFunctPanel.add(graphFourCheck);
+        graphFourCheck.setEnabled(false);
 
         SpringUtilities.makeCompactGrid(objFunctPanel,
                 4, 3,
@@ -340,7 +344,7 @@ public class MetalView extends JFrame {
             minIntervalOfVariablesText[i] = new JTextField();
             maxIntervalOfVariablesText[i] = new JTextField();
             stepVariablesText[i] = new JTextField();
-            //stepVariablesText[i].setEnabled(false); // TODO: check with previous window
+            //stepVariablesText[i].setEnabled(false); // TODO: check if step is needed or not
 
             parameterPanelSecond.add(nameOfVariablesText[i]);
             parameterPanelSecond.add(minIntervalOfVariablesText[i]);
@@ -360,14 +364,22 @@ public class MetalView extends JFrame {
     void updateViewThirdCard(MetalModel model) {
         int numOfObjFuncts = model.getNumOfObjFuncts();
 
-        if (numOfObjFuncts == 1)
-            objFunctOneText.setEditable(true);
-        if (numOfObjFuncts > 1)
-            objFunctTwoText.setEditable(true);
-        if (numOfObjFuncts > 2)
-            objFunctThreeText.setEditable(true);
-        if (numOfObjFuncts > 3)
-            objFunctFourText.setEditable(true);
+        if (numOfObjFuncts == 1) {
+            objFunctOneText.setEnabled(true);
+            graphOneCheck.setEnabled(true);
+        }
+        if (numOfObjFuncts > 1) {
+            objFunctTwoText.setEnabled(true);
+            graphTwoCheck.setEnabled(true);
+        }
+        if (numOfObjFuncts > 2) {
+            objFunctThreeText.setEnabled(true);
+            graphThreeCheck.setEnabled(true);
+        }
+        if (numOfObjFuncts > 3) {
+            objFunctFourText.setEnabled(true);
+            graphFourCheck.setEnabled(true);
+        }
     }
 
 
@@ -543,26 +555,33 @@ public class MetalView extends JFrame {
 
     /* METHODS FOR ENABLING GRAPHS */
     void enableGraph(MetalModel model) {
-        JFreeChart lineChart = ChartFactory.createLineChart(
-                "Graph",
-                "iterations","cost", //TODO: best cost with value
-                ChartUtilities.createDataset(model.getSolution().getScores()),
-                PlotOrientation.VERTICAL,
-                true,true,false);
+        // TODO: Maybe implement in another class inside this file (class Graph)
+        boolean graphs[] = model.getGraphChecks();
+        String graphNames[] = new String[]{"One","Two","Three","Four"};
 
-        ChartPanel chartPanel = new ChartPanel(lineChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(560 ,367));
-        setContentPane(chartPanel);
+        for (int i=0; i<4; i++) {
+            if (!graphs[i])
+                continue;
 
-        chart.Chart chart = new chart.Chart(
-                "JMetal Graph" ,
-                "Cost over iterations",
-                model.getSolution().getScores());
+            JFreeChart lineChart = ChartFactory.createLineChart(
+                    "Graph: " + graphNames[i],
+                    "iterations","cost", // TODO: best cost with value
+                    ChartUtilities.createDataset(model.getSolution().getScores()), // TODO: differentiate between different scores
+                    PlotOrientation.VERTICAL,
+                    true,true,false);
 
-        chart.pack();
-        RefineryUtilities.centerFrameOnScreen(chart);
-        chart.setVisible(true);
-        chart.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            JFrame chartFrame = new JFrame();
+
+            ChartPanel chartPanel = new ChartPanel(lineChart);
+            chartPanel.setPreferredSize(new java.awt.Dimension(560 ,367));
+            chartFrame.setContentPane(chartPanel);
+
+            chartFrame.pack();
+            RefineryUtilities.centerFrameOnScreen(chartFrame);
+            chartFrame.setVisible(true);
+            chartFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        }
     }
 
     /* METHOD FOR ERRORS */

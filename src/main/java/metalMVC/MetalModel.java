@@ -29,11 +29,12 @@ public class MetalModel {
     /* THIRD CARD */
 
     private static Vector<String> objFuncts = new Vector<String>(0);
+    private static boolean graphChecks[] = new boolean[4];
     private static int evaluations;
     private static int populationSize;
 
     /* JMETAL */
-    private Solution solution = new Solution();
+    private MetalSolution solution = new MetalSolution();
 
 
     /** CONSTRUCTOR */
@@ -115,6 +116,8 @@ public class MetalModel {
 
         if (!objFuncts.equals(view.getObjFunctions()))
             objFuncts = view.getObjFunctions();
+        if (graphChecks != view.getGraphChecks())
+            graphChecks = view.getGraphChecks();
         if (evaluations != view.getEvaluations())
             evaluations = view.getEvaluations();
         if (populationSize != view.getPopulationSize())
@@ -176,6 +179,10 @@ public class MetalModel {
         return objFuncts.elementAt(functNumber-1); // elements start at 0
     }
 
+    public boolean[] getGraphChecks() {
+        return graphChecks;
+    }
+
     public int getEvaluations() {
         return evaluations;
     }
@@ -184,7 +191,7 @@ public class MetalModel {
         return populationSize;
     }
 
-    public Solution getSolution() {
+    public MetalSolution getSolution() {
         return solution;
     }
 
@@ -209,20 +216,26 @@ public class MetalModel {
 
 
     /* EXECUTION OF ALGORITHM */
-    boolean execute() {
+    boolean execute(MetalView view) {
         boolean done = false;
 
-        switch (algorithmType) {
+        switch (getAlgorithmType()) {
+            // TODO: Try implementing different algorithms
             case "Genetic Algorithm": {
+                // TODO: Distinguish variable type
                 Jmetal_cst metal = new Jmetal_cst(getMetalModel());
                 try {
                     metal.run();
-                    //MetalView.enableGraph(this);
                     done = true;
                 } catch (Exception exc) {
                     exc.printStackTrace();
                 }
             }
+            // TODO: Multi-objective functions
+        }
+
+        if (done) {
+            view.enableGraph(this);
         }
 
         return done;
@@ -231,14 +244,14 @@ public class MetalModel {
 }
 
 
-class Solution {
+class MetalSolution {
 
     private long computingTime;
     private Vector<Double> scores;
     private DoubleSolution algorithmSolution;
 
 
-    Solution() {
+    MetalSolution() {
         computingTime = (long) 0;
         scores = null;
         algorithmSolution = null;

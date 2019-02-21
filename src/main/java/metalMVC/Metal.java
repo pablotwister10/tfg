@@ -1,5 +1,7 @@
 package metalMVC;
 
+import org.jfree.ui.RefineryUtilities;
+
 public class Metal {
 
     // Create model, view, and controller.  They are created once here and passed to the parts that need them so there
@@ -12,6 +14,7 @@ public class Metal {
         MetalController controller = new MetalController(model, view);
 
         view.setVisible(true);
+        RefineryUtilities.centerFrameOnScreen(view);
 
     }
 

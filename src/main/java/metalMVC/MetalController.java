@@ -1,5 +1,6 @@
 package metalMVC;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -42,8 +43,15 @@ public class MetalController {
                 } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 3")) {
                     saved = mModel.saveThirdCard(mView);
                     if (saved) {
-                        // TODO: execute algorithm
-                        boolean executed = mModel.execute();
+                        boolean executed = mModel.execute(mView);
+                        if (executed) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Algorithm executed!\n\n" +
+                                            "Computing time took: " + Long.toString(mModel.getSolution().getComputingTime()) + " ms\n" +
+                                            "MetalSolution: " + mModel.getSolution().getAlgorithmSolution().toString()
+                            );
+                        }
+                        mView.cards.show(mView.panelCards,"Card 3");
                     } else
                         mView.showError("INSERT DATA");
                 }
