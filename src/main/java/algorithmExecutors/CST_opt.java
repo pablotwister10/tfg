@@ -1,6 +1,5 @@
 package algorithmExecutors;
 
-import metalMVC.Metal;
 import metalMVC.MetalModel;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -10,7 +9,6 @@ import org.uma.jmetal.solution.DoubleSolution;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * @author angel
@@ -25,7 +23,7 @@ public class CST_opt extends AbstractDoubleProblem {
     public CST_opt(MetalModel model, List<Double> lowerbounds, List<Double> upperbounds, String ProjectPath)  {
         this.model = model;
         setNumberOfVariables(model.getNumOfVariables());
-        setNumberOfObjectives(1);
+        setNumberOfObjectives(model.getNumOfObjFuncts());
         setNumberOfConstraints(0) ;
         setName("prueba_GA");
 
@@ -109,8 +107,8 @@ public class CST_opt extends AbstractDoubleProblem {
                 .variables(vars);
         double fcost = e.evaluate();
 
-        System.out.println(solution.getObjective(0));
-        System.out.println(x[0]);
+        //System.out.println(solution.getObjective(0));
+        //System.out.println(x[0]);
 
         /*
         for (int i = 0; i < S11_data.length; i++) {
@@ -126,7 +124,7 @@ public class CST_opt extends AbstractDoubleProblem {
         fcost=fcost+10000;
         }*/
 
-        Jmetal_cst.scores.add(fcost);
+        MetalAlgorithm.scores.add(fcost);
 
         solution.setObjective(0, fcost);
     }

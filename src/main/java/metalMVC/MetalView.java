@@ -43,7 +43,8 @@ public class MetalView extends JFrame {
 
     private ComboItem doubleVarTypeComboBox = new ComboItem("Double",1);
     private ComboItem intVarTypeComboBox = new ComboItem("Integer",2);
-    private ComboItem geneticAlgorithmComboBox = new ComboItem("Genetic Algorithm",1);
+    private ComboItem algorithmGeneticComboBox = new ComboItem("Genetic Algorithm",1);
+    private ComboItem algorithmNSGAIIComboBox = new ComboItem("NSGAII",2);
 
 
     /* SECOND CARD */
@@ -169,7 +170,8 @@ public class MetalView extends JFrame {
         parameterPanelFirst.add(algorithmTypeLabel);
         algorithmTypeLabel.setLabelFor(algorithmTypeBox);
         parameterPanelFirst.add(algorithmTypeBox);
-        algorithmTypeBox.addItem(geneticAlgorithmComboBox);
+        algorithmTypeBox.addItem(algorithmGeneticComboBox);
+        algorithmTypeBox.addItem(algorithmNSGAIIComboBox);
 
         parameterPanelFirst.add(numOfObjFunctsLabel);
         numOfObjFunctsLabel.setLabelFor(numOfObjFunctsText);
@@ -364,7 +366,7 @@ public class MetalView extends JFrame {
     void updateViewThirdCard(MetalModel model) {
         int numOfObjFuncts = model.getNumOfObjFuncts();
 
-        if (numOfObjFuncts == 1) {
+        if (numOfObjFuncts > 0) {
             objFunctOneText.setEnabled(true);
             graphOneCheck.setEnabled(true);
         }
@@ -512,7 +514,6 @@ public class MetalView extends JFrame {
         Vector<String> objFuncts = new Vector<String>(0);
 
         objFuncts.add(objFunctOneText.getText());
-        System.out.println(objFunctOneText.getText());
         if (getNumOfObjFuncts() > 1)
             objFuncts.add(objFunctTwoText.getText());
         if (getNumOfObjFuncts() > 2)
@@ -554,7 +555,7 @@ public class MetalView extends JFrame {
 
 
     /* METHODS FOR ENABLING GRAPHS */
-    void enableGraph(MetalModel model) {
+    void displayGraph(MetalModel model) {
         // TODO: Maybe implement in another class inside this file (class Graph)
         boolean graphs[] = model.getGraphChecks();
         String graphNames[] = new String[]{"One","Two","Three","Four"};

@@ -1,6 +1,6 @@
 package metalMVC;
 
-import algorithmExecutors.Jmetal_cst;
+import algorithmExecutors.MetalAlgorithm;
 import org.uma.jmetal.solution.DoubleSolution;
 
 import java.util.Vector;
@@ -215,27 +215,15 @@ public class MetalModel {
     /* UPDATE MODEL */
 
 
-    /* EXECUTION OF ALGORITHM */
-    boolean execute(MetalView view) {
+    /* EXECUTION OF ALGORITHM ==> new MetalAlgorithm class creation */
+    boolean execute(MetalView view) throws Exception {
         boolean done = false;
 
-        switch (getAlgorithmType()) {
-            // TODO: Try implementing different algorithms
-            case "Genetic Algorithm": {
-                // TODO: Distinguish variable type
-                Jmetal_cst metal = new Jmetal_cst(getMetalModel());
-                try {
-                    metal.run();
-                    done = true;
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                }
-            }
-            // TODO: Multi-objective functions
-        }
+        MetalAlgorithm algo = new MetalAlgorithm(getMetalModel());
+        done = algo.run();
 
         if (done) {
-            view.enableGraph(this);
+            view.displayGraph(this);
         }
 
         return done;
