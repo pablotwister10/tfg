@@ -10,7 +10,7 @@ public class Metal {
     public static void main(String[] args) {
 
         MetalModel      model      = new MetalModel();
-        MetalView       view       = new MetalView(model);
+        MetalView       view       = new MetalView();
         MetalController controller = new MetalController(model, view);
 
         view.setVisible(true);

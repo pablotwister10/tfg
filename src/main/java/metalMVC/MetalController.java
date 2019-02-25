@@ -48,7 +48,7 @@ public class MetalController {
                         if (executed) {
                             JOptionPane.showMessageDialog(mView,"Algorithm executed!\n\n" +
                                             "Computing time took: " + Long.toString(mModel.getMetalSolution().getComputingTime()) + " ms\n" +
-                                            "MetalSolution: " + mModel.getMetalSolution().getSolutionAlgorithmGenetic().toString()
+                                            "MetalSolution: " + mModel.getMetalSolution().getSolutionAlgorithm().toString()
                             );
                         }
                     } else

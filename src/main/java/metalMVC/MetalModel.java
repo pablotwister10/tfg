@@ -2,10 +2,18 @@ package metalMVC;
 
 import algorithmExecutors.MetalAlgorithm;
 import algorithmExecutors.MetalSolution;
+import org.uma.jmetal.problem.DoubleProblem;
+import org.uma.jmetal.problem.IntegerProblem;
+import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.IntegerSolution;
 
 import java.util.Vector;
 
-// MetalModel Class for data structuration
+/**
+ * MetalModel Class for data structuration
+ * @param <> Type of variable (Double, Integer)
+ */
+// TODO: Change vectors of variables to @param type <T>
 public class MetalModel {
 
     /* FIRST CARD */
@@ -18,6 +26,11 @@ public class MetalModel {
     /* SECOND CARD */
 
     private static Vector<String> nameOfVariables = new Vector<String>(0);
+/*
+    private Vector<T> minIntervalOfVariables;
+    private Vector<T> maxIntervalOfVariables;
+    private Vector<T> stepVariables;
+*/
     // intervals in Double
     private static Vector<Double> minIntervalOfVariablesDouble = new Vector<Double>(0);
     private static Vector<Double> maxIntervalOfVariablesDouble = new Vector<Double>(0);
@@ -104,21 +117,20 @@ public class MetalModel {
 
         if (nameOfVariables.isEmpty() || !nameOfVariables.equals(view.getNameOfVariables()))
             nameOfVariables = view.getNameOfVariables();
-        if (variableType.equalsIgnoreCase("Double")) {
-            if (minIntervalOfVariablesDouble.isEmpty() || !minIntervalOfVariablesDouble.equals(view.getMinIntervalOfVariablesDouble()))
-                minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
-            if (maxIntervalOfVariablesDouble.isEmpty() || maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
-                maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
-            if (stepVariablesDouble.isEmpty() || stepVariablesDouble.equals(view.getStepVariablesDouble()))
-                stepVariablesDouble = view.getStepVariablesDouble();
-            saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesDouble.isEmpty()
-                    || !maxIntervalOfVariablesDouble.isEmpty() || !stepVariablesDouble.isEmpty());
-        } else if (variableType.equalsIgnoreCase("Integer")) {
+        if (minIntervalOfVariablesDouble.isEmpty() || !minIntervalOfVariablesDouble.equals(view.getMinIntervalOfVariablesDouble()))
+            minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
+        if (maxIntervalOfVariablesDouble.isEmpty() || !maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
+            maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
+        if (stepVariablesDouble.isEmpty() || !stepVariablesDouble.equals(view.getStepVariablesDouble()))
+            stepVariablesDouble = view.getStepVariablesDouble();
+        saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesDouble.isEmpty()
+                || !maxIntervalOfVariablesDouble.isEmpty() || !stepVariablesDouble.isEmpty());
+        if (variableType.equalsIgnoreCase("Integer")) {
             if (minIntervalOfVariablesInteger.isEmpty() || !minIntervalOfVariablesInteger.equals(view.getMinIntervalOfVariablesInteger()))
                 minIntervalOfVariablesInteger = view.getMinIntervalOfVariablesInteger();
-            if (maxIntervalOfVariablesInteger.isEmpty() || maxIntervalOfVariablesInteger.equals(view.getMaxIntervalOfVariablesInteger()))
+            if (maxIntervalOfVariablesInteger.isEmpty() || !maxIntervalOfVariablesInteger.equals(view.getMaxIntervalOfVariablesInteger()))
                 maxIntervalOfVariablesInteger = view.getMaxIntervalOfVariablesInteger();
-            if (stepVariablesInteger.isEmpty() || stepVariablesInteger.equals(view.getStepVariablesInteger()))
+            if (stepVariablesInteger.isEmpty() || !stepVariablesInteger.equals(view.getStepVariablesInteger()))
                 stepVariablesInteger = view.getStepVariablesInteger();
             saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesInteger.isEmpty()
                     || !maxIntervalOfVariablesInteger.isEmpty() || !stepVariablesInteger.isEmpty());
@@ -161,7 +173,19 @@ public class MetalModel {
     public Vector<String> getNameOfVariables() {
         return nameOfVariables;
     }
+/*
+    public Vector<T> getMinIntervalOfVariables() {
+        return minIntervalOfVariables;
+    }
 
+    public Vector<T> getMaxIntervalOfVariables() {
+        return maxIntervalOfVariables;
+    }
+
+    public Vector<T> getStepVariables() {
+        return stepVariables;
+    }
+*/
     public Vector<Double> getMinIntervalOfVariablesDouble() {
         return minIntervalOfVariablesDouble;
     }
@@ -215,16 +239,37 @@ public class MetalModel {
     }
 
 
+    /* SETTERS */
+/*
+    public void setMinIntervalOfVariables(Vector<T> minIntervalOfVariables) {
+        this.minIntervalOfVariables = minIntervalOfVariables;
+    }
+
+    public void setMaxIntervalOfVariables(Vector<T> maxIntervalOfVariables) {
+        this.maxIntervalOfVariables = maxIntervalOfVariables;
+    }
+
+    public void setStepVariables(Vector<T> stepVariables) {
+        this.stepVariables = stepVariables;
+    }
+*/
     /* UPDATE MODEL */
 
 
     /* EXECUTION OF ALGORITHM ==> new MetalAlgorithm class creation */
     boolean execute(MetalView view) throws Exception {
         boolean done = false;
-        metalSolution = new MetalSolution(this);
 
-        MetalAlgorithm algo = new MetalAlgorithm(getMetalModel());
-        done = algo.run();
+        if (variableType.equalsIgnoreCase("Double")) {
+            metalSolution = new MetalSolution<Double,DoubleSolution>(this);
+            MetalAlgorithm<Double,DoubleSolution,DoubleProblem> algo = new MetalAlgorithm<>(getMetalModel());
+            done = algo.run();
+        }
+        else if (variableType.equalsIgnoreCase("Integer")) {
+            metalSolution = new MetalSolution<Integer,IntegerSolution>(this);
+            MetalAlgorithm<Integer,IntegerSolution,IntegerProblem> algo = new MetalAlgorithm<>(getMetalModel());
+            done = algo.run();
+        }
 
         if (done) {
             view.displayGraph(this);

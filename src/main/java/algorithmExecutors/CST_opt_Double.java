@@ -11,17 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author angel
+ *
+ * @param <> Type of variable (Double, Integer)
+ * @param <> Type of problem (DoubleProblem, IntegerProblem)
  */
 @SuppressWarnings("serial")
-public class CST_opt extends AbstractDoubleProblem {
+public class CST_opt_Double extends AbstractDoubleProblem {
     private String ProjectPath;
     private MetalModel model;
 
 
     // Constructor de la clase DoubleProblem
-    public CST_opt(MetalModel model, List<Double> lowerbounds, List<Double> upperbounds, String ProjectPath)  {
+    public CST_opt_Double(MetalModel model, List<Double> lowerbounds, List<Double> upperbounds, String ProjectPath)  {
         this.model = model;
+
         setNumberOfVariables(model.getNumOfVariables());
         setNumberOfObjectives(model.getNumOfObjFuncts());
         setNumberOfConstraints(0) ;
@@ -45,7 +48,7 @@ public class CST_opt extends AbstractDoubleProblem {
         //La variable Double x guarda los valores que se van a evaluar en la función de coste (
         double[] x = new double[numberOfVariables] ;
 
-        for (int i = 0; i < numberOfVariables; i++) {
+        for (int i=0; i<numberOfVariables; i++) {
             x[i] = solution.getVariableValue(i) ;
         }
         ////////////////La siguientes lineas no te hacen falta porque es para lanzar el programa externo
@@ -57,7 +60,7 @@ public class CST_opt extends AbstractDoubleProblem {
         try {
             Write(x,path);
         } catch (IOException ex) {
-            Logger.getLogger(CST_opt.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
         }
     
     //Lanzar CST (poner timers)
@@ -69,7 +72,7 @@ public class CST_opt extends AbstractDoubleProblem {
             //Execute launcher VirtualBox command
             executeCommand(commandLaunchCST);
         } catch (InterruptedException ex) {
-            Logger.getLogger(CST_opt.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
         }
     
     //Lectura de los resultados
@@ -78,7 +81,7 @@ public class CST_opt extends AbstractDoubleProblem {
         try {
             MS11 = ReadResults(path_results);
         } catch (IOException ex) {
-            Logger.getLogger(CST_opt.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
         }
     
     //EvaluaciÃ³n de los resultados en la funciÃ³n de coste

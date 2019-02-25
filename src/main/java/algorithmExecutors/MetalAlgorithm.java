@@ -8,11 +8,15 @@ import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GeneticAlgorith
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.operator.impl.crossover.IntegerSBXCrossover;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.problem.DoubleProblem;
+import org.uma.jmetal.problem.IntegerProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
@@ -20,15 +24,51 @@ import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MetalAlgorithm {
+/**
+ *
+ * @param <T> Type of variable (Double, Integer)
+ * @param <E> Type of algorithm (DoubleSolution, IntegerSolution)
+ * @param <P> Type of problem (DoubleProblem, IntegerProblem)
+ */
+public class MetalAlgorithm<T,E,P> {
 
-    private static MetalSolution metalSolution;
+    private MetalSolution metalSolution;
     private MetalModel model;
 
+    Algorithm<E> algorithm;
+    ArrayList<T> lowers;
+    ArrayList<T> uppers;
+    P problem;
 
     public MetalAlgorithm(MetalModel model) {
         this.model = model;
         this.metalSolution = model.getMetalSolution(); // there's really no need to because it is inside the model instance
+
+        lowers = new ArrayList<T>(model.getNumOfVariables()); // 0.1 INTEGER
+        uppers = new ArrayList<T>(model.getNumOfVariables()); // 4.0
+
+        algorithm = new Algorithm<E>() {
+            @Override
+            public void run() {
+
+            }
+
+            @Override
+            public E getResult() {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getDescription() {
+                return null;
+            }
+        };
+
     }
 
 
@@ -40,7 +80,12 @@ public class MetalAlgorithm {
         switch (model.getAlgorithmType()) {
             // TODO: Try implementing different algorithms
             case "Genetic Algorithm": {
-                runGenetic();
+                // TODO: Parametrize type of variable, problem and solution
+                if (model.getVariableType().equalsIgnoreCase("Double")) {
+                    runGeneticDouble();
+                } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
+                    runGeneticInteger();
+                }
                 done = true;
                 break;
             }
@@ -56,7 +101,7 @@ public class MetalAlgorithm {
 
     }
 
-    private void runGenetic() throws Exception {
+    private void runGeneticDouble() throws Exception {
 
         Algorithm<DoubleSolution> algorithm;
         ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
@@ -66,15 +111,15 @@ public class MetalAlgorithm {
         uppers.addAll(model.getMaxIntervalOfVariablesDouble());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new CST_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
-        CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0, 20.0) ;
-        MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0) ;
-        SelectionOperator<List<DoubleSolution>, DoubleSolution> selectionOperator = new BinaryTournamentSelection<DoubleSolution>();
+        CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0);
+        MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<DoubleSolution>();
 
         //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
-        algorithm = new GeneticAlgorithmBuilder<DoubleSolution>(problem, crossoverOperator, mutationOperator)
+        algorithm = new GeneticAlgorithmBuilder<DoubleSolution>(problem,crossoverOperator,mutationOperator)
                 .setPopulationSize(model.getPopulationSize()) // Set to 2
                 .setMaxEvaluations(model.getEvaluations()) // Set to 25000
                 .setSelectionOperator(selectionOperator)
@@ -91,7 +136,7 @@ public class MetalAlgorithm {
         population.add(solution);
 
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
-        metalSolution.setSolutionAlgorithmGenetic(solution);
+        metalSolution.setSolutionAlgorithm(solution);
 
         //for (int i=0; i<solution.getObjectives().length; i++) {
         //    Jmetal_cst.scores.add(solution.getObjective(i));
@@ -109,9 +154,55 @@ public class MetalAlgorithm {
 
     }
 
+    private void runGeneticInteger() throws Exception {
+
+        Algorithm<IntegerSolution> algorithmInteger;
+        ArrayList<Integer> lowersInteger = new ArrayList<>(model.getNumOfVariables());
+        ArrayList<Integer> uppersInteger = new ArrayList<>(model.getNumOfVariables());
+
+        lowersInteger.addAll(model.getMinIntervalOfVariablesInteger());
+        uppersInteger.addAll(model.getMaxIntervalOfVariablesInteger());
+
+        String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
+
+        IntegerProblem problemInteger = new CST_opt_Integer(model,lowersInteger,uppersInteger,ProjectPath);
+
+        //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
+        CrossoverOperator<IntegerSolution> crossoverOperatorInteger = new IntegerSBXCrossover(1.0,2.0);
+        MutationOperator<IntegerSolution> mutationOperatorInteger = new IntegerPolynomialMutation(1.0/problemInteger.getNumberOfVariables(),20.0);
+        SelectionOperator<List<IntegerSolution>,IntegerSolution> selectionOperatorInteger = new BinaryTournamentSelection<IntegerSolution>();
+
+        algorithmInteger = new GeneticAlgorithmBuilder<IntegerSolution>(problemInteger,crossoverOperatorInteger,mutationOperatorInteger)
+                .setPopulationSize(model.getPopulationSize())
+                .setMaxEvaluations(model.getEvaluations())
+                .setSelectionOperator(selectionOperatorInteger)
+                .build();
+
+        AlgorithmRunner algorithmRunnerInteger = new AlgorithmRunner.Executor(algorithmInteger)
+                .execute();
+
+        IntegerSolution solutionInteger = algorithmInteger.getResult();
+        List<IntegerSolution> populationInteger = new ArrayList<>(1);
+        populationInteger.add(solutionInteger);
+
+        metalSolution.setComputingTime(algorithmRunnerInteger.getComputingTime());
+        metalSolution.setSolutionAlgorithm(solutionInteger);
+
+        new SolutionListOutput(populationInteger)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+                .print();
+
+        //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
+        //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
+        //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+
+    }
+
     private void runNSGAII() throws Exception {
 
-        NSGAII<DoubleSolution> algorithm ;
+        NSGAII<DoubleSolution> algorithm;
         ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
         ArrayList<Double> uppers = new ArrayList<>(model.getNumOfVariables()); // 4.0
 
@@ -119,15 +210,15 @@ public class MetalAlgorithm {
         uppers.addAll(model.getMaxIntervalOfVariablesDouble());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new CST_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
-        CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0, 20.0) ;
-        MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0) ;
-        SelectionOperator<List<DoubleSolution>, DoubleSolution> selectionOperator = new BinaryTournamentSelection<DoubleSolution>();
+        CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0) ;
+        MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<DoubleSolution>();
 
         //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
-        algorithm = new NSGAIIBuilder<DoubleSolution>(problem, crossoverOperator, mutationOperator)
+        algorithm = new NSGAIIBuilder<DoubleSolution>(problem,crossoverOperator,mutationOperator)
                 .setPopulationSize(model.getPopulationSize()) // Set to 2
                 .setMaxEvaluations(model.getEvaluations()) // Set to 25000
                 .setSelectionOperator(selectionOperator)
@@ -149,7 +240,6 @@ public class MetalAlgorithm {
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         //metalSolution.setSolutionAlgorithmGenetic(solution);
 
-        // TODO: Solve solution passing to MetalModel
 /*
 
         algorithm.getResult();

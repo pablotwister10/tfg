@@ -105,7 +105,7 @@ public class MetalView extends JFrame {
 
 
     /** CONSTRUCTOR */
-    public MetalView(MetalModel model) {
+    public MetalView() {
 
         // Main Panel Layout in two panels, one with cards and another with navigation panel
         panelMain.setLayout(new BoxLayout(panelMain,BoxLayout.Y_AXIS));
@@ -427,6 +427,19 @@ public class MetalView extends JFrame {
 
         return nameVars;
     }
+/*
+    Vector<T> getMinIntervalOfVariables(MetalModel<T> model) {
+        return null;
+    }
+
+    Vector<T> getMaxIntervalOfVariables() {
+        return null;
+    }
+
+    Vector<T> getStepVariables() {
+        return null;
+    }
+*/
 
     Vector<Double> getMinIntervalOfVariablesDouble() {
         return getIntervalsDouble("minDouble");

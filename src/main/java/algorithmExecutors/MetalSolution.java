@@ -1,30 +1,27 @@
 package algorithmExecutors;
 
 import metalMVC.MetalModel;
-import org.uma.jmetal.solution.DoubleSolution;
 
 import java.util.Vector;
 
-public class MetalSolution {
+/**
+ *
+ * @param <T> Type of variable (Double, Integer)
+ * @param <E> Type of algorithm (DoubleSolution, IntegerSolution)
+ */
+public class MetalSolution<T,E> {
 
+    protected Vector<T>[] scores;
     private long computingTime;
-    private Vector<Double> scoresMono;
-    protected Vector<Double>[] scores;
-    private DoubleSolution solutionAlgorithmGenetic;
-
+    private E solutionAlgorithm;
 
 
     public MetalSolution(MetalModel model) {
-        // TODO: Simplify with one score
-        if (model.getNumOfObjFuncts() == 1)
-            scoresMono = new Vector<>(model.getEvaluations());
-
+        computingTime = (long) 0;
         scores = new Vector[model.getNumOfObjFuncts()];
         for (int i=0; i<model.getNumOfObjFuncts(); i++)
-            scores[i] = new Vector<Double>(model.getEvaluations());
-
-        computingTime = (long) 0;
-        solutionAlgorithmGenetic = null;
+            scores[i] = new Vector<T>(model.getEvaluations());
+        solutionAlgorithm = null;
     }
 
 
@@ -33,16 +30,12 @@ public class MetalSolution {
         return computingTime;
     }
 
-    public Vector<Double> getScoresMono() {
-        return scoresMono;
-    }
-
-    public Vector<Double>[] getScores() {
+    public Vector<T>[] getScores() {
         return scores;
     }
 
-    public DoubleSolution getSolutionAlgorithmGenetic() {
-        return solutionAlgorithmGenetic;
+    public E getSolutionAlgorithm() {
+        return solutionAlgorithm;
     }
 
     /* SETTERS */
@@ -50,16 +43,12 @@ public class MetalSolution {
         this.computingTime = computingTime;
     }
 
-    void setScoresMono(Vector<Double> scoresMono) {
-        this.scoresMono = scoresMono;
-    }
-
-    protected void setScores(Vector<Double>[] scores) {
+    protected void setScores(Vector<T>[] scores) {
         this.scores = scores;
     }
 
-    void setSolutionAlgorithmGenetic(DoubleSolution solutionAlgorithmGenetic) {
-        this.solutionAlgorithmGenetic = solutionAlgorithmGenetic;
+    void setSolutionAlgorithm(E solutionAlgorithm) {
+        this.solutionAlgorithm = solutionAlgorithm;
     }
 
 }
