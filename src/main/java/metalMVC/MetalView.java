@@ -494,9 +494,9 @@ public class MetalView extends JFrame {
             Integer yMin = (int) 1;
             Integer yMax = yStep;
 
-            minIntervalVarsInteger.add(yStep);
-            maxIntervalVarsInteger.add(yMin);
-            stepVarsInteger.add(yMax);
+            minIntervalVarsInteger.add(yMin);
+            maxIntervalVarsInteger.add(yMax);
+            stepVarsInteger.add(yStep);
         }
 
         if (type.equalsIgnoreCase("minInteger"))

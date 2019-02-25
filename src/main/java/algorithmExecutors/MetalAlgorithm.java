@@ -19,7 +19,6 @@ import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class MetalAlgorithm {
 

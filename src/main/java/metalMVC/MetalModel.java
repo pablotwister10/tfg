@@ -18,10 +18,11 @@ public class MetalModel {
     /* SECOND CARD */
 
     private static Vector<String> nameOfVariables = new Vector<String>(0);
+    // intervals in Double
     private static Vector<Double> minIntervalOfVariablesDouble = new Vector<Double>(0);
     private static Vector<Double> maxIntervalOfVariablesDouble = new Vector<Double>(0);
     private static Vector<Double> stepVariablesDouble = new Vector<Double>(0);
-    // intervals to int
+    // intervals in Integer
     private static Vector<Integer> minIntervalOfVariablesInteger = new Vector<Integer>(0);
     private static Vector<Integer> maxIntervalOfVariablesInteger = new Vector<Integer>(0);
     private static Vector<Integer> stepVariablesInteger = new Vector<Integer>(0);
@@ -99,17 +100,31 @@ public class MetalModel {
 
     boolean saveSecondCard(MetalView view) {
 
+        boolean saved = false;
+
         if (nameOfVariables.isEmpty() || !nameOfVariables.equals(view.getNameOfVariables()))
             nameOfVariables = view.getNameOfVariables();
-        if (minIntervalOfVariablesDouble.isEmpty() || !minIntervalOfVariablesDouble.equals(view.getMinIntervalOfVariablesDouble()))
-            minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
-        if (maxIntervalOfVariablesDouble.isEmpty() || maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
-            maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
-        if (stepVariablesDouble.isEmpty() || stepVariablesDouble.equals(view.getStepVariablesDouble()))
-            stepVariablesDouble = view.getStepVariablesDouble();
+        if (variableType.equalsIgnoreCase("Double")) {
+            if (minIntervalOfVariablesDouble.isEmpty() || !minIntervalOfVariablesDouble.equals(view.getMinIntervalOfVariablesDouble()))
+                minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
+            if (maxIntervalOfVariablesDouble.isEmpty() || maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
+                maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
+            if (stepVariablesDouble.isEmpty() || stepVariablesDouble.equals(view.getStepVariablesDouble()))
+                stepVariablesDouble = view.getStepVariablesDouble();
+            saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesDouble.isEmpty()
+                    || !maxIntervalOfVariablesDouble.isEmpty() || !stepVariablesDouble.isEmpty());
+        } else if (variableType.equalsIgnoreCase("Integer")) {
+            if (minIntervalOfVariablesInteger.isEmpty() || !minIntervalOfVariablesInteger.equals(view.getMinIntervalOfVariablesInteger()))
+                minIntervalOfVariablesInteger = view.getMinIntervalOfVariablesInteger();
+            if (maxIntervalOfVariablesInteger.isEmpty() || maxIntervalOfVariablesInteger.equals(view.getMaxIntervalOfVariablesInteger()))
+                maxIntervalOfVariablesInteger = view.getMaxIntervalOfVariablesInteger();
+            if (stepVariablesInteger.isEmpty() || stepVariablesInteger.equals(view.getStepVariablesInteger()))
+                stepVariablesInteger = view.getStepVariablesInteger();
+            saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesInteger.isEmpty()
+                    || !maxIntervalOfVariablesInteger.isEmpty() || !stepVariablesInteger.isEmpty());
+        }
 
-        return (!nameOfVariables.isEmpty() || !minIntervalOfVariablesDouble.isEmpty()
-                || !maxIntervalOfVariablesDouble.isEmpty() || !stepVariablesDouble.isEmpty());
+        return saved;
     }
 
     boolean saveThirdCard(MetalView view) {
