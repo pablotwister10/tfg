@@ -23,19 +23,13 @@ import java.util.Vector;
 
 public class MetalAlgorithm {
 
-    private static long computingTime;
-    protected static Vector<Double> scores;
-    private static DoubleSolution algorithmMonoSolution;
-    private static List<DoubleSolution> algorithmMultiSolution;
+    private static MetalSolution metalSolution;
     private MetalModel model;
 
 
     public MetalAlgorithm(MetalModel model) {
-        computingTime = (long) 0;
-        scores = null;
-        algorithmMonoSolution = null;
-        algorithmMultiSolution = null;
         this.model = model;
+        this.metalSolution = model.getMetalSolution(); // there's really no need to because it is inside the model instance
     }
 
 
@@ -56,7 +50,6 @@ public class MetalAlgorithm {
                 done = true;
                 break;
             }
-            // TODO: Multi-objective functions
         }
         if (done) System.out.println(model.getAlgorithmType() + " executed");
 
@@ -89,24 +82,17 @@ public class MetalAlgorithm {
                 //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
                 .build();
 
-        scores = new Vector<>(model.getEvaluations());
-
-        //Ejecucion del algoritmo de optimizacion
+        //Ejecucion del algoritmo de optimizacion (SCORES WILL BE CHANGED)
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
                 .execute();
-
-        model.setSolution(scores);
 
         //Obtención de la mejor solución alcanzada por el optimizador
         DoubleSolution solution = algorithm.getResult();
         List<DoubleSolution> population = new ArrayList<>(1);
         population.add(solution);
 
-        computingTime = algorithmRunner.getComputingTime();
-        algorithmMonoSolution = solution;
-
-        model.setSolution(computingTime);
-        model.setSolution(algorithmMonoSolution);
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        metalSolution.setSolutionAlgorithmGenetic(solution);
 
         //for (int i=0; i<solution.getObjectives().length; i++) {
         //    Jmetal_cst.scores.add(solution.getObjective(i));
@@ -149,20 +135,20 @@ public class MetalAlgorithm {
                 //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
                 .build();
 
-        scores = new Vector<>(model.getEvaluations());
-
         //Ejecucion del algoritmo de optimizacion
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
                 .execute();
 
-        model.setSolution(scores);
+        //model.setSolution(scores);
+        //metalSolution.setScoresMulti(scores);
 
         //Obtención de la mejor solución alcanzada por el optimizador
         List<DoubleSolution> solution = algorithm.getResult();
 
-        computingTime = algorithmRunner.getComputingTime();
+        //model.setSolution(computingTime);
 
-        model.setSolution(computingTime);
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        //metalSolution.setSolutionAlgorithmGenetic(solution);
 
         // TODO: Solve solution passing to MetalModel
 /*

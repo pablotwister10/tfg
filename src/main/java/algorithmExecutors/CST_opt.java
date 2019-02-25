@@ -95,20 +95,19 @@ public class CST_opt extends AbstractDoubleProblem {
     }
     */
 
-        //Funcion de coste (muy sencilla) es una función que el optimizador va a minimizar
-        /*double fcost = -x[0]*5 +x[1]*20;*/
-        // TODO: Do this for every fcost
+        /* Optimizing functions from GUI */
         Map<String, Double> vars = new HashMap<String, Double>();
         for (int i = 0; i< model.getNumOfVariables(); i++) {
             vars.put(model.getNameOfVariables().elementAt(i),x[i]);
         }
-        Expression e = new ExpressionBuilder(model.getObjFuncts(1))
-                .build()
-                .variables(vars);
-        double fcost = e.evaluate();
-
-        //System.out.println(solution.getObjective(0));
-        //System.out.println(x[0]);
+        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
+            Expression e = new ExpressionBuilder(model.getObjFuncts(i+1))
+                    .build()
+                    .variables(vars);
+            double fcost = e.evaluate();
+            model.getMetalSolution().scores[i].add(fcost);
+            solution.setObjective(i,fcost);
+        }
 
         /*
         for (int i = 0; i < S11_data.length; i++) {
@@ -124,9 +123,6 @@ public class CST_opt extends AbstractDoubleProblem {
         fcost=fcost+10000;
         }*/
 
-        MetalAlgorithm.scores.add(fcost);
-
-        solution.setObjective(0, fcost);
     }
 
     //////// El resto de código son métodos que utilizaba para llamar al programa externo, estos también te lo explicaré

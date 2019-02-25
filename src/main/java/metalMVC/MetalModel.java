@@ -1,7 +1,7 @@
 package metalMVC;
 
 import algorithmExecutors.MetalAlgorithm;
-import org.uma.jmetal.solution.DoubleSolution;
+import algorithmExecutors.MetalSolution;
 
 import java.util.Vector;
 
@@ -33,8 +33,8 @@ public class MetalModel {
     private static int evaluations;
     private static int populationSize;
 
-    /* JMETAL */
-    private MetalSolution solution = new MetalSolution();
+    /* SOLUTION */
+    MetalSolution metalSolution;
 
 
     /** CONSTRUCTOR */
@@ -191,26 +191,14 @@ public class MetalModel {
         return populationSize;
     }
 
-    public MetalSolution getSolution() {
-        return solution;
+    public MetalSolution getMetalSolution() {
+        return metalSolution;
     }
 
     public MetalModel getMetalModel() {
         return this;
     }
 
-    /* SETTERS */
-    public void setSolution(long computingTime) {
-        solution.setComputingTime(computingTime);
-    }
-
-    public void setSolution(Vector<Double> scores) {
-        solution.setScores(scores);
-    }
-
-    public void setSolution(DoubleSolution algorithmSolution) {
-        solution.setAlgorithmSolution(algorithmSolution);
-    }
 
     /* UPDATE MODEL */
 
@@ -218,6 +206,7 @@ public class MetalModel {
     /* EXECUTION OF ALGORITHM ==> new MetalAlgorithm class creation */
     boolean execute(MetalView view) throws Exception {
         boolean done = false;
+        metalSolution = new MetalSolution(this);
 
         MetalAlgorithm algo = new MetalAlgorithm(getMetalModel());
         done = algo.run();
@@ -227,48 +216,6 @@ public class MetalModel {
         }
 
         return done;
-    }
-
-}
-
-
-class MetalSolution {
-
-    private long computingTime;
-    private Vector<Double> scores;
-    private DoubleSolution algorithmSolution;
-
-
-    MetalSolution() {
-        computingTime = (long) 0;
-        scores = null;
-        algorithmSolution = null;
-    }
-
-    /* GETTERS */
-    public long getComputingTime() {
-        return computingTime;
-    }
-
-    public Vector<Double> getScores() {
-        return scores;
-    }
-
-    public DoubleSolution getAlgorithmSolution() {
-        return algorithmSolution;
-    }
-
-    /* SETTERS */
-    void setComputingTime(long computingTime) {
-        this.computingTime = computingTime;
-    }
-
-    void setScores(Vector<Double> scores) {
-        this.scores = scores;
-    }
-
-    void setAlgorithmSolution(DoubleSolution algorithmSolution) {
-        this.algorithmSolution = algorithmSolution;
     }
 
 }
