@@ -39,7 +39,7 @@ public class MetalAlgorithm<T,E,P> {
     ArrayList<T> lowers;
     ArrayList<T> uppers;
     P problem;
-    
+
 
     public MetalAlgorithm(MetalModel model) {
         this.model = model;
