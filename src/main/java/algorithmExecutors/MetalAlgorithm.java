@@ -39,6 +39,7 @@ public class MetalAlgorithm<T,E,P> {
     ArrayList<T> lowers;
     ArrayList<T> uppers;
     P problem;
+    
 
     public MetalAlgorithm(MetalModel model) {
         this.model = model;
@@ -89,9 +90,15 @@ public class MetalAlgorithm<T,E,P> {
                 break;
             }
             case "NSGAII": {
-                runNSGAII();
-                done = true;
-                break;
+                if (model.getVariableType().equalsIgnoreCase("Double")) {
+                    runNSGAIIDouble();
+                    done = true;
+                    break;
+                } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
+                    runNSGAIIInteger();
+                    done = true;
+                    break;
+                }
             }
         }
         if (done) System.out.println(model.getAlgorithmType() + " executed");
@@ -199,7 +206,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
-    private void runNSGAII() {
+    private void runNSGAIIDouble() {
 
         NSGAII<DoubleSolution> algorithm;
         ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
@@ -233,6 +240,74 @@ public class MetalAlgorithm<T,E,P> {
 
         //Obtención de la mejor solución alcanzada por el optimizador
         List<DoubleSolution> solution = algorithm.getResult();
+
+        //model.setSolution(computingTime);
+
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        metalSolution.setSolutionAlgorithm(solution);
+
+/*
+
+        algorithm.getResult();
+        List<DoubleSolution> population = new ArrayList<>(1);
+        population.add(algorithm.getResult());
+
+        computingTime = algorithmRunner.getComputingTime();
+        sol = solution;
+
+        model.setSolution(computingTime);
+        model.setSolution(sol);
+
+        //for (int i=0; i<solution.getObjectives().length; i++) {
+        //    Jmetal_cst.scores.add(solution.getObjective(i));
+        //}
+
+        new SolutionListOutput(population)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+                .print();
+
+        //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
+        //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
+        //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+*/
+    }
+
+    private void runNSGAIIInteger() {
+
+        NSGAII<IntegerSolution> algorithm;
+        ArrayList<Integer> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
+        ArrayList<Integer> uppers = new ArrayList<>(model.getNumOfVariables()); // 4.0
+
+        lowers.addAll(model.getMinIntervalOfVariablesInteger());
+        uppers.addAll(model.getMaxIntervalOfVariablesInteger());
+
+        String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
+        IntegerProblem problem = new CST_opt_Integer(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+
+        //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
+        CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0) ;
+        MutationOperator<IntegerSolution> mutationOperator = new IntegerPolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<IntegerSolution>,IntegerSolution> selectionOperator = new BinaryTournamentSelection<>();
+
+        //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
+        algorithm = new NSGAIIBuilder<>(problem, crossoverOperator, mutationOperator)
+                .setPopulationSize(model.getPopulationSize()) // Set to 2
+                .setMaxEvaluations(model.getEvaluations()) // Set to 25000
+                .setSelectionOperator(selectionOperator)
+                //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
+                .build();
+
+        //Ejecucion del algoritmo de optimizacion
+        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
+                .execute();
+
+        //model.setSolution(scores);
+        //metalSolution.setScoresMulti(scores);
+
+        //Obtención de la mejor solución alcanzada por el optimizador
+        List<IntegerSolution> solution = algorithm.getResult();
 
         //model.setSolution(computingTime);
 

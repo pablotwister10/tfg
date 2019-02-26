@@ -55,8 +55,6 @@ class MetalView extends JFrame {
     private final String CARD_SECOND = "Card 2";
 
     private JPanel parameterPanelSecond = new JPanel();
-    private JPanel scrollbarPanel = new JPanel();
-    private Scrollbar scrollbar = new Scrollbar();
 
     private JLabel nameOfVariablesLabel = new JLabel("Name of Variables");
     private JLabel minIntervalOfVariablesLabel = new JLabel("Min of Interval");
