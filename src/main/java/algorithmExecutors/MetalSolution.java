@@ -11,7 +11,7 @@ import java.util.Vector;
  */
 public class MetalSolution<T,E> {
 
-    protected Vector<T>[] scores;
+    Vector<T>[] scores;
     private long computingTime;
     private E solutionAlgorithm;
 

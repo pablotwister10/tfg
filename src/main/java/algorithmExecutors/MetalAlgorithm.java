@@ -72,13 +72,12 @@ public class MetalAlgorithm<T,E,P> {
     }
 
 
-    public boolean run() throws Exception {
+    public boolean run() {
 
         boolean done = false;
 
         System.out.println(model.getAlgorithmType() + " chosen");
         switch (model.getAlgorithmType()) {
-            // TODO: Try implementing different algorithms
             case "Genetic Algorithm": {
                 // TODO: Parametrize type of variable, problem and solution
                 if (model.getVariableType().equalsIgnoreCase("Double")) {
@@ -101,7 +100,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
-    private void runGeneticDouble() throws Exception {
+    private void runGeneticDouble() {
 
         Algorithm<DoubleSolution> algorithm;
         ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
@@ -116,10 +115,10 @@ public class MetalAlgorithm<T,E,P> {
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0);
         MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
-        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<DoubleSolution>();
+        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<>();
 
         //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
-        algorithm = new GeneticAlgorithmBuilder<DoubleSolution>(problem,crossoverOperator,mutationOperator)
+        algorithm = new GeneticAlgorithmBuilder<>(problem, crossoverOperator, mutationOperator)
                 .setPopulationSize(model.getPopulationSize()) // Set to 2
                 .setMaxEvaluations(model.getEvaluations()) // Set to 25000
                 .setSelectionOperator(selectionOperator)
@@ -154,7 +153,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
-    private void runGeneticInteger() throws Exception {
+    private void runGeneticInteger() {
 
         Algorithm<IntegerSolution> algorithmInteger;
         ArrayList<Integer> lowersInteger = new ArrayList<>(model.getNumOfVariables());
@@ -170,9 +169,9 @@ public class MetalAlgorithm<T,E,P> {
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<IntegerSolution> crossoverOperatorInteger = new IntegerSBXCrossover(1.0,2.0);
         MutationOperator<IntegerSolution> mutationOperatorInteger = new IntegerPolynomialMutation(1.0/problemInteger.getNumberOfVariables(),20.0);
-        SelectionOperator<List<IntegerSolution>,IntegerSolution> selectionOperatorInteger = new BinaryTournamentSelection<IntegerSolution>();
+        SelectionOperator<List<IntegerSolution>,IntegerSolution> selectionOperatorInteger = new BinaryTournamentSelection<>();
 
-        algorithmInteger = new GeneticAlgorithmBuilder<IntegerSolution>(problemInteger,crossoverOperatorInteger,mutationOperatorInteger)
+        algorithmInteger = new GeneticAlgorithmBuilder<>(problemInteger, crossoverOperatorInteger, mutationOperatorInteger)
                 .setPopulationSize(model.getPopulationSize())
                 .setMaxEvaluations(model.getEvaluations())
                 .setSelectionOperator(selectionOperatorInteger)
@@ -200,7 +199,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
-    private void runNSGAII() throws Exception {
+    private void runNSGAII() {
 
         NSGAII<DoubleSolution> algorithm;
         ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
@@ -215,10 +214,10 @@ public class MetalAlgorithm<T,E,P> {
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0) ;
         MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
-        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<DoubleSolution>();
+        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<>();
 
         //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
-        algorithm = new NSGAIIBuilder<DoubleSolution>(problem,crossoverOperator,mutationOperator)
+        algorithm = new NSGAIIBuilder<>(problem, crossoverOperator, mutationOperator)
                 .setPopulationSize(model.getPopulationSize()) // Set to 2
                 .setMaxEvaluations(model.getEvaluations()) // Set to 25000
                 .setSelectionOperator(selectionOperator)
@@ -238,7 +237,7 @@ public class MetalAlgorithm<T,E,P> {
         //model.setSolution(computingTime);
 
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
-        //metalSolution.setSolutionAlgorithmGenetic(solution);
+        metalSolution.setSolutionAlgorithm(solution);
 
 /*
 

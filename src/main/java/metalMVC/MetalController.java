@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 // MetalController Class for manipulation of GUI and execution of algorithms
-public class MetalController {
+class MetalController {
 
     // The MetalController needs to interact with both the MetalModel and MetalView
     private MetalView mView;
@@ -27,7 +27,7 @@ public class MetalController {
     class NextBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             // TODO: BUG WHEN CHANGING ALGORITHMS!!!
-            boolean saved = false;
+            boolean saved;
             try {
                 if (mView.getCardIdentifier().equalsIgnoreCase("Card 1")) {
                     saved = mModel.saveFirstCard(mView);
@@ -64,7 +64,7 @@ public class MetalController {
         public void actionPerformed(ActionEvent e) {
             try {
                 mView.cards.previous(mView.panelCards);
-                mView.updateView();
+                mView.updateViewPanelNav();
             } catch (Exception exc) {
                 exc.printStackTrace();
             }

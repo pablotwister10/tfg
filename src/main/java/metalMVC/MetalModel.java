@@ -25,30 +25,30 @@ public class MetalModel {
 
     /* SECOND CARD */
 
-    private static Vector<String> nameOfVariables = new Vector<String>(0);
+    private static Vector<String> nameOfVariables = new Vector<>(0);
 /*
     private Vector<T> minIntervalOfVariables;
     private Vector<T> maxIntervalOfVariables;
     private Vector<T> stepVariables;
 */
     // intervals in Double
-    private static Vector<Double> minIntervalOfVariablesDouble = new Vector<Double>(0);
-    private static Vector<Double> maxIntervalOfVariablesDouble = new Vector<Double>(0);
-    private static Vector<Double> stepVariablesDouble = new Vector<Double>(0);
+    private static Vector<Double> minIntervalOfVariablesDouble = new Vector<>(0);
+    private static Vector<Double> maxIntervalOfVariablesDouble = new Vector<>(0);
+    private static Vector<Double> stepVariablesDouble = new Vector<>(0);
     // intervals in Integer
-    private static Vector<Integer> minIntervalOfVariablesInteger = new Vector<Integer>(0);
-    private static Vector<Integer> maxIntervalOfVariablesInteger = new Vector<Integer>(0);
-    private static Vector<Integer> stepVariablesInteger = new Vector<Integer>(0);
+    private static Vector<Integer> minIntervalOfVariablesInteger = new Vector<>(0);
+    private static Vector<Integer> maxIntervalOfVariablesInteger = new Vector<>(0);
+    private static Vector<Integer> stepVariablesInteger = new Vector<>(0);
 
     /* THIRD CARD */
 
-    private static Vector<String> objFuncts = new Vector<String>(0);
+    private static Vector<String> objFuncts = new Vector<>(0);
     private static boolean graphChecks[] = new boolean[4];
     private static int evaluations;
     private static int populationSize;
 
     /* SOLUTION */
-    MetalSolution metalSolution;
+    private MetalSolution metalSolution;
 
 
     /** CONSTRUCTOR */
@@ -58,7 +58,7 @@ public class MetalModel {
 
 
     /* RESET MODEL */
-    public void reset() {
+    private void reset() {
         // FIRST CARD
         numOfVariables = 0;
         variableType = null;
@@ -66,54 +66,53 @@ public class MetalModel {
         numOfObjFuncts = 0;
 
         // SECOND CARD
-        nameOfVariables = new Vector<String>(0);
-        minIntervalOfVariablesDouble = new Vector<Double>(0);
-        maxIntervalOfVariablesDouble = new Vector<Double>(0);
-        stepVariablesDouble = new Vector<Double>(0);
+        nameOfVariables = new Vector<>(0);
+        minIntervalOfVariablesDouble = new Vector<>(0);
+        maxIntervalOfVariablesDouble = new Vector<>(0);
+        stepVariablesDouble = new Vector<>(0);
         // intervals to int
-        minIntervalOfVariablesInteger = new Vector<Integer>(0);
-        maxIntervalOfVariablesInteger = new Vector<Integer>(0);
-        stepVariablesInteger = new Vector<Integer>(0);
+        minIntervalOfVariablesInteger = new Vector<>(0);
+        maxIntervalOfVariablesInteger = new Vector<>(0);
+        stepVariablesInteger = new Vector<>(0);
 
         // THIRD CARD
-        objFuncts = new Vector<String>(0);
+        objFuncts = new Vector<>(0);
         evaluations = 0;
         populationSize = 0;
     }
 
     /* SAVE CARDS */
     boolean saveFirstCard(MetalView view) {
-        boolean upView = false;
+        boolean upView2 = true;
+        boolean upView3 = true;
 
-        if (numOfVariables != view.getNumOfVariables()) {
+        if (numOfVariables != view.getNumOfVariables())
             numOfVariables = view.getNumOfVariables();
-            upView = true;
-        }
-        if (variableType == null || !variableType.equalsIgnoreCase(view.getVariableType())) {
+        else if (numOfVariables == 0)
+            upView2 = false;
+        if (variableType == null || !variableType.equalsIgnoreCase(view.getVariableType()))
             variableType = view.getVariableType();
-            upView = true;
-        }
-        if (algorithmType == null || algorithmType.equalsIgnoreCase(view.getAlgorithmType())) {
+        if (algorithmType == null || !algorithmType.equalsIgnoreCase(view.getAlgorithmType()))
             algorithmType = view.getAlgorithmType();
-            upView = true;
-        }
-        if (numOfObjFuncts != view.getNumOfObjFuncts()) {
+        if (numOfObjFuncts != view.getNumOfObjFuncts())
             numOfObjFuncts = view.getNumOfObjFuncts();
-            upView = true;
-        }
+        else if (numOfObjFuncts == 0)
+            upView3 = false;
 
         // Card 1 affects View of Cards 2 and 3
-        if (upView) {
-            view.updateView(this,"Card 2");
-            view.updateView(this,"Card 3");
+        if (numOfVariables != 0 && variableType != null && algorithmType != null && numOfObjFuncts != 0) {
+            if (upView2)
+                view.updateView(this,"Card 2");
         }
+        if (upView3)
+            view.updateView(this,"Card 3");
 
-        return (numOfVariables != 0 || !variableType.isEmpty() || !algorithmType.isEmpty() || numOfObjFuncts != 0);
+        return (numOfVariables != 0 && variableType != null && algorithmType != null && numOfObjFuncts != 0);
     }
 
     boolean saveSecondCard(MetalView view) {
 
-        boolean saved = false;
+        boolean saved;
 
         if (nameOfVariables.isEmpty() || !nameOfVariables.equals(view.getNameOfVariables()))
             nameOfVariables = view.getNameOfVariables();
@@ -121,19 +120,20 @@ public class MetalModel {
             minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
         if (maxIntervalOfVariablesDouble.isEmpty() || !maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
             maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
-        if (stepVariablesDouble.isEmpty() || !stepVariablesDouble.equals(view.getStepVariablesDouble()))
-            stepVariablesDouble = view.getStepVariablesDouble();
         saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesDouble.isEmpty()
-                || !maxIntervalOfVariablesDouble.isEmpty() || !stepVariablesDouble.isEmpty());
+                || !maxIntervalOfVariablesDouble.isEmpty());
         if (variableType.equalsIgnoreCase("Integer")) {
             if (minIntervalOfVariablesInteger.isEmpty() || !minIntervalOfVariablesInteger.equals(view.getMinIntervalOfVariablesInteger()))
                 minIntervalOfVariablesInteger = view.getMinIntervalOfVariablesInteger();
             if (maxIntervalOfVariablesInteger.isEmpty() || !maxIntervalOfVariablesInteger.equals(view.getMaxIntervalOfVariablesInteger()))
                 maxIntervalOfVariablesInteger = view.getMaxIntervalOfVariablesInteger();
+            if (stepVariablesDouble.isEmpty() || !stepVariablesDouble.equals(view.getStepVariablesDouble()))
+                stepVariablesDouble = view.getStepVariablesDouble();
             if (stepVariablesInteger.isEmpty() || !stepVariablesInteger.equals(view.getStepVariablesInteger()))
                 stepVariablesInteger = view.getStepVariablesInteger();
             saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesInteger.isEmpty()
-                    || !maxIntervalOfVariablesInteger.isEmpty() || !stepVariablesInteger.isEmpty());
+                    || !maxIntervalOfVariablesInteger.isEmpty() || !stepVariablesDouble.isEmpty()
+                    || !stepVariablesInteger.isEmpty());
         }
 
         return saved;
@@ -210,15 +210,11 @@ public class MetalModel {
         return stepVariablesInteger;
     }
 
-    public Vector<String> getObjFuncts() {
-        return objFuncts;
-    }
-
     public String getObjFuncts(int functNumber) {
         return objFuncts.elementAt(functNumber-1); // elements start at 0
     }
 
-    public boolean[] getGraphChecks() {
+    boolean[] getGraphChecks() {
         return graphChecks;
     }
 
@@ -234,7 +230,7 @@ public class MetalModel {
         return metalSolution;
     }
 
-    public MetalModel getMetalModel() {
+    private MetalModel getMetalModel() {
         return this;
     }
 

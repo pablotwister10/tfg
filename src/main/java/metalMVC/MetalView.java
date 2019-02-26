@@ -7,16 +7,16 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 import java.util.Vector;
 
 // MetalView Class implementing GUI
-public class MetalView extends JFrame {
+class MetalView extends JFrame {
 
     // Main Panel (using CardLayout for navigation of different windows)
     private JPanel panelMain = new JPanel();
@@ -25,9 +25,10 @@ public class MetalView extends JFrame {
 
 
     /* FIRST CARD */
+    // TODO: Set fix height to text fields and combo boxes
 
-    JPanel cardFirst = new JPanel();
-    final String CARD_FIRST = "Card 1";
+    private JPanel cardFirst = new JPanel();
+    private final String CARD_FIRST = "Card 1";
 
     private JPanel parameterPanelFirst = new JPanel(new SpringLayout());
 
@@ -39,7 +40,7 @@ public class MetalView extends JFrame {
     private JTextField numOfVariablesText = new JTextField(10);
     private JComboBox variableTypeBox = new JComboBox();
     private JComboBox algorithmTypeBox = new JComboBox();
-    private JTextField numOfObjFunctsText = new JTextField(10); // TODO:
+    private JTextField numOfObjFunctsText = new JTextField(10);
 
     private ComboItem doubleVarTypeComboBox = new ComboItem("Double",1);
     private ComboItem intVarTypeComboBox = new ComboItem("Integer",2);
@@ -48,11 +49,14 @@ public class MetalView extends JFrame {
 
 
     /* SECOND CARD */
+    // TODO: Set fix height to text fields and combo boxes
 
-    JPanel cardSecond = new JPanel();
-    final String CARD_SECOND = "Card 2";
+    private JPanel cardSecond = new JPanel();
+    private final String CARD_SECOND = "Card 2";
 
     private JPanel parameterPanelSecond = new JPanel();
+    private JPanel scrollbarPanel = new JPanel();
+    private Scrollbar scrollbar = new Scrollbar();
 
     private JLabel nameOfVariablesLabel = new JLabel("Name of Variables");
     private JLabel minIntervalOfVariablesLabel = new JLabel("Min of Interval");
@@ -67,9 +71,10 @@ public class MetalView extends JFrame {
 
 
     /* THIRD CARD */
+    // TODO: Set fix height to text fields and combo boxes
 
-    JPanel cardThird = new JPanel();
-    final String CARD_THIRD = "Card 3";
+    private JPanel cardThird = new JPanel();
+    private final String CARD_THIRD = "Card 3";
 
     private JPanel objFunctPanel = new JPanel(new SpringLayout());
 
@@ -101,11 +106,12 @@ public class MetalView extends JFrame {
     private JPanel panelNav = new JPanel();
     private JButton previousBtn = new JButton("Previous");
     private JButton nextBtn = new JButton("Next");
-    final Dimension BTN_DIM = new Dimension(20,5); // TODO: SET FIXED DIMENSIONS TO BUTTONS
+    // TODO: Set fixed dimensions to buttons
+    final Dimension BTN_DIM = new Dimension(20,5);
 
 
     /** CONSTRUCTOR */
-    public MetalView() {
+    MetalView() {
 
         // Main Panel Layout in two panels, one with cards and another with navigation panel
         panelMain.setLayout(new BoxLayout(panelMain,BoxLayout.Y_AXIS));
@@ -146,8 +152,7 @@ public class MetalView extends JFrame {
 
 
     /* METHODS FOR CONSTRUCTION */
-    public void makeFirstCard() {
-        // TODO: Set fix height to text fields and combo boxes
+    private void makeFirstCard() {
 
         cardFirst.setLayout(new BoxLayout(cardFirst,BoxLayout.Y_AXIS));
 
@@ -184,21 +189,15 @@ public class MetalView extends JFrame {
 
     }
 
-    public void makeSecondCard() {
-        // TODO: Scroll bar if too many
+    private void makeSecondCard() {
 
-        cardSecond.setLayout(new BoxLayout(cardSecond, BoxLayout.Y_AXIS));
+        cardSecond.setLayout(new BoxLayout(cardSecond,BoxLayout.Y_AXIS));
 
         cardSecond.setName(CARD_SECOND);
 
-        // Parameter panel
-
-        cardSecond.add(parameterPanelSecond);
-
     }
 
-    public void makeThirdCard() {
-        // TODO: Set fix height to text fields and combo boxes
+    private void makeThirdCard() {
 
         cardThird.setLayout(new BoxLayout(cardThird, BoxLayout.Y_AXIS));
 
@@ -260,7 +259,7 @@ public class MetalView extends JFrame {
 
     }
 
-    public void makePanelNav() {
+    private void makePanelNav() {
         panelNav.add(previousBtn);
         panelNav.add(nextBtn);
     }
@@ -277,31 +276,24 @@ public class MetalView extends JFrame {
 
 
     /* METHOD FOR GETTING CARD IDENTIFIER */
-    public String getCardIdentifier() {
+    String getCardIdentifier() {
         //now we want to get the String identifier of the top card:
         JPanel card = null;
         for (Component comp : this.panelCards.getComponents()) {
-            if (comp.isVisible() == true) {
+            if (comp.isVisible()) {
                 card = (JPanel) comp;
             }
         }
+        assert card != null;
         return card.getName();
     }
 
 
     /* METHODS FOR UPDATING VIEW */
-    void updateView() {
-        updateViewPanelNav();
-    }
-
-    void updateView(MetalModel model) {
-        updateView();
-        updateViewSecondCard(model);
-    }
 
     void updateView(MetalModel model, String cardIdentifier) {
         if (cardIdentifier.equalsIgnoreCase(CARD_FIRST)) {
-
+            updateViewPanelNav("");
         } else if (cardIdentifier.equalsIgnoreCase(CARD_SECOND)) {
             updateViewSecondCard(model);
         } else if (cardIdentifier.equalsIgnoreCase(CARD_THIRD)) {
@@ -313,7 +305,7 @@ public class MetalView extends JFrame {
         updateViewPanelNav("");
     }
 
-    void updateViewPanelNav(String cardIdentifier) {
+    private void updateViewPanelNav(String cardIdentifier) {
         if (cardIdentifier.equalsIgnoreCase(CARD_FIRST) || getCardIdentifier().equalsIgnoreCase(CARD_FIRST)) {
             previousBtn.setEnabled(false);
         }
@@ -325,12 +317,14 @@ public class MetalView extends JFrame {
         }
     }
 
-    void updateViewSecondCard(MetalModel model) {
+    private void updateViewSecondCard(MetalModel model) {
 
         int numOfVars = model.getNumOfVariables();
 
         // Clearing out panel
+        cardSecond.removeAll();
         parameterPanelSecond.removeAll(); // TODO: Check if not needed to be deleted
+        cardSecond.add(parameterPanelSecond);
 
         // Setting grids as many as variables
         parameterPanelSecond.setLayout(new SpringLayout());
@@ -346,7 +340,8 @@ public class MetalView extends JFrame {
             minIntervalOfVariablesText[i] = new JTextField();
             maxIntervalOfVariablesText[i] = new JTextField();
             stepVariablesText[i] = new JTextField();
-            //stepVariablesText[i].setEnabled(false); // TODO: check if step is needed or not
+            if (model.getVariableType().equalsIgnoreCase("Double"))
+                stepVariablesText[i].setEnabled(false);
 
             parameterPanelSecond.add(nameOfVariablesText[i]);
             parameterPanelSecond.add(minIntervalOfVariablesText[i]);
@@ -361,10 +356,22 @@ public class MetalView extends JFrame {
 
         updateViewPanelNav("Card 2");
 
+        JScrollPane jsp = new JScrollPane(parameterPanelSecond);
+        cardSecond.add(jsp);
+
     }
 
-    void updateViewThirdCard(MetalModel model) {
+    private void updateViewThirdCard(MetalModel model) {
         int numOfObjFuncts = model.getNumOfObjFuncts();
+
+        objFunctOneText.setEnabled(false);
+        graphOneCheck.setEnabled(false);
+        objFunctTwoText.setEnabled(false);
+        graphTwoCheck.setEnabled(false);
+        objFunctThreeText.setEnabled(false);
+        graphThreeCheck.setEnabled(false);
+        objFunctFourText.setEnabled(false);
+        graphFourCheck.setEnabled(false);
 
         if (numOfObjFuncts > 0) {
             objFunctOneText.setEnabled(true);
@@ -391,24 +398,24 @@ public class MetalView extends JFrame {
     int getNumOfVariables() {
         int numVars = 0;
 
-        if (!numOfVariablesText.getText().isEmpty())
+        if (!numOfVariablesText.getText().trim().isEmpty())
             numVars = Integer.valueOf(numOfVariablesText.getText());
 
         return numVars;
     }
 
     String getVariableType() {
-        return variableTypeBox.getSelectedItem().toString();
+        return Objects.requireNonNull(variableTypeBox.getSelectedItem()).toString();
     }
 
     String getAlgorithmType() {
-        return algorithmTypeBox.getSelectedItem().toString();
+        return Objects.requireNonNull(algorithmTypeBox.getSelectedItem()).toString();
     }
 
     int getNumOfObjFuncts() {
         int numFuncts = 0;
 
-        if (!numOfVariablesText.getText().isEmpty())
+        if (!numOfObjFunctsText.getText().trim().isEmpty())
             numFuncts = Integer.valueOf(numOfObjFunctsText.getText());
 
         return numFuncts;
@@ -417,12 +424,12 @@ public class MetalView extends JFrame {
     // CARD 2
     Vector<String> getNameOfVariables() {
         Component[] components = parameterPanelSecond.getComponents();
-        Vector<String> nameVars = new Vector<String>(0);
+        Vector<String> nameVars = new Vector<>(0);
 
         // Fill out vectors
         for (int i=4; i<components.length; i=i+4) {
             if (components[i] instanceof JTextField && components[i] != null)
-                nameVars.add(((JTextField) components[i]).getText());
+                nameVars.add(Objects.requireNonNull(((JTextField) components[i]).getText()));
         }
 
         return nameVars;
@@ -453,18 +460,18 @@ public class MetalView extends JFrame {
         return getIntervalsDouble("stepDouble");
     }
 
-    Vector<Double> getIntervalsDouble(String type) {
+    private Vector<Double> getIntervalsDouble(String type) {
         Component[] components = parameterPanelSecond.getComponents();
-        Vector<Double> minIntervalVarsDouble = new Vector<Double>(0);
-        Vector<Double> maxIntervalVarsDouble = new Vector<Double>(0);
-        Vector<Double> stepVarsDouble = new Vector<Double>(0);
+        Vector<Double> minIntervalVarsDouble = new Vector<>(0);
+        Vector<Double> maxIntervalVarsDouble = new Vector<>(0);
+        Vector<Double> stepVarsDouble = new Vector<>(0);
 
         for (int i=4; i<components.length; i=i+4) {
-            if (components[i+1] instanceof JTextField && !((JTextField) components[i+1]).getText().isEmpty())
+            if (components[i+1] instanceof JTextField && !((JTextField) components[i+1]).getText().trim().isEmpty())
                 minIntervalVarsDouble.add(Double.valueOf(((JTextField) components[i+1]).getText()));
-            if (components[i+2] instanceof JTextField && !((JTextField) components[i+2]).getText().isEmpty())
+            if (components[i+2] instanceof JTextField && !((JTextField) components[i+2]).getText().trim().isEmpty())
                 maxIntervalVarsDouble.add(Double.valueOf(((JTextField) components[i+2]).getText()));
-            if (components[i+3] instanceof JTextField && !((JTextField) components[i+3]).getText().isEmpty())
+            if (components[i+3] instanceof JTextField && !((JTextField) components[i+3]).getText().trim().isEmpty())
                 stepVarsDouble.add(Double.valueOf(((JTextField) components[i+3]).getText()));
         }
 
@@ -490,21 +497,21 @@ public class MetalView extends JFrame {
         return getIntervalsInteger("stepInteger");
     }
 
-    Vector<Integer> getIntervalsInteger(String type) {
+    private Vector<Integer> getIntervalsInteger(String type) {
         Vector<String> nameVars = getNameOfVariables();
         Vector<Double> minIntervalVarsDouble = getMinIntervalOfVariablesDouble();
         Vector<Double> maxIntervalVarsDouble = getMaxIntervalOfVariablesDouble();
         Vector<Double> stepVarsDouble = getStepVariablesDouble();
 
-        Vector<Integer> minIntervalVarsInteger = new Vector<Integer>(0);
-        Vector<Integer> maxIntervalVarsInteger = new Vector<Integer>(0);
-        Vector<Integer> stepVarsInteger = new Vector<Integer>(0);
+        Vector<Integer> minIntervalVarsInteger = new Vector<>(0);
+        Vector<Integer> maxIntervalVarsInteger = new Vector<>(0);
+        Vector<Integer> stepVarsInteger = new Vector<>(0);
 
         // Integer transform for intervals
         for (int i=0; i<nameVars.size(); i++) {
             Integer yStep = (int) Math.ceil((maxIntervalVarsDouble.elementAt(i)-minIntervalVarsDouble.elementAt(i))
                     /stepVarsDouble.elementAt(i)+0.0000000001);
-            Integer yMin = (int) 1;
+            Integer yMin = 1;
             Integer yMax = yStep;
 
             minIntervalVarsInteger.add(yMin);
@@ -551,7 +558,7 @@ public class MetalView extends JFrame {
     int getEvaluations() {
         int evals = 0;
 
-        if (!evaluationsText.getText().isEmpty())
+        if (!evaluationsText.getText().trim().isEmpty())
             evals = Integer.valueOf(evaluationsText.getText());
 
         return evals;
@@ -560,7 +567,7 @@ public class MetalView extends JFrame {
     int getPopulationSize() {
         int popSize = 0;
 
-        if (!populationSizeText.getText().isEmpty())
+        if (!populationSizeText.getText().trim().isEmpty())
             popSize = Integer.valueOf(populationSizeText.getText());
 
         return popSize;
