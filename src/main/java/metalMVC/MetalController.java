@@ -26,7 +26,6 @@ class MetalController {
 
     class NextBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            // TODO: BUG WHEN CHANGING ALGORITHMS!!!
             boolean saved;
             try {
                 if (mView.getCardIdentifier().equalsIgnoreCase("Card 1")) {
@@ -46,10 +45,15 @@ class MetalController {
                     if (saved) {
                         boolean executed = mModel.execute(mView);
                         if (executed) {
-                            JOptionPane.showMessageDialog(mView,"Algorithm executed!\n\n" +
-                                            "Computing time took: " + Long.toString(mModel.getMetalSolution().getComputingTime()) + " ms\n" +
-                                            "MetalSolution: " + mModel.getMetalSolution().getSolutionAlgorithm().toString()
-                            );
+                            if (mModel.getPopulationSize() < 10)
+                                JOptionPane.showMessageDialog(mView,"Algorithm executed!\n\n" +
+                                                "Computing time took: " + Long.toString(mModel.getMetalSolution().getComputingTime()) + " ms\n" +
+                                                "MetalSolution: " + mModel.getMetalSolution().getSolutionAlgorithm().toString()
+                                );
+                            else
+                                JOptionPane.showMessageDialog(mView,"Algorithm executed!\n\n" +
+                                        "Computing time took: " + Long.toString(mModel.getMetalSolution().getComputingTime()) + " ms\n"
+                                );
                         }
                     } else
                         mView.showError("INSERT DATA");

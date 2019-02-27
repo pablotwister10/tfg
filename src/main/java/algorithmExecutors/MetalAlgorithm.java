@@ -144,10 +144,6 @@ public class MetalAlgorithm<T,E,P> {
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
 
-        //for (int i=0; i<solution.getObjectives().length; i++) {
-        //    Jmetal_cst.scores.add(solution.getObjective(i));
-        //}
-
         new SolutionListOutput(population)
                 .setSeparator("\t")
                 .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
@@ -245,6 +241,11 @@ public class MetalAlgorithm<T,E,P> {
 
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
+        for (int i=0; i<model.getPopulationSize(); i++) {
+            for (int j=0; j<model.getNumOfVariables(); j++) {
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getVariableValue(j)); // Change for getVariableValue if desired
+            }
+        }
 
 /*
 
@@ -313,6 +314,11 @@ public class MetalAlgorithm<T,E,P> {
 
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
+        for (int i=0; i<model.getPopulationSize(); i++) {
+            for (int j=0; j<model.getNumOfVariables(); j++) {
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getVariableValue(j));
+            }
+        }
 
 /*
 

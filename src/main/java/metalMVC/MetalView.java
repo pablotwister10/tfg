@@ -6,7 +6,9 @@ import layout.SpringUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYDrawableAnnotation;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
@@ -585,14 +587,14 @@ class MetalView extends JFrame {
             JFreeChart lineChart = ChartFactory.createLineChart(
                     "Graph: " + graphNames[i],
                     "iterations","cost", // TODO: best cost with value
-                    ChartUtilities.createDataset(model.getMetalSolution().getScores()[i]),
+                    ChartUtilities.createDefaultCategoryDataset(model.getMetalSolution().getScores()[i]),
                     PlotOrientation.VERTICAL,
                     true,true,false);
 
             JFrame chartFrame = new JFrame();
 
             ChartPanel chartPanel = new ChartPanel(lineChart);
-            chartPanel.setPreferredSize(new java.awt.Dimension(560 ,367));
+            chartPanel.setPreferredSize(new java.awt.Dimension(560,367));
             chartFrame.setContentPane(chartPanel);
 
             chartFrame.pack();
@@ -601,6 +603,41 @@ class MetalView extends JFrame {
             chartFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         }
+    }
+
+    void displayPareto(MetalModel model) {
+        for (int variableNumFirst=0; variableNumFirst<model.getNumOfVariables(); variableNumFirst++) {
+            for (int variableNumSecond=0; variableNumSecond<model.getNumOfVariables(); variableNumSecond++) {
+                if (variableNumFirst==variableNumSecond || variableNumFirst>variableNumSecond)
+                    continue;
+
+                String variableNameFirst = model.getNameOfVariables().get(variableNumFirst);
+                String variableNameSecond = model.getNameOfVariables().get(variableNumSecond);
+
+                XYDataset dataset = ChartUtilities.createXYDataset(model.getMetalSolution().getScoresPareto(),variableNumFirst,variableNumSecond);
+
+                JFreeChart chart = ChartFactory.createScatterPlot(
+                        "Graph: " + variableNameFirst + " vs. " + variableNameSecond,
+                        variableNameFirst,
+                        variableNameSecond,
+                        dataset,
+                        PlotOrientation.VERTICAL,
+                        true,true,false);
+
+                JFrame chartFrame = new JFrame();
+
+                ChartPanel chartPanel = new ChartPanel(chart);
+                chartPanel.setPreferredSize(new java.awt.Dimension(560,367));
+                chartFrame.setContentPane(chartPanel);
+
+                chartFrame.pack();
+                RefineryUtilities.centerFrameOnScreen(chartFrame);
+                chartFrame.setVisible(true);
+                chartFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+            }
+        }
+
     }
 
     /* METHOD FOR ERRORS */

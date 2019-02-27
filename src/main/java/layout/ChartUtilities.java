@@ -1,13 +1,15 @@
 package layout;
 
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import java.util.Vector;
 
 public class ChartUtilities {
 
-    public static DefaultCategoryDataset createDataset(Vector<Double> scores) {
+    public static DefaultCategoryDataset createDefaultCategoryDataset(Vector<Double> scores) {
         if (scores == null)
             return null;
 
@@ -23,20 +25,30 @@ public class ChartUtilities {
         return dataset;
     }
 
-    public XYSeries createDefaultSeries(Vector<Double> scores) {
+    public static XYDataset createXYDataset(Vector<Double>[] scores, int variableNumFirst, int variableNumSecond) {
+        if (scores == null || variableNumFirst > scores.length || variableNumSecond > scores.length)
+            return null;
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+
+        XYSeries series = createXYSeries(scores,variableNumFirst,variableNumSecond);
+
+        dataset.addSeries(series);
+
+        return dataset;
+    }
+
+    public static XYSeries createXYSeries(Vector<Double>[] scores, int variableNumFirst, int variableNumSecond) {
         if (scores == null)
             return null;
-        
-        XYSeries seriesDefault = new XYSeries("Default Series");
 
-        int iterations = 1;
-
-        for (int i=0; i<scores.size(); i++) {
-            seriesDefault.add((double) iterations,scores.elementAt(i));
-            iterations++;
+        XYSeries series = new XYSeries("Default Series");
+        for (int i=0; i<scores.length; i++) {
+            series.add(scores[i].get(variableNumFirst),scores[i].get(variableNumSecond));
         }
 
-        return seriesDefault;
+        return series;
+
     }
 
     public XYSeries createBestSeries(Vector<Double> scores) {

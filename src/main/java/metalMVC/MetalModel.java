@@ -267,8 +267,12 @@ public class MetalModel {
             done = algo.run();
         }
 
-        if (done) {
-            view.displayGraph(this);
+        if (algorithmType.equalsIgnoreCase("Genetic Algorithm")) {
+            if (done)
+                view.displayGraph(this);
+        } else if (algorithmType.equalsIgnoreCase("NSGAII")) {
+            if (done)
+                view.displayPareto(this);
         }
 
         return done;

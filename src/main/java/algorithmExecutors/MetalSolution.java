@@ -12,6 +12,7 @@ import java.util.Vector;
 public class MetalSolution<T,E> {
 
     Vector<T>[] scores;
+    Vector<T>[] scoresPareto;
     private long computingTime;
     private E solutionAlgorithm;
 
@@ -20,7 +21,10 @@ public class MetalSolution<T,E> {
         computingTime = (long) 0;
         scores = new Vector[model.getNumOfObjFuncts()];
         for (int i=0; i<model.getNumOfObjFuncts(); i++)
-            scores[i] = new Vector<T>(model.getEvaluations());
+            scores[i] = new Vector<>(model.getEvaluations());
+        scoresPareto = new Vector[model.getPopulationSize()];
+        for (int i=0; i<model.getPopulationSize(); i++)
+            scoresPareto[i] = new Vector<>(model.getNumOfVariables());
         solutionAlgorithm = null;
     }
 
@@ -34,6 +38,10 @@ public class MetalSolution<T,E> {
         return scores;
     }
 
+    public Vector<T>[] getScoresPareto() {
+        return scoresPareto;
+    }
+
     public E getSolutionAlgorithm() {
         return solutionAlgorithm;
     }
@@ -43,8 +51,12 @@ public class MetalSolution<T,E> {
         this.computingTime = computingTime;
     }
 
-    protected void setScores(Vector<T>[] scores) {
+    void setScores(Vector<T>[] scores) {
         this.scores = scores;
+    }
+
+    public void setScoresPareto(Vector<T>[] scoresPareto) {
+        this.scoresPareto = scoresPareto;
     }
 
     void setSolutionAlgorithm(E solutionAlgorithm) {
