@@ -6,7 +6,6 @@ import layout.SpringUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.annotations.XYDrawableAnnotation;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RefineryUtilities;
@@ -14,6 +13,7 @@ import org.jfree.ui.RefineryUtilities;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Objects;
 import java.util.Vector;
 
@@ -99,6 +99,12 @@ class MetalView extends JFrame {
     private JLabel populationSizeLabel = new JLabel("Population size: ");
     private JTextField evaluationsText = new JTextField(10);
     private JTextField populationSizeText = new JTextField(10);
+
+    private JPanel optimizationPanel = new JPanel();
+
+    private JRadioButton guiRButton = new JRadioButton("Optimize with Functions of GUI");
+    private JRadioButton cstRButton = new JRadioButton("Optimize with CST");
+    private JRadioButton matlabRButton = new JRadioButton("Optimize with MATLAB");
 
 
     /* NAVIGATION PANEL */
@@ -203,7 +209,7 @@ class MetalView extends JFrame {
 
         cardThird.setName(CARD_THIRD);
 
-        // Objective panel
+        /* Objective panel */
 
         cardThird.add(objFunctPanel);
 
@@ -240,7 +246,7 @@ class MetalView extends JFrame {
                 6, 6,
                 6, 6);
 
-        // Population panel
+        /* Population panel */
 
         cardThird.add(populationPanel);
 
@@ -257,9 +263,28 @@ class MetalView extends JFrame {
                 6, 6,
                 6, 6);
 
+        /* Optimization Panel */
+
+        cardThird.add(optimizationPanel);
+
+        // Select first as true
+        guiRButton.setSelected(true);
+
+        // Group the radio buttons
+        ButtonGroup bGroup = new ButtonGroup();
+        bGroup.add(guiRButton);
+        bGroup.add(cstRButton);
+        bGroup.add(matlabRButton);
+
+        optimizationPanel.add(guiRButton);
+        optimizationPanel.add(cstRButton);
+        optimizationPanel.add(matlabRButton);
+
     }
 
     private void makePanelNav() {
+        previousBtn.setMnemonic(KeyEvent.VK_P);
+        nextBtn.setMnemonic(KeyEvent.VK_N);
         panelNav.add(previousBtn);
         panelNav.add(nextBtn);
     }
@@ -372,6 +397,9 @@ class MetalView extends JFrame {
         graphThreeCheck.setEnabled(false);
         objFunctFourText.setEnabled(false);
         graphFourCheck.setEnabled(false);
+
+        if (model.getAlgorithmType().equalsIgnoreCase("NSGAII"))
+            return;
 
         if (numOfObjFuncts > 0) {
             objFunctOneText.setEnabled(true);
@@ -571,6 +599,13 @@ class MetalView extends JFrame {
             popSize = Integer.valueOf(populationSizeText.getText());
 
         return popSize;
+    }
+
+    int getOptimizationChoice() {
+        if (guiRButton.isSelected()) return 0;
+        if (cstRButton.isSelected()) return 1;
+        if (matlabRButton.isSelected()) return 2;
+        else return -1;
     }
 
 

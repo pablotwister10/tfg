@@ -77,37 +77,47 @@ public class MetalAlgorithm<T,E,P> {
 
         boolean done = false;
 
-        System.out.println(model.getAlgorithmType() + " chosen");
+        System.out.println(model.getAlgorithmType() + " chosen"); // LOGGER
         switch (model.getAlgorithmType()) {
             case "Genetic Algorithm": {
                 // TODO: Parametrize type of variable, problem and solution
-                if (model.getVariableType().equalsIgnoreCase("Double")) {
-                    runGeneticDouble();
-                } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
-                    runGeneticInteger();
+                if (model.getOptimizationChoice().equalsIgnoreCase("GUI")) {
+                    if (model.getVariableType().equalsIgnoreCase("Double")) {
+                        runGeneticGuiDouble();
+                    } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
+                        runGeneticGuiInteger();
+                    }
+                    done = true;
+                    break;
+                } else if (model.getOptimizationChoice().equalsIgnoreCase("CST")) {
+
+                } else if (model.getOptimizationChoice().equalsIgnoreCase("MATLAB")) {
                 }
-                done = true;
-                break;
             }
             case "NSGAII": {
-                if (model.getVariableType().equalsIgnoreCase("Double")) {
-                    runNSGAIIDouble();
-                    done = true;
-                    break;
-                } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
-                    runNSGAIIInteger();
-                    done = true;
-                    break;
+                if (model.getOptimizationChoice().equalsIgnoreCase("GUI")) {
+                    if (model.getVariableType().equalsIgnoreCase("Double")) {
+                        runNSGA2GuiDouble();
+                        done = true;
+                        break;
+                    } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
+                        runNSGA2GuiInteger();
+                        done = true;
+                        break;
+                    }
+                } else if (model.getOptimizationChoice().equalsIgnoreCase("CST")) {
+
+                } else if (model.getOptimizationChoice().equalsIgnoreCase("MATLAB")) {
                 }
             }
         }
-        if (done) System.out.println(model.getAlgorithmType() + " executed");
+        if (done) System.out.println(model.getAlgorithmType() + " executed"); // LOGGER
 
         return done;
 
     }
 
-    private void runGeneticDouble() {
+    private void runGeneticGuiDouble() {
 
         Algorithm<DoubleSolution> algorithm;
         ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
@@ -117,7 +127,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesDouble());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new GUI_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0);
@@ -156,7 +166,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
-    private void runGeneticInteger() {
+    private void runGeneticGuiInteger() {
 
         Algorithm<IntegerSolution> algorithmInteger;
         ArrayList<Integer> lowersInteger = new ArrayList<>(model.getNumOfVariables());
@@ -167,7 +177,7 @@ public class MetalAlgorithm<T,E,P> {
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
 
-        IntegerProblem problemInteger = new CST_opt_Integer(model,lowersInteger,uppersInteger,ProjectPath);
+        IntegerProblem problemInteger = new GUI_opt_Integer(model,lowersInteger,uppersInteger,ProjectPath);
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<IntegerSolution> crossoverOperatorInteger = new IntegerSBXCrossover(1.0,2.0);
@@ -202,7 +212,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
-    private void runNSGAIIDouble() {
+    private void runNSGA2GuiDouble() {
 
         NSGAII<DoubleSolution> algorithm;
         ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
@@ -212,7 +222,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesDouble());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new GUI_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0) ;
@@ -275,7 +285,7 @@ public class MetalAlgorithm<T,E,P> {
 */
     }
 
-    private void runNSGAIIInteger() {
+    private void runNSGA2GuiInteger() {
 
         NSGAII<IntegerSolution> algorithm;
         ArrayList<Integer> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
@@ -285,7 +295,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesInteger());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        IntegerProblem problem = new CST_opt_Integer(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        IntegerProblem problem = new GUI_opt_Integer(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0) ;

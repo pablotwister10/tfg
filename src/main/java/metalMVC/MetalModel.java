@@ -46,6 +46,7 @@ public class MetalModel {
     private static boolean graphChecks[] = new boolean[4];
     private static int evaluations;
     private static int populationSize;
+    private static String optimizationChoice;
 
     /* SOLUTION */
     private MetalSolution metalSolution;
@@ -149,8 +150,11 @@ public class MetalModel {
             evaluations = view.getEvaluations();
         if (populationSize != view.getPopulationSize())
             populationSize = view.getPopulationSize();
+        String[] optChoices = new String[] {"GUI","CST","MATLAB"};
+        optimizationChoice = optChoices[view.getOptimizationChoice()];
+        System.out.println("Chose to optimize with "+optimizationChoice); // LOGGER
 
-        return (!objFuncts.isEmpty() || evaluations != 0 || populationSize != 0);
+        return (!objFuncts.isEmpty() || evaluations != 0 || populationSize != 0 || !optimizationChoice.isEmpty());
     }
 
     /* GETTERS */
@@ -225,6 +229,8 @@ public class MetalModel {
     public int getPopulationSize() {
         return populationSize;
     }
+
+    public String getOptimizationChoice() { return optimizationChoice; }
 
     public MetalSolution getMetalSolution() {
         return metalSolution;
