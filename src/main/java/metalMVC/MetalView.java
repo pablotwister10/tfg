@@ -606,20 +606,20 @@ class MetalView extends JFrame {
     }
 
     void displayPareto(MetalModel model) {
-        for (int variableNumFirst=0; variableNumFirst<model.getNumOfVariables(); variableNumFirst++) {
-            for (int variableNumSecond=0; variableNumSecond<model.getNumOfVariables(); variableNumSecond++) {
-                if (variableNumFirst==variableNumSecond || variableNumFirst>variableNumSecond)
+        for (int objectiveNumFirst=0; objectiveNumFirst<model.getNumOfObjFuncts(); objectiveNumFirst++) {
+            for (int objectiveNumSecond=0; objectiveNumSecond<model.getNumOfObjFuncts(); objectiveNumSecond++) {
+                if (objectiveNumFirst==objectiveNumSecond || objectiveNumFirst>objectiveNumSecond)
                     continue;
+                if (!getGraphChecks()[objectiveNumFirst] || !getGraphChecks()[objectiveNumSecond])
+                    continue;
+                // TODO: Change that to checkBoxes of Graphs
 
-                String variableNameFirst = model.getNameOfVariables().get(variableNumFirst);
-                String variableNameSecond = model.getNameOfVariables().get(variableNumSecond);
-
-                XYDataset dataset = ChartUtilities.createXYDataset(model.getMetalSolution().getScoresPareto(),variableNumFirst,variableNumSecond);
+                XYDataset dataset = ChartUtilities.createXYDataset(model.getMetalSolution().getScoresPareto(),objectiveNumFirst,objectiveNumSecond);
 
                 JFreeChart chart = ChartFactory.createScatterPlot(
-                        "Graph: " + variableNameFirst + " vs. " + variableNameSecond,
-                        variableNameFirst,
-                        variableNameSecond,
+                        "Graph: " + Integer.toString(objectiveNumFirst+1) + " vs. " + Integer.toString(objectiveNumSecond+1),
+                        Integer.toString(objectiveNumFirst+1),
+                        Integer.toString(objectiveNumSecond+1),
                         dataset,
                         PlotOrientation.VERTICAL,
                         true,true,false);

@@ -242,8 +242,8 @@ public class MetalAlgorithm<T,E,P> {
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
-            for (int j=0; j<model.getNumOfVariables(); j++) {
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getVariableValue(j)); // Change for getVariableValue if desired
+            for (int j=0; j<model.getNumOfObjFuncts(); j++) {
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j)); // Change for getVariableValue if desired
             }
         }
 
@@ -315,12 +315,13 @@ public class MetalAlgorithm<T,E,P> {
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
-            for (int j=0; j<model.getNumOfVariables(); j++) {
-                Double min = model.getMinIntervalOfVariablesDouble().get(j);
+            for (int j=0; j<model.getNumOfObjFuncts(); j++) {
+                /*Double min = model.getMinIntervalOfVariablesDouble().get(j);
                 Double step = model.getStepVariablesDouble().get(j);
                 Integer score = solution.get(i).getVariableValue(j);
                 Double scoreDouble = min+step*(score-1);
-                metalSolution.scoresPareto[i].add(j,scoreDouble);
+                metalSolution.scoresPareto[i].add(j,scoreDouble);*/
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j)); // Change for getVariableValue if desired
             }
         }
 

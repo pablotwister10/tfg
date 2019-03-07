@@ -24,7 +24,7 @@ public class MetalSolution<T,E> {
             scores[i] = new Vector<>(model.getEvaluations());
         scoresPareto = new Vector[model.getPopulationSize()];
         for (int i=0; i<model.getPopulationSize(); i++)
-            scoresPareto[i] = new Vector<>(model.getNumOfVariables());
+            scoresPareto[i] = new Vector<>(model.getNumOfObjFuncts());
         solutionAlgorithm = null;
     }
 
