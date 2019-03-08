@@ -26,7 +26,7 @@ public class CST_opt_Double extends AbstractDoubleProblem {
 
 
     // Constructor de la clase DoubleProblem
-    public CST_opt_Double(MetalModel model, List<Double> lowerbounds, List<Double> upperbounds, String ProjectPath)  {
+    CST_opt_Double(MetalModel model, List<Double> lowerbounds, List<Double> upperbounds, String ProjectPath)  {
         this.model = model;
 
         setNumberOfVariables(model.getNumOfVariables());
@@ -44,10 +44,10 @@ public class CST_opt_Double extends AbstractDoubleProblem {
     public void evaluate(DoubleSolution solution) {
 
         //La variable Double x guarda los valores que se van a evaluar en la función de coste (
-        double[] x = new double[model.getNumOfVariables()] ;
+        double[] x = new double[model.getNumOfVariables()];
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
-            x[i] = solution.getVariableValue(i) ;
+            x[i] = solution.getVariableValue(i);
         }
 
         //Escribir los nuevos valores en la macro
@@ -109,6 +109,10 @@ public class CST_opt_Double extends AbstractDoubleProblem {
                 fcost=fcost+10000;
         }
 
+        // TODO: Multiobjective Functions (not only S11)
+        model.getMetalSolution().scores[0].add(1,fcost);
+        solution.setObjective(1,fcost);
+
     }
 
     private void Write(double array[],String path) throws FileNotFoundException, IOException {
@@ -116,7 +120,7 @@ public class CST_opt_Double extends AbstractDoubleProblem {
         RandomAccessFile raf = new RandomAccessFile(file,"rw");
 
         String[] name_variables = new String[array.length];
-        double[] value_variables=new double[array.length];
+        double[] value_variables = new double[array.length];
 
         // Optimizing functions from GUI
         for (int i=0; i<model.getNumOfVariables(); i++) {
@@ -159,7 +163,7 @@ public class CST_opt_Double extends AbstractDoubleProblem {
 
     }
 
-    private static String executeCommand(String command) throws InterruptedException {
+    private static void executeCommand(String command) throws InterruptedException {
 
         String s = null;
 
@@ -196,7 +200,6 @@ public class CST_opt_Double extends AbstractDoubleProblem {
             e.printStackTrace();
             //System.exit(-1);
         }
-        return null;
 
     }
 
