@@ -304,6 +304,7 @@ class MetalView extends JFrame {
         optimizationPanel.add(guiRButton);
         optimizationPanel.add(cstRButton);
         optimizationPanel.add(matlabRButton);
+        matlabRButton.setEnabled(false);
 
         /* Panel Files */
 
