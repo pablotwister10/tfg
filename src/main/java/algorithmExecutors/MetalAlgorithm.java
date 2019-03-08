@@ -90,7 +90,11 @@ public class MetalAlgorithm<T,E,P> {
                     done = true;
                     break;
                 } else if (model.getOptimizationChoice().equalsIgnoreCase("CST")) {
-
+                    if (model.getVariableType().equalsIgnoreCase("Double")) {
+                        runGeneticCSTDouble();
+                    }
+                    done = true;
+                    break;
                 } else if (model.getOptimizationChoice().equalsIgnoreCase("MATLAB")) {
                 }
             }
@@ -210,6 +214,54 @@ public class MetalAlgorithm<T,E,P> {
         //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
         //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
 
+    }
+
+    private void runGeneticCSTDouble() {
+
+        Algorithm<DoubleSolution> algorithm;
+        ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables()); // 0.1 INTEGER
+        ArrayList<Double> uppers = new ArrayList<>(model.getNumOfVariables()); // 4.0
+
+        lowers.addAll(model.getMinIntervalOfVariablesDouble());
+        uppers.addAll(model.getMaxIntervalOfVariablesDouble());
+
+        String ProjectPath = "C:\\Users\\Pablo\\IdeaProjects\\gh\\files"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
+        DoubleProblem problem = new CST_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+
+        //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
+        CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0);
+        MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<>();
+
+        //Elección del tipo del algoritmo genético que se va a utilizar, asi como el tamaño de su población y el número máximo de generaciones
+        algorithm = new GeneticAlgorithmBuilder<>(problem, crossoverOperator, mutationOperator)
+                .setPopulationSize(model.getPopulationSize()) // Set to 2
+                .setMaxEvaluations(model.getEvaluations()) // Set to 25000
+                .setSelectionOperator(selectionOperator)
+                //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
+                .build();
+
+        //Ejecucion del algoritmo de optimizacion (SCORES WILL BE CHANGED)
+        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
+                .execute();
+
+        //Obtención de la mejor solución alcanzada por el optimizador
+        DoubleSolution solution = algorithm.getResult();
+        List<DoubleSolution> population = new ArrayList<>(1);
+        population.add(solution);
+
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        metalSolution.setSolutionAlgorithm(solution);
+
+        new SolutionListOutput(population)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+                .print();
+
+        //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
+        //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
+        //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
     }
 
     private void runNSGA2GuiDouble() {

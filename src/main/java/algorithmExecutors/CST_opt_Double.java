@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 @SuppressWarnings("serial")
 public class CST_opt_Double extends AbstractDoubleProblem {
 
-    private String ProjectPath;
     private MetalModel model;
 
 
@@ -37,7 +36,6 @@ public class CST_opt_Double extends AbstractDoubleProblem {
 
         setLowerLimit(lowerbounds);
         setUpperLimit(upperbounds);
-        this.ProjectPath = ProjectPath;
     }
 
 
@@ -45,17 +43,15 @@ public class CST_opt_Double extends AbstractDoubleProblem {
     @Override
     public void evaluate(DoubleSolution solution) {
 
-        int numberOfVariables = getNumberOfVariables();
-
         //La variable Double x guarda los valores que se van a evaluar en la función de coste (
-        double[] x = new double[numberOfVariables] ;
+        double[] x = new double[model.getNumOfVariables()] ;
 
-        for (int i=0; i<numberOfVariables; i++) {
+        for (int i=0; i<model.getNumOfVariables(); i++) {
             x[i] = solution.getVariableValue(i) ;
         }
 
         //Escribir los nuevos valores en la macro
-        String path = ProjectPath + "\\macro.bas";
+        String path = model.getProjectPath() + "\\macro.bas";
         try {
             Write(x,path);
         } catch (IOException ex) {
@@ -64,7 +60,7 @@ public class CST_opt_Double extends AbstractDoubleProblem {
 
         //Lanzar CST (poner timers)
         String CST_path = "\"C:\\Program Files (x86)\\CST STUDIO SUITE 2015\\CST DESIGN ENVIRONMENT.exe\"";
-        String macroCST = "\"" + ProjectPath + "\\macro.bas\"";
+        String macroCST = "\"" + model.getProjectPath() + "\\macro.bas\"";
         String commandLaunchCST = CST_path + " -m " + macroCST;
 
         try {
@@ -75,73 +71,60 @@ public class CST_opt_Double extends AbstractDoubleProblem {
         }
 
         //Lectura de los resultados
-        String path_results =ProjectPath + "\\Results.txt";
-        double[][] MS11=null;
+        String path_results = model.getProjectPath() + "\\Results.txt";
+        double[][] MS11 = null;
         try {
             MS11 = ReadResults(path_results);
         } catch (IOException ex) {
             Logger.getLogger(algorithmExecutors.CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //EvaluaciÃ³n de los resultados en la funciÃ³n de coste
+        //Evaluacion de los resultados en la funcion de coste
         double fcost;
         double[] frequency = new double [MS11.length];
         double[] S11_data = new double [MS11.length];
 
-        for (int i = 0; i < MS11.length ; i++) {
-            frequency[i] = MS11[i][0] ;
+        for (int i=0; i<MS11.length; i++) {
+            frequency[i] = MS11[i][0];
         }
 
-        for (int i = 0; i < MS11.length ; i++) {
-            S11_data[i] = MS11[i][1] ;
+        for (int i=0; i<MS11.length; i++) {
+            S11_data[i] = MS11[i][1];
         }
 
 
-        /* Optimizing functions from GUI
-        Map<String, Double> vars = new HashMap<String, Double>();
-        for (int i = 0; i< model.getNumOfVariables(); i++) {
-            vars.put(model.getNameOfVariables().elementAt(i),x[i]);
-        }
-        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
-            Expression e = new ExpressionBuilder(model.getObjFuncts(i+1))
-                    .build()
-                    .variables(vars);
-            double fcost = e.evaluate();
-            model.getMetalSolution().scores[i].add(fcost);
-            solution.setObjective(i,fcost);
-        }
-        */
         //Funcion de coste (muy sencilla) es una funci�n que el optimizador va a minimizar
-        fcost = -x[0]*5 +x[1]*20;
+        fcost = 0;
 
-        for (int i = 0; i < S11_data.length; i++) {
-            if(S11_data[i]<-30){
+        for (int i=0; i<S11_data.length; i++) {
+            if(S11_data[i]<-30)
                 fcost=fcost+1;
-            }else if(S11_data[i]<-20){
+            else if(S11_data[i]<-20)
                 fcost=fcost+10;
-            }else if(S11_data[i]<-10){
+            else if(S11_data[i]<-10)
                 fcost=fcost+1000;
-            }else if(S11_data[i]<-5){
+            else if(S11_data[i]<-5)
                 fcost=fcost+5000;
-            }else
+            else
                 fcost=fcost+10000;
         }
 
     }
 
-    public static void Write(double array[],String path) throws FileNotFoundException, IOException {
-        //path = "C:\\Users\\angel\\Desktop\\PruebasJava\\macro.bas";
+    private void Write(double array[],String path) throws FileNotFoundException, IOException {
         File file =new File(path);
-        RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        RandomAccessFile raf = new RandomAccessFile(file,"rw");
 
-        //Variables que se van modificar
-        String[] name_variables=new String[array.length];
-        name_variables[0]="wc";
-        name_variables[1]="hc";
-        //Valor de la variables que se van a modificar
+        String[] name_variables = new String[array.length];
         double[] value_variables=new double[array.length];
-        value_variables[0]=array[0];
-        value_variables[1]=array[1];
+
+        // Optimizing functions from GUI
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            //Variables que se van modificar
+            name_variables[i] = model.getNameOfVariables().elementAt(i);
+            //Valor de la variables que se van a modificar
+            value_variables[i] = array[i];
+        }
 
         for (int index=0; index<array.length; index++){
             String lineref;
@@ -176,7 +159,7 @@ public class CST_opt_Double extends AbstractDoubleProblem {
 
     }
 
-    public static String executeCommand(String command) throws InterruptedException {
+    private static String executeCommand(String command) throws InterruptedException {
 
         String s = null;
 
@@ -217,8 +200,7 @@ public class CST_opt_Double extends AbstractDoubleProblem {
 
     }
 
-    public static double[][] ReadResults(String path_results) throws FileNotFoundException, IOException {
-        //path_results = "C:\\Users\\angel\\Desktop\\PruebasJava\\Results.txt";
+    private static double[][] ReadResults(String path_results) throws FileNotFoundException, IOException {
 
         BufferedReader br;
         FileReader fr = new FileReader(path_results);

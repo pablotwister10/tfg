@@ -2,6 +2,7 @@ package metalMVC;
 
 import layout.ChartUtilities;
 import layout.ComboItem;
+import layout.MyButtonGroup;
 import layout.SpringUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -12,6 +13,7 @@ import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
@@ -69,7 +71,6 @@ class MetalView extends JFrame {
     private JTextField stepVariablesText[] = new JTextField[100];
 
 
-
     /* THIRD CARD */
     // TODO: Set fix height to text fields and combo boxes
 
@@ -102,9 +103,27 @@ class MetalView extends JFrame {
 
     private JPanel optimizationPanel = new JPanel();
 
+    private MyButtonGroup rBtnGroup = new MyButtonGroup();
+
     private JRadioButton guiRButton = new JRadioButton("Optimize with Functions of GUI");
     private JRadioButton cstRButton = new JRadioButton("Optimize with CST");
     private JRadioButton matlabRButton = new JRadioButton("Optimize with MATLAB");
+
+    /* FILE CHOOSER */
+    //private JFileChooser fileChooser = new JFileChooser();
+    private JPanel panelFiles = new JPanel(new SpringLayout());
+
+    private JLabel projectPathLabel = new JLabel("Project path: ");
+    private JLabel macroBasLabel = new JLabel("Macros.bas: ");
+    private JLabel resultsTxtLabel = new JLabel("Results.txt: ");
+
+    private JTextField projectPathText = new JTextField(10);
+    private JTextField macroBasText = new JTextField(10);
+    private JTextField resultsTxtText = new JTextField(10);
+
+    private JButton projectPathBtn = new JButton("Open");
+    private JButton macroBasBtn = new JButton("Open");
+    private JButton resultsTxtBtn = new JButton("Open");
 
 
     /* NAVIGATION PANEL */
@@ -271,14 +290,71 @@ class MetalView extends JFrame {
         guiRButton.setSelected(true);
 
         // Group the radio buttons
-        ButtonGroup bGroup = new ButtonGroup();
-        bGroup.add(guiRButton);
-        bGroup.add(cstRButton);
-        bGroup.add(matlabRButton);
+        rBtnGroup.add(guiRButton);
+        rBtnGroup.add(cstRButton);
+        rBtnGroup.add(matlabRButton);
+
+        rBtnGroup.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateFilesView();
+            }
+        });
 
         optimizationPanel.add(guiRButton);
         optimizationPanel.add(cstRButton);
         optimizationPanel.add(matlabRButton);
+
+        /* Panel Files */
+
+        cardThird.add(panelFiles);
+
+        panelFiles.add(projectPathLabel);
+        projectPathLabel.setEnabled(false);
+        projectPathLabel.setLabelFor(projectPathText);
+        panelFiles.add(projectPathText);
+        projectPathText.setEnabled(false);
+
+        /*
+        panelFiles.add(projectPathBtn);
+        projectPathBtn.setEnabled(false);
+
+        panelFiles.add(macroBasLabel);
+        macroBasLabel.setEnabled(false);
+        macroBasLabel.setLabelFor(macroBasText);
+        panelFiles.add(macroBasText);
+        macroBasText.setEnabled(false);
+        panelFiles.add(macroBasBtn);
+        macroBasBtn.setEnabled(false);
+
+        macroBasBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooserMacro = new JFileChooser();
+            }
+        });
+
+        panelFiles.add(resultsTxtLabel);
+        resultsTxtLabel.setEnabled(false);
+        resultsTxtLabel.setLabelFor(resultsTxtText);
+        panelFiles.add(resultsTxtText);
+        resultsTxtText.setEnabled(false);
+        panelFiles.add(resultsTxtBtn);
+        resultsTxtBtn.setEnabled(false);
+
+        resultsTxtBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooserResults = new JFileChooser();
+            }
+        });
+        */
+
+        SpringUtilities.makeCompactGrid(panelFiles,
+                1, 2, //rows, cols
+                6, 6, //initX, initY
+                6, 6); //xPad, yPad
+
 
     }
 
@@ -398,9 +474,6 @@ class MetalView extends JFrame {
         objFunctFourText.setEnabled(false);
         graphFourCheck.setEnabled(false);
 
-        if (model.getAlgorithmType().equalsIgnoreCase("NSGAII"))
-            return;
-
         if (numOfObjFuncts > 0) {
             objFunctOneText.setEnabled(true);
             graphOneCheck.setEnabled(true);
@@ -416,6 +489,34 @@ class MetalView extends JFrame {
         if (numOfObjFuncts > 3) {
             objFunctFourText.setEnabled(true);
             graphFourCheck.setEnabled(true);
+        }
+    }
+
+    private void updateFilesView() {
+        if (getOptimizationChoiceString().equalsIgnoreCase("CST")) {
+            projectPathLabel.setEnabled(true);
+            projectPathText.setEnabled(true);
+            projectPathBtn.setEnabled(true);
+            /*
+            macroBasLabel.setEnabled(true);
+            macroBasText.setEnabled(true);
+            macroBasBtn.setEnabled(true);
+            resultsTxtLabel.setEnabled(true);
+            resultsTxtText.setEnabled(true);
+            resultsTxtBtn.setEnabled(true);
+            */
+        } else {
+            projectPathLabel.setEnabled(false);
+            projectPathText.setEnabled(false);
+            projectPathBtn.setEnabled(false);
+            /*
+            macroBasLabel.setEnabled(false);
+            macroBasText.setEnabled(false);
+            macroBasBtn.setEnabled(false);
+            resultsTxtLabel.setEnabled(false);
+            resultsTxtText.setEnabled(false);
+            resultsTxtBtn.setEnabled(false);
+            */
         }
     }
 
@@ -603,11 +704,32 @@ class MetalView extends JFrame {
 
     int getOptimizationChoice() {
         if (guiRButton.isSelected()) return 0;
-        if (cstRButton.isSelected()) return 1;
-        if (matlabRButton.isSelected()) return 2;
+        else if (cstRButton.isSelected()) return 1;
+        else if (matlabRButton.isSelected()) return 2;
         else return -1;
     }
 
+    String getOptimizationChoiceString() {
+        int optChoice = getOptimizationChoice();
+        if (optChoice == 0) return "GUI";
+        else if (optChoice == 1) return "CST";
+        else if (optChoice == 2) return "MATLAB";
+        else return null;
+    }
+
+    // FILE CHOOSER
+    String getProjectPath() {
+        return Objects.requireNonNull(projectPathText.getText());
+    }
+    /*
+    String getPathMacroBas() {
+        return Objects.requireNonNull(macroBasText.getText());
+    }
+
+    String getPathResultsTxt() {
+        return Objects.requireNonNull(resultsTxtText.getText());
+    }
+    */
 
     /* METHODS FOR ENABLING GRAPHS */
     void displayGraph(MetalModel model) {

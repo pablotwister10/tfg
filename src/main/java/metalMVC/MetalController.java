@@ -1,5 +1,7 @@
 package metalMVC;
 
+import net.objecthunter.exp4j.shuntingyard.ShuntingYard;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,6 +45,7 @@ class MetalController {
                 } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 3")) {
                     saved = mModel.saveThirdCard(mView);
                     if (saved) {
+                        System.out.println(mModel.getProjectPath());
                         boolean executed = mModel.execute(mView);
                         if (executed) {
                             if (mModel.getPopulationSize() < 10)

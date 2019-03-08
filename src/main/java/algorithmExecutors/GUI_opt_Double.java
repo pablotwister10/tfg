@@ -50,7 +50,7 @@ public class GUI_opt_Double extends AbstractDoubleProblem {
 
         /* Optimizing functions from GUI */
         Map<String, Double> vars = new HashMap<String, Double>();
-        for (int i = 0; i< model.getNumOfVariables(); i++) {
+        for (int i = 0; i<model.getNumOfVariables(); i++) {
             vars.put(model.getNameOfVariables().elementAt(i),x[i]);
         }
         for (int i=0; i<model.getNumOfObjFuncts(); i++) {

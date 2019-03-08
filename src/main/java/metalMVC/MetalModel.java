@@ -51,6 +51,11 @@ public class MetalModel {
     /* SOLUTION */
     private MetalSolution metalSolution;
 
+    /* CST VARS */
+    private String projectPath;
+    private String pathMacroBas;
+    private String pathResultsTxt;
+
 
     /** CONSTRUCTOR */
     MetalModel() {
@@ -80,6 +85,16 @@ public class MetalModel {
         objFuncts = new Vector<>(0);
         evaluations = 0;
         populationSize = 0;
+
+        // SOLUTION
+        metalSolution = null;
+
+        // CST VARS
+        projectPath = "";
+        /*
+        pathMacroBas = null;
+        pathResultsTxt = null;
+        */
     }
 
     /* SAVE CARDS */
@@ -121,8 +136,8 @@ public class MetalModel {
             minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
         if (maxIntervalOfVariablesDouble.isEmpty() || !maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
             maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
-        saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesDouble.isEmpty()
-                || !maxIntervalOfVariablesDouble.isEmpty());
+        saved = (!nameOfVariables.isEmpty() && !minIntervalOfVariablesDouble.isEmpty()
+                && !maxIntervalOfVariablesDouble.isEmpty());
         if (variableType.equalsIgnoreCase("Integer")) {
             if (minIntervalOfVariablesInteger.isEmpty() || !minIntervalOfVariablesInteger.equals(view.getMinIntervalOfVariablesInteger()))
                 minIntervalOfVariablesInteger = view.getMinIntervalOfVariablesInteger();
@@ -132,9 +147,9 @@ public class MetalModel {
                 stepVariablesDouble = view.getStepVariablesDouble();
             if (stepVariablesInteger.isEmpty() || !stepVariablesInteger.equals(view.getStepVariablesInteger()))
                 stepVariablesInteger = view.getStepVariablesInteger();
-            saved = (!nameOfVariables.isEmpty() || !minIntervalOfVariablesInteger.isEmpty()
-                    || !maxIntervalOfVariablesInteger.isEmpty() || !stepVariablesDouble.isEmpty()
-                    || !stepVariablesInteger.isEmpty());
+            saved = (!nameOfVariables.isEmpty() && !minIntervalOfVariablesInteger.isEmpty()
+                    && !maxIntervalOfVariablesInteger.isEmpty() && !stepVariablesDouble.isEmpty()
+                    && !stepVariablesInteger.isEmpty());
         }
 
         return saved;
@@ -153,8 +168,18 @@ public class MetalModel {
         String[] optChoices = new String[] {"GUI","CST","MATLAB"};
         optimizationChoice = optChoices[view.getOptimizationChoice()];
         System.out.println("Chose to optimize with "+optimizationChoice); // LOGGER
-
-        return (!objFuncts.isEmpty() || evaluations != 0 || populationSize != 0 || !optimizationChoice.isEmpty());
+        if (optimizationChoice.equalsIgnoreCase("CST")) {
+            if (projectPath.isEmpty() || projectPath.equalsIgnoreCase(view.getProjectPath()))
+                projectPath = view.getProjectPath();
+            /*
+            if (!pathMacroBas.equalsIgnoreCase(view.getPathMacroBas()))
+                pathMacroBas = view.getPathMacroBas();
+            if (!pathResultsTxt.equalsIgnoreCase(view.getPathResultsTxt()))
+                pathResultsTxt = view.getPathResultsTxt();
+            */
+            return (!objFuncts.isEmpty() || (evaluations != 0 && populationSize != 0 && !optimizationChoice.isEmpty() && projectPath != null));
+        } else
+            return (!objFuncts.isEmpty() || (evaluations != 0 && populationSize != 0 && !optimizationChoice.isEmpty()));
     }
 
     /* GETTERS */
@@ -240,6 +265,17 @@ public class MetalModel {
         return this;
     }
 
+    public String getProjectPath() {
+        return projectPath;
+    }
+
+    public String getPathMacroBas() {
+        return pathMacroBas;
+    }
+
+    public String getPathResultsTxt() {
+        return pathResultsTxt;
+    }
 
     /* SETTERS */
 /*
