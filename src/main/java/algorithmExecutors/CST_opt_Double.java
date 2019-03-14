@@ -53,7 +53,7 @@ public class CST_opt_Double extends AbstractDoubleProblem {
         //Escribir los nuevos valores en la macro
         String path = model.getProjectPath() + "\\macro.bas";
         try {
-            Write(x,path);
+            modifyVariableValues(x,path);
         } catch (IOException ex) {
             Logger.getLogger(algorithmExecutors.CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -70,52 +70,61 @@ public class CST_opt_Double extends AbstractDoubleProblem {
             Logger.getLogger(algorithmExecutors.CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //Lectura de los resultados
-        String path_results = model.getProjectPath() + "\\Results.txt";
-        double[][] MS11 = null;
-        try {
-            MS11 = ReadResults(path_results);
-        } catch (IOException ex) {
-            Logger.getLogger(algorithmExecutors.CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
+        // Name of variables to optimize
+        String[] nameObjectiveVars = new String[model.getNumOfObjFuncts()];
+        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
+            nameObjectiveVars[i] = model.getObjFuncts(i);
         }
 
-        //Evaluacion de los resultados en la funcion de coste
-        double fcost;
-        double[] frequency = new double [MS11.length];
-        double[] S11_data = new double [MS11.length];
+        // Extracting results from txt file created with CST
+        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
 
-        for (int i=0; i<MS11.length; i++) {
-            frequency[i] = MS11[i][0];
+            // Reading current file and extracting current objective variable results
+            String currentResultsFile = model.getProjectPath() + "\\Results_" + nameObjectiveVars[i] + ".txt";
+            double[][] currentObjectiveVar = null;
+            try {
+                currentObjectiveVar = extractResults(currentResultsFile);
+            } catch (IOException ex) {
+                Logger.getLogger(algorithmExecutors.CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            // Evaluation of fcost depending on current results
+            double fcost;
+            double[] currentObjectiveVarFrequency = new double [currentObjectiveVar.length];
+            double[] currentObjectiveVarData = new double [currentObjectiveVar.length];
+
+            for (int j=0; j<currentObjectiveVar.length; j++) {
+                currentObjectiveVarFrequency[j] = currentObjectiveVar[j][0];
+            }
+
+            for (int j=0; j<currentObjectiveVar.length; j++) {
+                currentObjectiveVarData[j] = currentObjectiveVar[j][1];
+            }
+
+            // Simple fcost to minimize
+            fcost = 0;
+
+            for (int j=0; j<currentObjectiveVarData.length; j++) {
+                if(currentObjectiveVarData[j]<-30)
+                    fcost = fcost+1;
+                else if(currentObjectiveVarData[j]<-20)
+                    fcost = fcost+10;
+                else if(currentObjectiveVarData[j]<-10)
+                    fcost = fcost+1000;
+                else if(currentObjectiveVarData[j]<-5)
+                    fcost = fcost+5000;
+                else
+                    fcost = fcost+10000;
+            }
+
+            model.getMetalSolution().scores[i].add(fcost);
+            solution.setObjective(i,fcost);
+
         }
-
-        for (int i=0; i<MS11.length; i++) {
-            S11_data[i] = MS11[i][1];
-        }
-
-
-        //Funcion de coste (muy sencilla) es una funci�n que el optimizador va a minimizar
-        fcost = 0;
-
-        for (int i=0; i<S11_data.length; i++) {
-            if(S11_data[i]<-30)
-                fcost=fcost+1;
-            else if(S11_data[i]<-20)
-                fcost=fcost+10;
-            else if(S11_data[i]<-10)
-                fcost=fcost+1000;
-            else if(S11_data[i]<-5)
-                fcost=fcost+5000;
-            else
-                fcost=fcost+10000;
-        }
-
-        // TODO: Multiobjective Functions (not only S11)
-        model.getMetalSolution().scores[0].add(1,fcost);
-        solution.setObjective(1,fcost);
 
     }
 
-    private void Write(double array[],String path) throws FileNotFoundException, IOException {
+    private void modifyVariableValues(double array[],String path) throws FileNotFoundException, IOException {
         File file =new File(path);
         RandomAccessFile raf = new RandomAccessFile(file,"rw");
 
@@ -182,13 +191,13 @@ public class CST_opt_Double extends AbstractDoubleProblem {
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
             // read the output from the command
-            System.out.println("Here is the standard output of the command:\n");
+            System.out.println("Here is the standard output of the command: ");
             while ((s = stdInput.readLine()) != null) {
                 //System.out.println(s);
             }
 
             // read any errors from the attempted command
-            System.out.println("Here is the standard error of the command (if any):\n");
+            System.out.println("Here is the standard error of the command (if any): ");
             while ((s = stdError.readLine()) != null) {
                 System.out.println(s);
             }
@@ -203,15 +212,15 @@ public class CST_opt_Double extends AbstractDoubleProblem {
 
     }
 
-    private static double[][] ReadResults(String path_results) throws FileNotFoundException, IOException {
+    private static double[][] extractResults(String resultsFile) throws FileNotFoundException, IOException {
 
         BufferedReader br;
-        FileReader fr = new FileReader(path_results);
+        FileReader fr = new FileReader(resultsFile);
         br = new BufferedReader(fr);
 
         String line;
 
-        //Salto las dos primeras lÃ­neas
+        // Salto las dos primeras lineas
         line = br.readLine();
         line = br.readLine();
         line = br.readLine();

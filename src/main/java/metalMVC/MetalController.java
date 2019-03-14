@@ -45,7 +45,7 @@ class MetalController {
                 } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 3")) {
                     saved = mModel.saveThirdCard(mView);
                     if (saved) {
-                        System.out.println(mModel.getProjectPath());
+                        System.out.println("Chosen project path: " + mModel.getProjectPath());
                         boolean executed = mModel.execute(mView);
                         if (executed) {
                             if (mModel.getPopulationSize() < 10)

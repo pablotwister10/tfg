@@ -49,7 +49,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         //Escribir los nuevos valores en la macro
         String path = model.getProjectPath() + "\\macro.bas";
         try {
-            Write(x,path);
+            modifyVariableValues(x,path);
         } catch (IOException ex) {
             Logger.getLogger(algorithmExecutors.CST_opt_Integer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -67,10 +67,10 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         }
 
         //Lectura de los resultados
-        String path_results = model.getProjectPath() + "\\Results.txt";
+        String resultsFile = model.getProjectPath() + "\\Results.txt";
         double[][] MS11=null;
         try {
-            MS11 = ReadResults(path_results);
+            MS11 = extractResults(resultsFile);
         } catch (IOException ex) {
             Logger.getLogger(algorithmExecutors.CST_opt_Integer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -110,7 +110,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
 
     }
 
-    private void Write(double array[],String path) throws FileNotFoundException, IOException {
+    private void modifyVariableValues(double array[],String path) throws FileNotFoundException, IOException {
         // TODO: Implement in same CST_opt
         File file =new File(path);
         RandomAccessFile raf = new RandomAccessFile(file, "rw");
@@ -202,11 +202,11 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
 
     }
 
-    private static double[][] ReadResults(String path_results) throws FileNotFoundException, IOException {
-        //path_results = "C:\\Users\\angel\\Desktop\\PruebasJava\\Results.txt";
+    private static double[][] extractResults(String resultsFile) throws FileNotFoundException, IOException {
+        //resultsFile = "C:\\Users\\angel\\Desktop\\PruebasJava\\Results.txt";
 
         BufferedReader br;
-        FileReader fr = new FileReader(path_results);
+        FileReader fr = new FileReader(resultsFile);
         br = new BufferedReader(fr);
 
         String line;

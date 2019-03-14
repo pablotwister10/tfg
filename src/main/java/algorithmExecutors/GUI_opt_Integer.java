@@ -56,7 +56,7 @@ public class GUI_opt_Integer extends AbstractIntegerProblem {
                     .variables(vars);
             double fcost = e.evaluate();
             model.getMetalSolution().scores[i].add(fcost);
-            solution.setObjective(i, fcost);
+            solution.setObjective(i,fcost);
         }
 
     }
