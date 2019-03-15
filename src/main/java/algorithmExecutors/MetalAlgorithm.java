@@ -512,7 +512,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesInteger());
 
         // Creating problem with model for data abstraction and lower and upper bounds
-        IntegerProblem problem = new CstOptInteger(model,lowers,uppers);
+        IntegerProblem problem = new GuiOptInteger(model,lowers,uppers);
 
         // Crossover, Mutation and Selection parameters for the algorithm of type IntegerSolution
         CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0);
