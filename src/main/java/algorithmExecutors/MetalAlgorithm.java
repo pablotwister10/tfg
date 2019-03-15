@@ -107,6 +107,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
+
     private void runGeneticDouble() {
 
         Algorithm<DoubleSolution> algorithm;
@@ -117,7 +118,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesDouble());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new GuiOptDouble(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0);
@@ -167,7 +168,7 @@ public class MetalAlgorithm<T,E,P> {
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
 
-        IntegerProblem problemInteger = new CST_opt_Integer(model,lowersInteger,uppersInteger,ProjectPath);
+        IntegerProblem problemInteger = new GuiOptInteger(model,lowersInteger,uppersInteger,ProjectPath);
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<IntegerSolution> crossoverOperatorInteger = new IntegerSBXCrossover(1.0,2.0);
@@ -212,7 +213,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesDouble());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        DoubleProblem problem = new CST_opt_Double(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        DoubleProblem problem = new GuiOptDouble(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0) ;
@@ -285,7 +286,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesInteger());
 
         String ProjectPath = "C:\\Users\\angel\\Desktop\\PruebasJava"; //Esta es un path que lo necesitaba (en tu caso no hace falta)
-        IntegerProblem problem = new CST_opt_Integer(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
+        IntegerProblem problem = new GuiOptInteger(model,lowers,uppers,ProjectPath) ; // Clase problema creada --> especifica el número de variables, objetivos y la función de coste del problema a optimizar
 
         //Parámetros de Cruce, Mutación y Selección del algoritmo genético (parámetros del optimizador)
         CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0) ;
