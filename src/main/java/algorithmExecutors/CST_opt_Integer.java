@@ -21,7 +21,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
 
     
     // Constructor de la clase DoubleProblem
-    public CST_opt_Integer(MetalModel model, List<Integer> lowerbounds, List<Integer> upperbounds, String ProjectPath)  {
+    CST_opt_Integer(MetalModel model, List<Integer> lowerbounds, List<Integer> upperbounds, String ProjectPath)  {
         this.model = model;
 
         setNumberOfVariables(model.getNumOfVariables());
@@ -40,7 +40,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
     public void evaluate(IntegerSolution solution) {
 
         //La variable Double x guarda los valores que se van a evaluar en la funcion de coste (
-        double[] x = new double[model.getNumOfVariables()] ;
+        double[] x = new double[model.getNumOfVariables()];
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
             x[i] = solution.getVariableValue(i);
@@ -105,28 +105,24 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         }
 
         // TODO: Multiobjective Functions (not only S11)
-        model.getMetalSolution().scores[0].add(1,fcost);
-        solution.setObjective(1,fcost);
+        model.getMetalSolution().scores[0].add(fcost);
+        solution.setObjective(0,fcost);
 
     }
 
     private void modifyVariableValues(double array[],String path) throws FileNotFoundException, IOException {
-        // TODO: Implement in same CST_opt
         File file =new File(path);
-        RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        RandomAccessFile raf = new RandomAccessFile(file,"rw");
 
-        //Variables que se van modificar
         String[] name_variables = new String[array.length];
-        //Valor de la variables que se van a modificar
         double[] value_variables = new double[array.length];
 
-        for (int i = 0; i < model.getNumOfVariables(); i++) {
+        // Optimizing functions from GUI
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            //Variables que se van modificar
             name_variables[i] = model.getNameOfVariables().elementAt(i);
-
-            Double min = model.getMinIntervalOfVariablesDouble().elementAt(i);
-            Double paso = model.getStepVariablesDouble().elementAt(i);
-            Double varInDouble = min+paso*(array[i]-1);
-            value_variables[i] = (double) varInDouble;
+            //Valor de la variables que se van a modificar
+            value_variables[i] = array[i];
         }
 
         for (int index=0; index<array.length; index++){
@@ -181,21 +177,21 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
             // read the output from the command
-            System.out.println("Here is the standard output of the command:\n");
+            System.out.println("Here is the standard output of the command: ");
             while ((s = stdInput.readLine()) != null) {
                 //System.out.println(s);
             }
 
             // read any errors from the attempted command
-            System.out.println("Here is the standard error of the command (if any):\n");
+            System.err.println("Here is the standard error of the command (if any): ");
             while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
+                System.err.println(s);
             }
 
             //System.exit(0);
         }
         catch (IOException e) {
-            System.out.println("exception happened - here's what I know: ");
+            System.err.println("exception happened - here's what I know: ");
             e.printStackTrace();
             //System.exit(-1);
         }
@@ -203,7 +199,6 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
     }
 
     private static double[][] extractResults(String resultsFile) throws FileNotFoundException, IOException {
-        //resultsFile = "C:\\Users\\angel\\Desktop\\PruebasJava\\Results.txt";
 
         BufferedReader br;
         FileReader fr = new FileReader(resultsFile);
@@ -211,7 +206,7 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
 
         String line;
 
-        //Salto las dos primeras lÃ­neas
+        // Salto las dos primeras lineas
         line = br.readLine();
         line = br.readLine();
         line = br.readLine();
@@ -240,4 +235,5 @@ public class CST_opt_Integer extends AbstractIntegerProblem {
         return Results;
 
     }
+
 }

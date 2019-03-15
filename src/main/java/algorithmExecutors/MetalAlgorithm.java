@@ -127,6 +127,7 @@ public class MetalAlgorithm<T,E,P> {
 
     }
 
+
     private void runGeneticGuiDouble() {
 
         Algorithm<DoubleSolution> algorithm;

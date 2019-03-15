@@ -70,57 +70,47 @@ public class CST_opt_Double extends AbstractDoubleProblem {
             Logger.getLogger(algorithmExecutors.CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // Name of variables to optimize
-        String[] nameObjectiveVars = new String[model.getNumOfObjFuncts()];
-        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
-            nameObjectiveVars[i] = model.getObjFuncts(i);
+        //Lectura de los resultados
+        String resultsFile = model.getProjectPath() + "\\Results.txt";
+        double[][] MS11=null;
+        try {
+            MS11 = extractResults(resultsFile);
+        } catch (IOException ex) {
+            Logger.getLogger(algorithmExecutors.CST_opt_Integer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // Extracting results from txt file created with CST
-        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
+        //Evaluacion de los resultados en la funcion de coste
+        double fcost;
+        double[] frequency = new double [MS11.length];
+        double[] S11_data = new double [MS11.length];
 
-            // Reading current file and extracting current objective variable results
-            String currentResultsFile = model.getProjectPath() + "\\Results_" + nameObjectiveVars[i] + ".txt";
-            double[][] currentObjectiveVar = null;
-            try {
-                currentObjectiveVar = extractResults(currentResultsFile);
-            } catch (IOException ex) {
-                Logger.getLogger(algorithmExecutors.CST_opt_Double.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            // Evaluation of fcost depending on current results
-            double fcost;
-            double[] currentObjectiveVarFrequency = new double [currentObjectiveVar.length];
-            double[] currentObjectiveVarData = new double [currentObjectiveVar.length];
-
-            for (int j=0; j<currentObjectiveVar.length; j++) {
-                currentObjectiveVarFrequency[j] = currentObjectiveVar[j][0];
-            }
-
-            for (int j=0; j<currentObjectiveVar.length; j++) {
-                currentObjectiveVarData[j] = currentObjectiveVar[j][1];
-            }
-
-            // Simple fcost to minimize
-            fcost = 0;
-
-            for (int j=0; j<currentObjectiveVarData.length; j++) {
-                if(currentObjectiveVarData[j]<-30)
-                    fcost = fcost+1;
-                else if(currentObjectiveVarData[j]<-20)
-                    fcost = fcost+10;
-                else if(currentObjectiveVarData[j]<-10)
-                    fcost = fcost+1000;
-                else if(currentObjectiveVarData[j]<-5)
-                    fcost = fcost+5000;
-                else
-                    fcost = fcost+10000;
-            }
-
-            model.getMetalSolution().scores[i].add(fcost);
-            solution.setObjective(i,fcost);
-
+        for (int i=0; i<MS11.length; i++) {
+            frequency[i] = MS11[i][0];
         }
+
+        for (int i=0; i<MS11.length; i++) {
+            S11_data[i] = MS11[i][1];
+        }
+
+        //Funcion de coste (muy sencilla) es una funcion que el optimizador va a minimizar
+        fcost = 0;
+
+        for (int i=0; i<S11_data.length; i++) {
+            if(S11_data[i]<-30)
+                fcost=fcost+1;
+            else if(S11_data[i]<-20)
+                fcost=fcost+10;
+            else if(S11_data[i]<-10)
+                fcost=fcost+1000;
+            else if(S11_data[i]<-5)
+                fcost=fcost+5000;
+            else
+                fcost=fcost+10000;
+        }
+
+        // TODO: Multiobjective Functions (not only S11)
+        model.getMetalSolution().scores[0].add(fcost);
+        solution.setObjective(0,fcost);
 
     }
 
@@ -197,15 +187,15 @@ public class CST_opt_Double extends AbstractDoubleProblem {
             }
 
             // read any errors from the attempted command
-            System.out.println("Here is the standard error of the command (if any): ");
+            System.err.println("Here is the standard error of the command (if any): ");
             while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
+                System.err.println(s);
             }
 
             //System.exit(0);
         }
         catch (IOException e) {
-            System.out.println("exception happened - here's what I know: ");
+            System.err.println("exception happened - here's what I know: ");
             e.printStackTrace();
             //System.exit(-1);
         }
