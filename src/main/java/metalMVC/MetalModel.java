@@ -7,31 +7,26 @@ import org.uma.jmetal.problem.IntegerProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.IntegerSolution;
 
-import java.io.*;
 import java.util.Vector;
 
 /**
- * MetalModel Class for data structuration
+ * MetalModel Class
+ *
+ * Data structuration and container
+ *
+ * TODO: Change vectors of variables to @param type <T>
  * @param <> Type of variable (Double, Integer)
  */
-// TODO: Change vectors of variables to @param type <T>
 public class MetalModel {
 
     /* FIRST CARD */
-
     private static int numOfVariables;
     private static String variableType;
     private static String algorithmType;
     private static int numOfObjFuncts;
 
     /* SECOND CARD */
-
     private static Vector<String> nameOfVariables = new Vector<>(0);
-/*
-    private Vector<T> minIntervalOfVariables;
-    private Vector<T> maxIntervalOfVariables;
-    private Vector<T> stepVariables;
-*/
     // intervals in Double
     private static Vector<Double> minIntervalOfVariablesDouble = new Vector<>(0);
     private static Vector<Double> maxIntervalOfVariablesDouble = new Vector<>(0);
@@ -42,7 +37,6 @@ public class MetalModel {
     private static Vector<Integer> stepVariablesInteger = new Vector<>(0);
 
     /* THIRD CARD */
-
     private static Vector<String> objFuncts = new Vector<>(0);
     private static boolean graphChecks[] = new boolean[4];
     private static int evaluations;
@@ -54,17 +48,18 @@ public class MetalModel {
 
     /* CST VARS */
     private String projectPath;
-    private String pathMacroBas;
-    private String pathResultsTxt;
 
 
-    /** CONSTRUCTOR */
+    /**
+     * MetalModel constructor
+     */
     MetalModel() {
+        // Resets view
         reset();
     }
 
 
-    /* RESET MODEL */
+    // Reset method to initialize variables to 0
     private void reset() {
         // FIRST CARD
         numOfVariables = 0;
@@ -92,20 +87,20 @@ public class MetalModel {
 
         // CST VARS
         projectPath = "";
-        /*
-        pathMacroBas = null;
-        pathResultsTxt = null;
-        */
     }
 
-    /* SAVE CARDS */
+    // Save Card methods, always check if the view is empty and illegal type or value
     boolean saveFirstCard(MetalView view) {
+
+        // Boolean variables to update second and third cards
         boolean upView2 = true;
         boolean upView3 = true;
 
+        // Save number of variables, variable type, algorithm type and number of objective functions
         if (numOfVariables != view.getNumOfVariables())
             numOfVariables = view.getNumOfVariables();
         else if (numOfVariables == 0)
+            // Second card cannot be of 0 variable length
             upView2 = false;
         if (variableType == null || !variableType.equalsIgnoreCase(view.getVariableType()))
             variableType = view.getVariableType();
@@ -114,9 +109,9 @@ public class MetalModel {
         if (numOfObjFuncts != view.getNumOfObjFuncts())
             numOfObjFuncts = view.getNumOfObjFuncts();
         else if (numOfObjFuncts == 0)
-            upView3 = false;
+            upView3 = false;  // Third card cannot have 0 objective functions
 
-        // Card 1 affects View of Cards 2 and 3
+        // Card 1 affects MetalView of Cards 2 and 3, so it updates them depending on Boolean values
         if (numOfVariables != 0 && variableType != null && algorithmType != null && numOfObjFuncts != 0) {
             if (upView2)
                 view.updateView(this,"Card 2");
@@ -124,6 +119,7 @@ public class MetalModel {
         if (upView3)
             view.updateView(this,"Card 3");
 
+        // For error checking and to ensure that the values are set
         return (numOfVariables != 0 && variableType != null && algorithmType != null && numOfObjFuncts != 0);
     }
 
@@ -131,18 +127,26 @@ public class MetalModel {
 
         boolean saved;
 
+        // Save name of variables and the minimum and maximum intervals of these variables
         if (nameOfVariables.isEmpty() || !nameOfVariables.equals(view.getNameOfVariables()))
             nameOfVariables = view.getNameOfVariables();
-        if (minIntervalOfVariablesDouble.isEmpty() || !minIntervalOfVariablesDouble.equals(view.getMinIntervalOfVariablesDouble()))
+        if (minIntervalOfVariablesDouble.isEmpty()
+                || !minIntervalOfVariablesDouble.equals(view.getMinIntervalOfVariablesDouble()))
             minIntervalOfVariablesDouble = view.getMinIntervalOfVariablesDouble();
-        if (maxIntervalOfVariablesDouble.isEmpty() || !maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
+        if (maxIntervalOfVariablesDouble.isEmpty()
+                || !maxIntervalOfVariablesDouble.equals(view.getMaxIntervalOfVariablesDouble()))
             maxIntervalOfVariablesDouble = view.getMaxIntervalOfVariablesDouble();
         saved = (!nameOfVariables.isEmpty() && !minIntervalOfVariablesDouble.isEmpty()
                 && !maxIntervalOfVariablesDouble.isEmpty());
+
+        // If the variable type is Integer, then save as well the minimum and maximum intervals and the step in Double
+        // and Integer
         if (variableType.equalsIgnoreCase("Integer")) {
-            if (minIntervalOfVariablesInteger.isEmpty() || !minIntervalOfVariablesInteger.equals(view.getMinIntervalOfVariablesInteger()))
+            if (minIntervalOfVariablesInteger.isEmpty()
+                    || !minIntervalOfVariablesInteger.equals(view.getMinIntervalOfVariablesInteger()))
                 minIntervalOfVariablesInteger = view.getMinIntervalOfVariablesInteger();
-            if (maxIntervalOfVariablesInteger.isEmpty() || !maxIntervalOfVariablesInteger.equals(view.getMaxIntervalOfVariablesInteger()))
+            if (maxIntervalOfVariablesInteger.isEmpty()
+                    || !maxIntervalOfVariablesInteger.equals(view.getMaxIntervalOfVariablesInteger()))
                 maxIntervalOfVariablesInteger = view.getMaxIntervalOfVariablesInteger();
             if (stepVariablesDouble.isEmpty() || !stepVariablesDouble.equals(view.getStepVariablesDouble()))
                 stepVariablesDouble = view.getStepVariablesDouble();
@@ -153,11 +157,13 @@ public class MetalModel {
                     && !stepVariablesInteger.isEmpty());
         }
 
+        // For error checking and to ensure that the values are saved
         return saved;
     }
 
     boolean saveThirdCard(MetalView view) {
 
+        // Save objective functions, the graph checks, the evaluations and the population size
         if (!objFuncts.equals(view.getObjFunctions()))
             objFuncts = view.getObjFunctions();
         if (graphChecks != view.getGraphChecks())
@@ -166,24 +172,56 @@ public class MetalModel {
             evaluations = view.getEvaluations();
         if (populationSize != view.getPopulationSize())
             populationSize = view.getPopulationSize();
+
+        // Saving optimization choice
         String[] optChoices = new String[] {"GUI","CST","MATLAB"};
         optimizationChoice = optChoices[view.getOptimizationChoice()];
         System.out.println("Chose to optimize with "+optimizationChoice); // LOGGER
+
+        // If optimizing with CST, save the project path for the macros and results
         if (optimizationChoice.equalsIgnoreCase("CST")) {
             if (projectPath.isEmpty() || projectPath.equalsIgnoreCase(view.getProjectPath()))
                 projectPath = view.getProjectPath();
-            /*
-            if (!pathMacroBas.equalsIgnoreCase(view.getPathMacroBas()))
-                pathMacroBas = view.getPathMacroBas();
-            if (!pathResultsTxt.equalsIgnoreCase(view.getPathResultsTxt()))
-                pathResultsTxt = view.getPathResultsTxt();
-            */
             return (!objFuncts.isEmpty() || (evaluations != 0 && populationSize != 0 && !optimizationChoice.isEmpty() && projectPath != null));
         } else
             return (!objFuncts.isEmpty() || (evaluations != 0 && populationSize != 0 && !optimizationChoice.isEmpty()));
+        // The return is for error checking and to ensure that the values are saved
     }
 
-    /* GETTERS */
+    // Execution method for running algorithm, creating a new MetalAlgorithm object
+    boolean execute(MetalView view) throws Exception {
+        // For error checking
+        boolean done = false;
+
+        // MetalAlgorithm class creation depending on type of variable
+        if (variableType.equalsIgnoreCase("Double")) {
+            metalSolution = new MetalSolution<Double,DoubleSolution>(this);
+            MetalAlgorithm<Double,DoubleSolution,DoubleProblem> algo = new MetalAlgorithm<>(getMetalModel());
+            // Run algorithm
+            done = algo.run();
+        } else if (variableType.equalsIgnoreCase("Integer")) {
+            metalSolution = new MetalSolution<Integer,IntegerSolution>(this);
+            MetalAlgorithm<Integer,IntegerSolution,IntegerProblem> algo = new MetalAlgorithm<>(getMetalModel());
+            // Run algorithm
+            done = algo.run();
+        }
+
+        // Display graph method calling
+        if (algorithmType.equalsIgnoreCase("Genetic Algorithm")) {
+            // Normal graph
+            if (done)
+                view.displayGraph(this);
+        } else if (algorithmType.equalsIgnoreCase("NSGAII")) {
+            // Pareto graph
+            if (done)
+                view.displayPareto(this);
+        }
+
+        return done;
+    }
+
+
+    // Getters
     public int getNumOfVariables() {
         return numOfVariables;
     }
@@ -203,19 +241,7 @@ public class MetalModel {
     public Vector<String> getNameOfVariables() {
         return nameOfVariables;
     }
-/*
-    public Vector<T> getMinIntervalOfVariables() {
-        return minIntervalOfVariables;
-    }
 
-    public Vector<T> getMaxIntervalOfVariables() {
-        return maxIntervalOfVariables;
-    }
-
-    public Vector<T> getStepVariables() {
-        return stepVariables;
-    }
-*/
     public Vector<Double> getMinIntervalOfVariablesDouble() {
         return minIntervalOfVariablesDouble;
     }
@@ -268,56 +294,6 @@ public class MetalModel {
 
     public String getProjectPath() {
         return projectPath;
-    }
-
-    public String getPathMacroBas() {
-        return pathMacroBas;
-    }
-
-    public String getPathResultsTxt() {
-        return pathResultsTxt;
-    }
-
-    /* SETTERS */
-/*
-    public void setMinIntervalOfVariables(Vector<T> minIntervalOfVariables) {
-        this.minIntervalOfVariables = minIntervalOfVariables;
-    }
-
-    public void setMaxIntervalOfVariables(Vector<T> maxIntervalOfVariables) {
-        this.maxIntervalOfVariables = maxIntervalOfVariables;
-    }
-
-    public void setStepVariables(Vector<T> stepVariables) {
-        this.stepVariables = stepVariables;
-    }
-*/
-    /* UPDATE MODEL */
-
-
-    /* EXECUTION OF ALGORITHM ==> new MetalAlgorithm class creation */
-    boolean execute(MetalView view) throws Exception {
-        boolean done = false;
-
-        if (variableType.equalsIgnoreCase("Double")) {
-            metalSolution = new MetalSolution<Double,DoubleSolution>(this);
-            MetalAlgorithm<Double,DoubleSolution,DoubleProblem> algo = new MetalAlgorithm<>(getMetalModel());
-            done = algo.run();
-        } else if (variableType.equalsIgnoreCase("Integer")) {
-            metalSolution = new MetalSolution<Integer,IntegerSolution>(this);
-            MetalAlgorithm<Integer,IntegerSolution,IntegerProblem> algo = new MetalAlgorithm<>(getMetalModel());
-            done = algo.run();
-        }
-
-        if (algorithmType.equalsIgnoreCase("Genetic Algorithm")) {
-            if (done)
-                view.displayGraph(this);
-        } else if (algorithmType.equalsIgnoreCase("NSGAII")) {
-            if (done)
-                view.displayPareto(this);
-        }
-
-        return done;
     }
 
 }

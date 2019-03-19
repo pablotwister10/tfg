@@ -5,6 +5,9 @@ import metalMVC.MetalModel;
 import java.util.Vector;
 
 /**
+ * MetalSolution Class
+ *
+ * Container for scores and solution
  *
  * @param <T> Type of variable (Double, Integer)
  * @param <E> Type of algorithm (DoubleSolution, IntegerSolution)
@@ -17,7 +20,13 @@ public class MetalSolution<T,E> {
     private E solutionAlgorithm;
 
 
+    /**
+     * MetalSolution constructor
+     *
+     * @param model MetalModel for data abstraction
+     */
     public MetalSolution(MetalModel model) {
+        // Initializing with null values and allocating memory for vectors
         computingTime = (long) 0;
         scores = new Vector[model.getNumOfObjFuncts()];
         for (int i=0; i<model.getNumOfObjFuncts(); i++)

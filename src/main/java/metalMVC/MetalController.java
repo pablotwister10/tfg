@@ -1,12 +1,14 @@
 package metalMVC;
 
-import net.objecthunter.exp4j.shuntingyard.ShuntingYard;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// MetalController Class for manipulation of GUI and execution of algorithms
+/**
+ * MetalController Class
+ *
+ * Manipulation of GUI through MetalView, execution of algorithms with and saving data into MetalModel
+ */
 class MetalController {
 
     // The MetalController needs to interact with both the MetalModel and MetalView
@@ -14,6 +16,12 @@ class MetalController {
     private MetalModel mModel;
 
 
+    /**
+     * MetalController constructor
+     *
+     * @param model MetalModel for data container
+     * @param view MetalView for updating view
+     */
     MetalController(MetalModel model, MetalView view) {
 
         mModel = model;
@@ -26,7 +34,9 @@ class MetalController {
     }
 
 
+    // Next button class implementing the ActionListener for navigation
     class NextBtnListener implements ActionListener {
+        // When event happens, tries to save data in MetalModel and then updates MetalView to the next card
         public void actionPerformed(ActionEvent e) {
             boolean saved;
             try {
@@ -36,16 +46,20 @@ class MetalController {
                         mView.cards.next(mView.panelCards);
                     } else
                         mView.showError("INSERT DATA");
-                } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 2")) {
+                }
+                else if (mView.getCardIdentifier().equalsIgnoreCase("Card 2")) {
                     saved = mModel.saveSecondCard(mView);
                     if (saved) {
                         mView.cards.next(mView.panelCards);
                     } else
                         mView.showError("INSERT DATA");
-                } else if (mView.getCardIdentifier().equalsIgnoreCase("Card 3")) {
+                }
+                else if (mView.getCardIdentifier().equalsIgnoreCase("Card 3")) {
                     saved = mModel.saveThirdCard(mView);
                     if (saved) {
                         System.out.println("Chosen project path: " + mModel.getProjectPath());
+
+                        // Execute algorithms with data from MetalModel
                         boolean executed = mModel.execute(mView);
                         if (executed) {
                             if (mModel.getPopulationSize() < 10)
@@ -61,17 +75,21 @@ class MetalController {
                     } else
                         mView.showError("INSERT DATA");
                 }
+
             } catch (Exception exc) {
                 exc.printStackTrace();
             }
         }
     }
 
+    // Previous button class implementing the ActionListener for navigation
     class PreviousBtnListener implements ActionListener {
+        // When event happens, updates MetalView to the previous card
         public void actionPerformed(ActionEvent e) {
             try {
                 mView.cards.previous(mView.panelCards);
                 mView.updateViewPanelNav();
+
             } catch (Exception exc) {
                 exc.printStackTrace();
             }

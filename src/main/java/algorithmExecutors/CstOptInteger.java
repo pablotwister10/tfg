@@ -1,111 +1,125 @@
 package algorithmExecutors;
 
 import metalMVC.MetalModel;
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
-import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.solution.IntegerSolution;
 
 import java.io.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CST_opt_Integer extends AbstractIntegerProblem {
+/**
+ * CstOptInteger Class
+ *
+ * Implements CST optimization with type of variable Integer
+ *
+ * TODO: set parameters
+ * TODO: Check if lowerBounds and upperBounds is needed or can be got from model.getMin(Max)IntervalOfVariablesDouble
+ * @param <> Type of variable (Double, Integer)
+ * @param <> Type of problem (DoubleProblem, IntegerProblem)
+ */
+public class CstOptInteger extends AbstractIntegerProblem {
 
     private MetalModel model;
 
-    
-    // Constructor de la clase DoubleProblem
-    CST_opt_Integer(MetalModel model, List<Integer> lowerbounds, List<Integer> upperbounds, String ProjectPath)  {
+
+    /**
+     * CstOptInteger constructor
+     *
+     * @param model MetalModel for data abstraction
+     * @param lowerBounds lower limits for variables
+     * @param upperBounds upper limits for variables
+     */
+    CstOptInteger(MetalModel model, List<Integer> lowerBounds, List<Integer> upperBounds)  {
         this.model = model;
 
         setNumberOfVariables(model.getNumOfVariables());
         setNumberOfObjectives(model.getNumOfObjFuncts());
-        setNumberOfConstraints(0) ;
+        setNumberOfConstraints(0);
         setName("prueba_GA");
         
 
-        setLowerLimit(lowerbounds);
-        setUpperLimit(upperbounds);
+        setLowerLimit(lowerBounds);
+        setUpperLimit(upperBounds);
     }
 
 
-    // Metodo que evalua la funcion de coste a partir de una entrada (solution)
+    // Evaluation method extracting data from macro and setting it to solution
     @Override
     public void evaluate(IntegerSolution solution) {
 
-        //La variable Double x guarda los valores que se van a evaluar en la funcion de coste (
+        // Vector of variables to evaluate cost function
         double[] x = new double[model.getNumOfVariables()];
 
+        // Initializing and extracting the value for the variables
         for (int i=0; i<model.getNumOfVariables(); i++) {
             x[i] = solution.getVariableValue(i);
         }
 
-        //Escribir los nuevos valores en la macro
+        // Modifying the variable value for the macro
         String path = model.getProjectPath() + "\\macro.bas";
         try {
             modifyVariableValues(x,path);
         } catch (IOException ex) {
-            Logger.getLogger(algorithmExecutors.CST_opt_Integer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //Lanzar CST (poner timers)
+        // Commands to run CST
         String CST_path = "\"C:\\Program Files (x86)\\CST STUDIO SUITE 2015\\CST DESIGN ENVIRONMENT.exe\"";
         String macroCST = "\"" + model.getProjectPath() + "\\macro.bas\"";
         String commandLaunchCST = CST_path + " -m " + macroCST;
 
+        // Run CST to start optimizing
         try {
             //Execute launcher VirtualBox command
             executeCommand(commandLaunchCST);
         } catch (InterruptedException ex) {
-            Logger.getLogger(algorithmExecutors.CST_opt_Integer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //Lectura de los resultados
+        // Optimization results extraction
+        // TODO: Multiobjective Functions (not only S11)
         String resultsFile = model.getProjectPath() + "\\Results.txt";
-        double[][] MS11=null;
+        double[][] MS11 = null;
         try {
             MS11 = extractResults(resultsFile);
         } catch (IOException ex) {
-            Logger.getLogger(algorithmExecutors.CST_opt_Integer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //Evaluacion de los resultados en la funcion de coste
+        // Initialization for result evaluation
         double fcost;
         double[] frequency = new double [MS11.length];
         double[] S11_data = new double [MS11.length];
 
+        // The Result.txt files are two columns with frequency (on the left) and amplitude (on the right)
         for (int i=0; i<MS11.length; i++) {
             frequency[i] = MS11[i][0];
         }
-
         for (int i=0; i<MS11.length; i++) {
             S11_data[i] = MS11[i][1];
         }
 
-        //Funcion de coste (muy sencilla) es una funcion que el optimizador va a minimizar
+        // Results evaluation
         fcost = 0;
-
         for (int i=0; i<S11_data.length; i++) {
             if(S11_data[i]<-30)
-                fcost=fcost+1;
+                fcost = fcost+1;
             else if(S11_data[i]<-20)
-                fcost=fcost+10;
+                fcost = fcost+10;
             else if(S11_data[i]<-10)
-                fcost=fcost+1000;
+                fcost = fcost+1000;
             else if(S11_data[i]<-5)
-                fcost=fcost+5000;
+                fcost = fcost+5000;
             else
-                fcost=fcost+10000;
+                fcost = fcost+10000;
         }
 
-        // TODO: Multiobjective Functions (not only S11)
+        // Saving results and scores
         model.getMetalSolution().scores[0].add(fcost);
+        // Setting algorithm objective for next evaluation
         solution.setObjective(0,fcost);
 
     }

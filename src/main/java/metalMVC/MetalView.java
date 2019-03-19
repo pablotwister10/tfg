@@ -13,13 +13,16 @@ import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
 import java.util.Vector;
 
-// MetalView Class implementing GUI
+/**
+ * MetalView Class
+ *
+ * Implements GUI
+ */
 class MetalView extends JFrame {
 
     // Main Panel (using CardLayout for navigation of different windows)
@@ -27,115 +30,104 @@ class MetalView extends JFrame {
     JPanel panelCards = new JPanel();
     CardLayout cards = new CardLayout();
 
+    // TODO: Set fix height to text fields and combo boxes from every card
 
     /* FIRST CARD */
-    // TODO: Set fix height to text fields and combo boxes
 
     private JPanel cardFirst = new JPanel();
     private final String CARD_FIRST = "Card 1";
-
-    private JPanel parameterPanelFirst = new JPanel(new SpringLayout());
-
-    private JLabel numOfVariablesLabel = new JLabel("Number of variables (introduce an integer): ", JLabel.TRAILING);
-    private JLabel variableTypeLabel = new JLabel("Variable type: ", JLabel.TRAILING);
-    private JLabel algorithmTypeLabel = new JLabel("Algorithm type: ", JLabel.TRAILING);
-    private JLabel numOfObjFunctsLabel = new JLabel("Number of objective functions (from 1 to 4): ", JLabel.TRAILING);
-
-    private JTextField numOfVariablesText = new JTextField(10);
-    private JComboBox variableTypeBox = new JComboBox();
-    private JComboBox algorithmTypeBox = new JComboBox();
-    private JTextField numOfObjFunctsText = new JTextField(10);
-
-    private ComboItem doubleVarTypeComboBox = new ComboItem("Double",1);
-    private ComboItem intVarTypeComboBox = new ComboItem("Integer",2);
-    private ComboItem algorithmGeneticComboBox = new ComboItem("Genetic Algorithm",1);
-    private ComboItem algorithmNSGAIIComboBox = new ComboItem("NSGAII",2);
-
+    // Parameters
+    private JPanel panelParameterFirst = new JPanel(new SpringLayout());
+    // Labels
+    private JLabel labelNumOfVariables = new JLabel("Number of variables (introduce an integer): ", JLabel.TRAILING);
+    private JLabel labelVariableType = new JLabel("Variable type: ", JLabel.TRAILING);
+    private JLabel labelAlgorithmType = new JLabel("Algorithm type: ", JLabel.TRAILING);
+    private JLabel labelNumOfObjFuncts = new JLabel("Number of objective functions (from 1 to 4): ", JLabel.TRAILING);
+    // Texts and Boxes
+    private JTextField textNumOfVariables = new JTextField(10);
+    private JComboBox boxVariableType = new JComboBox();
+    private JComboBox boxAlgorithmType = new JComboBox();
+    private JTextField textNumOfObjFuncts = new JTextField(10);
+    // Combo Boxes for boxes
+    private ComboItem comboBoxDoubleVarType = new ComboItem("Double",1);
+    private ComboItem comboBoxIntVarType = new ComboItem("Integer",2);
+    private ComboItem comboBoxAlgorithmGenetic = new ComboItem("Genetic Algorithm",1);
+    private ComboItem comboBoxAlgorithmNSGAII = new ComboItem("NSGAII",2);
 
     /* SECOND CARD */
-    // TODO: Set fix height to text fields and combo boxes
 
     private JPanel cardSecond = new JPanel();
     private final String CARD_SECOND = "Card 2";
-
-    private JPanel parameterPanelSecond = new JPanel();
-
-    private JLabel nameOfVariablesLabel = new JLabel("Name of Variables");
-    private JLabel minIntervalOfVariablesLabel = new JLabel("Min of Interval");
-    private JLabel maxIntervalOfVariablesLabel = new JLabel("Max of Interval");
-    private JLabel stepVariablesLabel = new JLabel("Step");
-
-    private JTextField nameOfVariablesText[] = new JTextField[100]; // reserving for 100 variables
-    private JTextField minIntervalOfVariablesText[] = new JTextField[100];
-    private JTextField maxIntervalOfVariablesText[] = new JTextField[100];
-    private JTextField stepVariablesText[] = new JTextField[100];
-
+    // Parameters
+    private JPanel panelParameterSecond = new JPanel();
+    // Labels
+    private JLabel labelNameOfVariables = new JLabel("Name of Variables");
+    private JLabel labelMinIntervalOfVariables = new JLabel("Min of Interval");
+    private JLabel labelMaxIntervalOfVariables = new JLabel("Max of Interval");
+    private JLabel labelStepVariables = new JLabel("Step");
+    // Texts arrays
+    private JTextField textNameOfVariables[] = new JTextField[100]; // reserving for 100 variables
+    private JTextField textMinIntervalOfVariables[] = new JTextField[100];
+    private JTextField textMaxIntervalOfVariables[] = new JTextField[100];
+    private JTextField textStepVariables[] = new JTextField[100];
 
     /* THIRD CARD */
-    // TODO: Set fix height to text fields and combo boxes
 
     private JPanel cardThird = new JPanel();
     private final String CARD_THIRD = "Card 3";
+    // Objective functions parameters
+    private JPanel panelObjFunction = new JPanel(new SpringLayout());
+    // Labels for objFunction
+    private JLabel labelObjFunctionOne = new JLabel("Objective function 1: ");
+    private JLabel labelObjFunctionTwo = new JLabel("Objective function 2: ");
+    private JLabel labelObjFunctionThree = new JLabel("Objective function 3: ");
+    private JLabel labelObjFunctionFour = new JLabel("Objective function 4: ");
+    // Texts for objFunction
+    private JTextField textObjFunctionOne = new JTextField(30);
+    private JTextField textObjFunctionTwo = new JTextField(30);
+    private JTextField textObjFunctionThree = new JTextField(30);
+    private JTextField textObjFunctionFour = new JTextField(30);
+    // Check boxes for objFunction
+    private JCheckBox checkBoxGraphOne = new JCheckBox("Do Graph f1");
+    private JCheckBox checkBoxGraphTwo = new JCheckBox("Do Graph f2");
+    private JCheckBox checkBoxGraphThree = new JCheckBox("Do Graph f3");
+    private JCheckBox checkBoxGraphFour = new JCheckBox("Do Graph f4");
 
-    private JPanel objFunctPanel = new JPanel(new SpringLayout());
+    // Population parameters
+    private JPanel panelPopulation = new JPanel(new SpringLayout());
+    // Labels for population
+    private JLabel labelEvaluations = new JLabel("Maximum evaluations: ");
+    private JLabel labelPopulationSize = new JLabel("Population size: ");
+    // Texts for population
+    private JTextField textEvaluations = new JTextField(10);
+    private JTextField textPopulationSize = new JTextField(10);
 
-    private JLabel objFunctOneLabel = new JLabel("Objective function 1: ");
-    private JLabel objFunctTwoLabel = new JLabel("Objective function 2: ");
-    private JLabel objFunctThreeLabel = new JLabel("Objective function 3: ");
-    private JLabel objFunctFourLabel = new JLabel("Objective function 4: ");
-
-    private JTextField objFunctOneText = new JTextField(30);
-    private JTextField objFunctTwoText = new JTextField(30);
-    private JTextField objFunctThreeText = new JTextField(30);
-    private JTextField objFunctFourText = new JTextField(30);
-
-    private JCheckBox graphOneCheck = new JCheckBox("Do Graph f1");
-    private JCheckBox graphTwoCheck = new JCheckBox("Do Graph f2");
-    private JCheckBox graphThreeCheck = new JCheckBox("Do Graph f3");
-    private JCheckBox graphFourCheck = new JCheckBox("Do Graph f4");
-
-    private JPanel populationPanel = new JPanel(new SpringLayout());
-
-    private JLabel evaluationsLabel = new JLabel("Maximum evaluations: ");
-    private JLabel populationSizeLabel = new JLabel("Population size: ");
-    private JTextField evaluationsText = new JTextField(10);
-    private JTextField populationSizeText = new JTextField(10);
-
-    private JPanel optimizationPanel = new JPanel();
-
-    private MyButtonGroup rBtnGroup = new MyButtonGroup();
-
-    private JRadioButton guiRButton = new JRadioButton("Optimize with Functions of GUI");
-    private JRadioButton cstRButton = new JRadioButton("Optimize with CST");
-    private JRadioButton matlabRButton = new JRadioButton("Optimize with MATLAB");
-
-    /* FILE CHOOSER */
-    //private JFileChooser fileChooser = new JFileChooser();
-    private JPanel panelFiles = new JPanel(new SpringLayout());
-
-    private JLabel projectPathLabel = new JLabel("Project path: ");
-    private JLabel macroBasLabel = new JLabel("Macros.bas: ");
-    private JLabel resultsTxtLabel = new JLabel("Results.txt: ");
-
-    private JTextField projectPathText = new JTextField(10);
-    private JTextField macroBasText = new JTextField(10);
-    private JTextField resultsTxtText = new JTextField(10);
-
-    private JButton projectPathBtn = new JButton("Open");
-    private JButton macroBasBtn = new JButton("Open");
-    private JButton resultsTxtBtn = new JButton("Open");
-
+    // Optimization parameters
+    private JPanel panelOptimization = new JPanel();
+    // Button Group for optimization choice
+    private MyButtonGroup buttonGroup = new MyButtonGroup();
+    // Buttons with optimization choices
+    private JRadioButton radioButtonGui = new JRadioButton("Optimize with Functions of GUI");
+    private JRadioButton radioButtonCst = new JRadioButton("Optimize with CST");
+    private JRadioButton radioButtonMatlab = new JRadioButton("Optimize with MATLAB");
+    // Project Path
+    private JPanel panelProjectPath = new JPanel(new SpringLayout());
+    // Label for project path
+    private JLabel labelProjectPath = new JLabel("Project path: ");
+    // Text for project path
+    private JTextField textProjectPath = new JTextField(10);
 
     /* NAVIGATION PANEL */
 
-    private JPanel panelNav = new JPanel();
-    private JButton previousBtn = new JButton("Previous");
-    private JButton nextBtn = new JButton("Next");
-    // TODO: Set fixed dimensions to buttons
-    final Dimension BTN_DIM = new Dimension(20,5);
+    private JPanel panelNavigation = new JPanel();
+    // Buttons for navigation
+    private JButton buttonPrevious = new JButton("Previous");
+    private JButton buttonNext = new JButton("Next");
 
 
-    /** CONSTRUCTOR */
+    /**
+     * MetalView constructor
+     */
     MetalView() {
 
         // Main Panel Layout in two panels, one with cards and another with navigation panel
@@ -143,7 +135,7 @@ class MetalView extends JFrame {
 
         // Adding both panels
         panelMain.add(panelCards);
-        panelMain.add(panelNav);
+        panelMain.add(panelNavigation);
 
         // Setting cards as layout in cards' panel
         panelCards.setLayout(cards);
@@ -153,7 +145,7 @@ class MetalView extends JFrame {
         makeSecondCard();
         makeThirdCard();
 
-        // Making navigation panel
+        // Making navigation panel, the components are added in the method
         makePanelNav();
 
         // Arranging cards
@@ -176,38 +168,41 @@ class MetalView extends JFrame {
     }
 
 
-    /* METHODS FOR CONSTRUCTION */
+    // Methods for construction of cards
+
     private void makeFirstCard() {
 
+        // First card layout
         cardFirst.setLayout(new BoxLayout(cardFirst,BoxLayout.Y_AXIS));
 
         cardFirst.setName(CARD_FIRST);
 
-        // Parameter panel
+        // Adding the first parameter panel to the first card
+        cardFirst.add(panelParameterFirst);
 
-        cardFirst.add(parameterPanelFirst);
+        // Adding all components for the first parameter panel
+        panelParameterFirst.add(labelNumOfVariables);
+        labelNumOfVariables.setLabelFor(textNumOfVariables);
+        panelParameterFirst.add(textNumOfVariables);
 
-        parameterPanelFirst.add(numOfVariablesLabel);
-        numOfVariablesLabel.setLabelFor(numOfVariablesText);
-        parameterPanelFirst.add(numOfVariablesText);
+        panelParameterFirst.add(labelVariableType);
+        labelVariableType.setLabelFor(boxVariableType);
+        panelParameterFirst.add(boxVariableType);
+        boxVariableType.addItem(comboBoxDoubleVarType);
+        boxVariableType.addItem(comboBoxIntVarType);
 
-        parameterPanelFirst.add(variableTypeLabel);
-        variableTypeLabel.setLabelFor(variableTypeBox);
-        parameterPanelFirst.add(variableTypeBox);
-        variableTypeBox.addItem(doubleVarTypeComboBox);
-        variableTypeBox.addItem(intVarTypeComboBox);
+        panelParameterFirst.add(labelAlgorithmType);
+        labelAlgorithmType.setLabelFor(boxAlgorithmType);
+        panelParameterFirst.add(boxAlgorithmType);
+        boxAlgorithmType.addItem(comboBoxAlgorithmGenetic);
+        boxAlgorithmType.addItem(comboBoxAlgorithmNSGAII);
 
-        parameterPanelFirst.add(algorithmTypeLabel);
-        algorithmTypeLabel.setLabelFor(algorithmTypeBox);
-        parameterPanelFirst.add(algorithmTypeBox);
-        algorithmTypeBox.addItem(algorithmGeneticComboBox);
-        algorithmTypeBox.addItem(algorithmNSGAIIComboBox);
+        panelParameterFirst.add(labelNumOfObjFuncts);
+        labelNumOfObjFuncts.setLabelFor(textNumOfObjFuncts);
+        panelParameterFirst.add(textNumOfObjFuncts);
 
-        parameterPanelFirst.add(numOfObjFunctsLabel);
-        numOfObjFunctsLabel.setLabelFor(numOfObjFunctsText);
-        parameterPanelFirst.add(numOfObjFunctsText);
-
-        SpringUtilities.makeCompactGrid(parameterPanelFirst,
+        // Grid set with spaces
+        SpringUtilities.makeCompactGrid(panelParameterFirst,
                 4, 2, //rows, cols
                 6, 6, //initX, initY
                 6, 6); //xPad, yPad
@@ -216,182 +211,146 @@ class MetalView extends JFrame {
 
     private void makeSecondCard() {
 
+        // Second card layout
         cardSecond.setLayout(new BoxLayout(cardSecond,BoxLayout.Y_AXIS));
 
         cardSecond.setName(CARD_SECOND);
+
+        // Second card will be updated once the number of variables is set in the first view, so there is no need to
+        // initialize anything, it's just wasting time
 
     }
 
     private void makeThirdCard() {
 
+        // Third card layout
         cardThird.setLayout(new BoxLayout(cardThird, BoxLayout.Y_AXIS));
 
         cardThird.setName(CARD_THIRD);
 
-        /* Objective panel */
 
-        cardThird.add(objFunctPanel);
+        // Adding the objective function panel to the third card
+        cardThird.add(panelObjFunction);
 
-        objFunctPanel.add(objFunctOneLabel);
-        objFunctOneLabel.setLabelFor(objFunctOneText);
-        objFunctPanel.add(objFunctOneText);
-        objFunctOneText.setEnabled(false);
-        objFunctPanel.add(graphOneCheck);
-        graphOneCheck.setEnabled(false);
+        // Adding all components for the objective function panel
+        panelObjFunction.add(labelObjFunctionOne);
+        labelObjFunctionOne.setLabelFor(textObjFunctionOne);
+        panelObjFunction.add(textObjFunctionOne);
+        textObjFunctionOne.setEnabled(false);
+        panelObjFunction.add(checkBoxGraphOne);
+        checkBoxGraphOne.setEnabled(false);
 
-        objFunctPanel.add(objFunctTwoLabel);
-        objFunctTwoLabel.setLabelFor(objFunctTwoText);
-        objFunctPanel.add(objFunctTwoText);
-        objFunctTwoText.setEnabled(false);
-        objFunctPanel.add(graphTwoCheck);
-        graphTwoCheck.setEnabled(false);
+        panelObjFunction.add(labelObjFunctionTwo);
+        labelObjFunctionTwo.setLabelFor(textObjFunctionTwo);
+        panelObjFunction.add(textObjFunctionTwo);
+        textObjFunctionTwo.setEnabled(false);
+        panelObjFunction.add(checkBoxGraphTwo);
+        checkBoxGraphTwo.setEnabled(false);
 
-        objFunctPanel.add(objFunctThreeLabel);
-        objFunctThreeLabel.setLabelFor(objFunctThreeText);
-        objFunctPanel.add(objFunctThreeText);
-        objFunctThreeText.setEnabled(false);
-        objFunctPanel.add(graphThreeCheck);
-        graphThreeCheck.setEnabled(false);
+        panelObjFunction.add(labelObjFunctionThree);
+        labelObjFunctionThree.setLabelFor(textObjFunctionThree);
+        panelObjFunction.add(textObjFunctionThree);
+        textObjFunctionThree.setEnabled(false);
+        panelObjFunction.add(checkBoxGraphThree);
+        checkBoxGraphThree.setEnabled(false);
 
-        objFunctPanel.add(objFunctFourLabel);
-        objFunctFourLabel.setLabelFor(objFunctFourText);
-        objFunctPanel.add(objFunctFourText);
-        objFunctFourText.setEnabled(false);
-        objFunctPanel.add(graphFourCheck);
-        graphFourCheck.setEnabled(false);
+        panelObjFunction.add(labelObjFunctionFour);
+        labelObjFunctionFour.setLabelFor(textObjFunctionFour);
+        panelObjFunction.add(textObjFunctionFour);
+        textObjFunctionFour.setEnabled(false);
+        panelObjFunction.add(checkBoxGraphFour);
+        checkBoxGraphFour.setEnabled(false);
 
-        SpringUtilities.makeCompactGrid(objFunctPanel,
+        // The checks and the texts are not enabled because they will be updated once the first card saves the number
+        // of objective functions
+
+        // Grid set with spaces
+        SpringUtilities.makeCompactGrid(panelObjFunction,
                 4, 3,
                 6, 6,
                 6, 6);
 
-        /* Population panel */
 
-        cardThird.add(populationPanel);
+        // Adding the population panel to the third card
+        cardThird.add(panelPopulation);
 
-        populationPanel.add(evaluationsLabel);
-        evaluationsLabel.setLabelFor(evaluationsText);
-        populationPanel.add(evaluationsText);
+        // Adding all components to population panel
+        panelPopulation.add(labelEvaluations);
+        labelEvaluations.setLabelFor(textEvaluations);
+        panelPopulation.add(textEvaluations);
 
-        populationPanel.add(populationSizeLabel);
-        populationSizeLabel.setLabelFor(populationSizeText);
-        populationPanel.add(populationSizeText);
+        panelPopulation.add(labelPopulationSize);
+        labelPopulationSize.setLabelFor(textPopulationSize);
+        panelPopulation.add(textPopulationSize);
 
-        SpringUtilities.makeCompactGrid(populationPanel,
+        // Grid set with spaces
+        SpringUtilities.makeCompactGrid(panelPopulation,
                 2, 2,
                 6, 6,
                 6, 6);
 
-        /* Optimization Panel */
 
-        cardThird.add(optimizationPanel);
+        // Adding the optimization panel to the third card
+        cardThird.add(panelOptimization);
 
-        // Select first as true
-        guiRButton.setSelected(true);
+        // Select the first button of the group as true as initialization
+        radioButtonGui.setSelected(true);
 
-        // Group the radio buttons
-        rBtnGroup.add(guiRButton);
-        rBtnGroup.add(cstRButton);
-        rBtnGroup.add(matlabRButton);
+        // Group and add the radio buttons to the button group
+        buttonGroup.add(radioButtonGui);
+        buttonGroup.add(radioButtonCst);
+        buttonGroup.add(radioButtonMatlab);
 
-        rBtnGroup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateFilesView();
-            }
-        });
+        // Add action listener to enable project path or not
+        buttonGroup.addActionListener(e -> updateProjectPathText());
 
-        optimizationPanel.add(guiRButton);
-        optimizationPanel.add(cstRButton);
-        optimizationPanel.add(matlabRButton);
-        matlabRButton.setEnabled(false);
+        // Adding all components to optimization panel
+        panelOptimization.add(radioButtonGui);
+        panelOptimization.add(radioButtonCst);
+        panelOptimization.add(radioButtonMatlab);
+        radioButtonMatlab.setEnabled(false);
 
-        /* Panel Files */
 
-        cardThird.add(panelFiles);
+        // Adding the project path panel to the third card
+        cardThird.add(panelProjectPath);
 
-        panelFiles.add(projectPathLabel);
-        projectPathLabel.setEnabled(false);
-        projectPathLabel.setLabelFor(projectPathText);
-        panelFiles.add(projectPathText);
-        projectPathText.setEnabled(false);
+        // Adding all components to the project path panel
+        panelProjectPath.add(labelProjectPath);
+        labelProjectPath.setEnabled(false);
+        labelProjectPath.setLabelFor(textProjectPath);
+        panelProjectPath.add(textProjectPath);
+        textProjectPath.setEnabled(false);
 
-        /*
-        panelFiles.add(projectPathBtn);
-        projectPathBtn.setEnabled(false);
-
-        panelFiles.add(macroBasLabel);
-        macroBasLabel.setEnabled(false);
-        macroBasLabel.setLabelFor(macroBasText);
-        panelFiles.add(macroBasText);
-        macroBasText.setEnabled(false);
-        panelFiles.add(macroBasBtn);
-        macroBasBtn.setEnabled(false);
-
-        macroBasBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooserMacro = new JFileChooser();
-            }
-        });
-
-        panelFiles.add(resultsTxtLabel);
-        resultsTxtLabel.setEnabled(false);
-        resultsTxtLabel.setLabelFor(resultsTxtText);
-        panelFiles.add(resultsTxtText);
-        resultsTxtText.setEnabled(false);
-        panelFiles.add(resultsTxtBtn);
-        resultsTxtBtn.setEnabled(false);
-
-        resultsTxtBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooserResults = new JFileChooser();
-            }
-        });
-        */
-
-        SpringUtilities.makeCompactGrid(panelFiles,
+        // Grid set with spaces
+        SpringUtilities.makeCompactGrid(panelProjectPath,
                 1, 2, //rows, cols
                 6, 6, //initX, initY
                 6, 6); //xPad, yPad
 
-
     }
 
     private void makePanelNav() {
-        previousBtn.setMnemonic(KeyEvent.VK_P);
-        nextBtn.setMnemonic(KeyEvent.VK_N);
-        panelNav.add(previousBtn);
-        panelNav.add(nextBtn);
+        // Setting mnemonics to buttons to navigate with keys P (for Previous) and N (for Next)
+        buttonPrevious.setMnemonic(KeyEvent.VK_P);
+        buttonNext.setMnemonic(KeyEvent.VK_N);
+        // Adding all components to the navigation panel
+        panelNavigation.add(buttonPrevious);
+        panelNavigation.add(buttonNext);
     }
 
 
-    /* METHODS FOR LISTENERS */
+    // Methods for adding listeners
+
     void addNextBtnListener(ActionListener next) {
-        nextBtn.addActionListener(next);
+        buttonNext.addActionListener(next);
     }
 
     void addPreviousBtnListener(ActionListener previous) {
-        previousBtn.addActionListener(previous);
+        buttonPrevious.addActionListener(previous);
     }
 
 
-    /* METHOD FOR GETTING CARD IDENTIFIER */
-    String getCardIdentifier() {
-        //now we want to get the String identifier of the top card:
-        JPanel card = null;
-        for (Component comp : this.panelCards.getComponents()) {
-            if (comp.isVisible()) {
-                card = (JPanel) comp;
-            }
-        }
-        assert card != null;
-        return card.getName();
-    }
-
-
-    /* METHODS FOR UPDATING VIEW */
+    // Methods for updating view
 
     void updateView(MetalModel model, String cardIdentifier) {
         if (cardIdentifier.equalsIgnoreCase(CARD_FIRST)) {
@@ -408,14 +367,15 @@ class MetalView extends JFrame {
     }
 
     private void updateViewPanelNav(String cardIdentifier) {
+        // The first card should not be able to go to the third with the Previous button
         if (cardIdentifier.equalsIgnoreCase(CARD_FIRST) || getCardIdentifier().equalsIgnoreCase(CARD_FIRST)) {
-            previousBtn.setEnabled(false);
+            buttonPrevious.setEnabled(false);
         }
         // This statement overwrites the previous one in case the card identifier is different from CARD_FIRST even if
         // the current card is CARD_FIRST
         // TODO: should be avoided (figure out way) BUG BC UPDATES BEFORE NEXT CARD IS SHOWN !!!
         if (cardIdentifier.equalsIgnoreCase(CARD_SECOND) || cardIdentifier.equalsIgnoreCase(CARD_THIRD)) {
-            previousBtn.setEnabled(true);
+            buttonPrevious.setEnabled(true);
         }
     }
 
@@ -423,42 +383,45 @@ class MetalView extends JFrame {
 
         int numOfVars = model.getNumOfVariables();
 
-        // Clearing out panel
+        // Clearing out panel and adding the parameter panel
         cardSecond.removeAll();
-        parameterPanelSecond.removeAll(); // TODO: Check if not needed to be deleted
-        cardSecond.add(parameterPanelSecond);
+        panelParameterSecond.removeAll(); // TODO: Check if not needed to be deleted
+        cardSecond.add(panelParameterSecond);
 
         // Setting grids as many as variables
-        parameterPanelSecond.setLayout(new SpringLayout());
+        panelParameterSecond.setLayout(new SpringLayout());
 
-        // Adding
-        parameterPanelSecond.add(nameOfVariablesLabel);
-        parameterPanelSecond.add(minIntervalOfVariablesLabel);
-        parameterPanelSecond.add(maxIntervalOfVariablesLabel);
-        parameterPanelSecond.add(stepVariablesLabel);
+        // Adding labels
+        panelParameterSecond.add(labelNameOfVariables);
+        panelParameterSecond.add(labelMinIntervalOfVariables);
+        panelParameterSecond.add(labelMaxIntervalOfVariables);
+        panelParameterSecond.add(labelStepVariables);
 
+        // Adding rows of text depending on number of variables
         for (int i=0; i<numOfVars; i++) {
-            nameOfVariablesText[i] = new JTextField();
-            minIntervalOfVariablesText[i] = new JTextField();
-            maxIntervalOfVariablesText[i] = new JTextField();
-            stepVariablesText[i] = new JTextField();
+            textNameOfVariables[i] = new JTextField();
+            textMinIntervalOfVariables[i] = new JTextField();
+            textMaxIntervalOfVariables[i] = new JTextField();
+            textStepVariables[i] = new JTextField();
             if (model.getVariableType().equalsIgnoreCase("Double"))
-                stepVariablesText[i].setEnabled(false);
+                textStepVariables[i].setEnabled(false);
 
-            parameterPanelSecond.add(nameOfVariablesText[i]);
-            parameterPanelSecond.add(minIntervalOfVariablesText[i]);
-            parameterPanelSecond.add(maxIntervalOfVariablesText[i]);
-            parameterPanelSecond.add(stepVariablesText[i]);
+            panelParameterSecond.add(textNameOfVariables[i]);
+            panelParameterSecond.add(textMinIntervalOfVariables[i]);
+            panelParameterSecond.add(textMaxIntervalOfVariables[i]);
+            panelParameterSecond.add(textStepVariables[i]);
         }
 
-        SpringUtilities.makeCompactGrid(parameterPanelSecond,
+        // Grid set with spaces
+        SpringUtilities.makeCompactGrid(panelParameterSecond,
                 numOfVars+1,4, //rows, cols
                 6,6, //initX, initY
                 6,6); //xPad, yPad
 
         updateViewPanelNav("Card 2");
 
-        JScrollPane jsp = new JScrollPane(parameterPanelSecond);
+        // If too many rows, need of scrollPane
+        JScrollPane jsp = new JScrollPane(panelParameterSecond);
         cardSecond.add(jsp);
 
     }
@@ -466,94 +429,93 @@ class MetalView extends JFrame {
     private void updateViewThirdCard(MetalModel model) {
         int numOfObjFuncts = model.getNumOfObjFuncts();
 
-        objFunctOneText.setEnabled(false);
-        graphOneCheck.setEnabled(false);
-        objFunctTwoText.setEnabled(false);
-        graphTwoCheck.setEnabled(false);
-        objFunctThreeText.setEnabled(false);
-        graphThreeCheck.setEnabled(false);
-        objFunctFourText.setEnabled(false);
-        graphFourCheck.setEnabled(false);
+        // Set all texts and checkBoxes to not enabled
+        textObjFunctionOne.setEnabled(false);
+        checkBoxGraphOne.setEnabled(false);
+        textObjFunctionTwo.setEnabled(false);
+        checkBoxGraphTwo.setEnabled(false);
+        textObjFunctionThree.setEnabled(false);
+        checkBoxGraphThree.setEnabled(false);
+        textObjFunctionFour.setEnabled(false);
+        checkBoxGraphFour.setEnabled(false);
 
+        // Now check if they need to be enabled
         if (numOfObjFuncts > 0) {
-            objFunctOneText.setEnabled(true);
-            graphOneCheck.setEnabled(true);
+            textObjFunctionOne.setEnabled(true);
+            checkBoxGraphOne.setEnabled(true);
+            if (numOfObjFuncts > 1) {
+                textObjFunctionTwo.setEnabled(true);
+                checkBoxGraphTwo.setEnabled(true);
+                if (numOfObjFuncts > 2) {
+                    textObjFunctionThree.setEnabled(true);
+                    checkBoxGraphThree.setEnabled(true);
+                    if (numOfObjFuncts > 3) {
+                        textObjFunctionFour.setEnabled(true);
+                        checkBoxGraphFour.setEnabled(true);
+                    }
+                }
+            }
         }
-        if (numOfObjFuncts > 1) {
-            objFunctTwoText.setEnabled(true);
-            graphTwoCheck.setEnabled(true);
-        }
-        if (numOfObjFuncts > 2) {
-            objFunctThreeText.setEnabled(true);
-            graphThreeCheck.setEnabled(true);
-        }
-        if (numOfObjFuncts > 3) {
-            objFunctFourText.setEnabled(true);
-            graphFourCheck.setEnabled(true);
-        }
+
     }
 
-    private void updateFilesView() {
+    private void updateProjectPathText() {
+        // If optimization choice is CST then enable it to get macros and results, otherwise disable it
         if (getOptimizationChoiceString().equalsIgnoreCase("CST")) {
-            projectPathLabel.setEnabled(true);
-            projectPathText.setEnabled(true);
-            projectPathBtn.setEnabled(true);
-            /*
-            macroBasLabel.setEnabled(true);
-            macroBasText.setEnabled(true);
-            macroBasBtn.setEnabled(true);
-            resultsTxtLabel.setEnabled(true);
-            resultsTxtText.setEnabled(true);
-            resultsTxtBtn.setEnabled(true);
-            */
+            labelProjectPath.setEnabled(true);
+            textProjectPath.setEnabled(true);
         } else {
-            projectPathLabel.setEnabled(false);
-            projectPathText.setEnabled(false);
-            projectPathBtn.setEnabled(false);
-            /*
-            macroBasLabel.setEnabled(false);
-            macroBasText.setEnabled(false);
-            macroBasBtn.setEnabled(false);
-            resultsTxtLabel.setEnabled(false);
-            resultsTxtText.setEnabled(false);
-            resultsTxtBtn.setEnabled(false);
-            */
+            labelProjectPath.setEnabled(false);
+            textProjectPath.setEnabled(false);
         }
     }
 
 
-    /* METHODS FOR UPDATING MODEL */
+    // Accessors of data in MetalView to set MetalModel values
 
-    // CARD 1
+    // Identifier of current card
+    String getCardIdentifier() {
+        // Get the String identifier of the top card
+        JPanel card = null;
+        for (Component comp : this.panelCards.getComponents()) {
+            if (comp.isVisible()) {
+                card = (JPanel) comp;
+            }
+        }
+        assert card != null;
+        return card.getName();
+    }
+
+    // Card 1
     int getNumOfVariables() {
         int numVars = 0;
 
-        if (!numOfVariablesText.getText().trim().isEmpty())
-            numVars = Integer.valueOf(numOfVariablesText.getText());
+        if (!textNumOfVariables.getText().trim().isEmpty())
+            numVars = Integer.valueOf(textNumOfVariables.getText());
 
         return numVars;
     }
 
     String getVariableType() {
-        return Objects.requireNonNull(variableTypeBox.getSelectedItem()).toString();
+        return Objects.requireNonNull(boxVariableType.getSelectedItem()).toString();
     }
 
     String getAlgorithmType() {
-        return Objects.requireNonNull(algorithmTypeBox.getSelectedItem()).toString();
+        return Objects.requireNonNull(boxAlgorithmType.getSelectedItem()).toString();
     }
 
     int getNumOfObjFuncts() {
         int numFuncts = 0;
 
-        if (!numOfObjFunctsText.getText().trim().isEmpty())
-            numFuncts = Integer.valueOf(numOfObjFunctsText.getText());
+        if (!textNumOfObjFuncts.getText().trim().isEmpty())
+            numFuncts = Integer.valueOf(textNumOfObjFuncts.getText());
 
         return numFuncts;
     }
 
-    // CARD 2
+    // Card 2
     Vector<String> getNameOfVariables() {
-        Component[] components = parameterPanelSecond.getComponents();
+        Component[] components = panelParameterSecond.getComponents();
         Vector<String> nameVars = new Vector<>(0);
 
         // Fill out vectors
@@ -564,19 +526,6 @@ class MetalView extends JFrame {
 
         return nameVars;
     }
-/*
-    Vector<T> getMinIntervalOfVariables(MetalModel<T> model) {
-        return null;
-    }
-
-    Vector<T> getMaxIntervalOfVariables() {
-        return null;
-    }
-
-    Vector<T> getStepVariables() {
-        return null;
-    }
-*/
 
     Vector<Double> getMinIntervalOfVariablesDouble() {
         return getIntervalsDouble("minDouble");
@@ -591,7 +540,7 @@ class MetalView extends JFrame {
     }
 
     private Vector<Double> getIntervalsDouble(String type) {
-        Component[] components = parameterPanelSecond.getComponents();
+        Component[] components = panelParameterSecond.getComponents();
         Vector<Double> minIntervalVarsDouble = new Vector<>(0);
         Vector<Double> maxIntervalVarsDouble = new Vector<>(0);
         Vector<Double> stepVarsDouble = new Vector<>(0);
@@ -659,17 +608,17 @@ class MetalView extends JFrame {
             return null;
     }
 
-    // CARD 3
+    // Card 3
     Vector<String> getObjFunctions() {
         Vector<String> objFuncts = new Vector<String>(0);
 
-        objFuncts.add(objFunctOneText.getText());
+        objFuncts.add(textObjFunctionOne.getText());
         if (getNumOfObjFuncts() > 1)
-            objFuncts.add(objFunctTwoText.getText());
+            objFuncts.add(textObjFunctionTwo.getText());
         if (getNumOfObjFuncts() > 2)
-            objFuncts.add(objFunctThreeText.getText());
+            objFuncts.add(textObjFunctionThree.getText());
         if (getNumOfObjFuncts() > 3)
-            objFuncts.add(objFunctFourText.getText());
+            objFuncts.add(textObjFunctionFour.getText());
 
         return objFuncts;
     }
@@ -677,10 +626,10 @@ class MetalView extends JFrame {
     boolean[] getGraphChecks() {
         boolean[] graphs = new boolean[4];
 
-        graphs[0] = graphOneCheck.isSelected();
-        graphs[1] = graphTwoCheck.isSelected();
-        graphs[2] = graphThreeCheck.isSelected();
-        graphs[3] = graphFourCheck.isSelected();
+        graphs[0] = checkBoxGraphOne.isSelected();
+        graphs[1] = checkBoxGraphTwo.isSelected();
+        graphs[2] = checkBoxGraphThree.isSelected();
+        graphs[3] = checkBoxGraphFour.isSelected();
 
         return graphs;
     }
@@ -688,8 +637,8 @@ class MetalView extends JFrame {
     int getEvaluations() {
         int evals = 0;
 
-        if (!evaluationsText.getText().trim().isEmpty())
-            evals = Integer.valueOf(evaluationsText.getText());
+        if (!textEvaluations.getText().trim().isEmpty())
+            evals = Integer.valueOf(textEvaluations.getText());
 
         return evals;
     }
@@ -697,20 +646,20 @@ class MetalView extends JFrame {
     int getPopulationSize() {
         int popSize = 0;
 
-        if (!populationSizeText.getText().trim().isEmpty())
-            popSize = Integer.valueOf(populationSizeText.getText());
+        if (!textPopulationSize.getText().trim().isEmpty())
+            popSize = Integer.valueOf(textPopulationSize.getText());
 
         return popSize;
     }
 
     int getOptimizationChoice() {
-        if (guiRButton.isSelected()) return 0;
-        else if (cstRButton.isSelected()) return 1;
-        else if (matlabRButton.isSelected()) return 2;
+        if (radioButtonGui.isSelected()) return 0;
+        else if (radioButtonCst.isSelected()) return 1;
+        else if (radioButtonMatlab.isSelected()) return 2;
         else return -1;
     }
 
-    String getOptimizationChoiceString() {
+    private String getOptimizationChoiceString() {
         int optChoice = getOptimizationChoice();
         if (optChoice == 0) return "GUI";
         else if (optChoice == 1) return "CST";
@@ -718,30 +667,24 @@ class MetalView extends JFrame {
         else return null;
     }
 
-    // FILE CHOOSER
     String getProjectPath() {
-        return Objects.requireNonNull(projectPathText.getText());
-    }
-    /*
-    String getPathMacroBas() {
-        return Objects.requireNonNull(macroBasText.getText());
+        return Objects.requireNonNull(textProjectPath.getText());
     }
 
-    String getPathResultsTxt() {
-        return Objects.requireNonNull(resultsTxtText.getText());
-    }
-    */
 
-    /* METHODS FOR ENABLING GRAPHS */
+    // Methods for displaying graphs
+
     void displayGraph(MetalModel model) {
         // TODO: Maybe implement in another class inside this file (class Graph)
         boolean graphs[] = model.getGraphChecks();
         String graphNames[] = new String[]{"One","Two","Three","Four"};
 
+        // Check if graphs are selected, if not continue
         for (int i=0; i<4; i++) {
             if (!graphs[i])
                 continue;
 
+            // Create chart and dataset with scores
             JFreeChart lineChart = ChartFactory.createLineChart(
                     "Graph: " + graphNames[i],
                     "iterations","cost", // TODO: best cost with value
@@ -749,6 +692,7 @@ class MetalView extends JFrame {
                     PlotOrientation.VERTICAL,
                     true,true,false);
 
+            // New frame to display
             JFrame chartFrame = new JFrame();
 
             ChartPanel chartPanel = new ChartPanel(lineChart);
@@ -764,16 +708,21 @@ class MetalView extends JFrame {
     }
 
     void displayPareto(MetalModel model) {
+
+        // Check what objective functions are selected to display the pareto and combine all that are chosen, otherwise
+        // continue
         for (int objectiveNumFirst=0; objectiveNumFirst<model.getNumOfObjFuncts(); objectiveNumFirst++) {
             for (int objectiveNumSecond=0; objectiveNumSecond<model.getNumOfObjFuncts(); objectiveNumSecond++) {
+
                 if (objectiveNumFirst==objectiveNumSecond || objectiveNumFirst>objectiveNumSecond)
                     continue;
                 if (!getGraphChecks()[objectiveNumFirst] || !getGraphChecks()[objectiveNumSecond])
                     continue;
-                // TODO: Change that to checkBoxes of Graphs
 
+                // Create dataset with pareto scores
                 XYDataset dataset = ChartUtilities.createXYDataset(model.getMetalSolution().getScoresPareto(),objectiveNumFirst,objectiveNumSecond);
 
+                // Create chart with dataset
                 JFreeChart chart = ChartFactory.createScatterPlot(
                         "Graph: " + Integer.toString(objectiveNumFirst+1) + " vs. " + Integer.toString(objectiveNumSecond+1),
                         Integer.toString(objectiveNumFirst+1),
@@ -782,6 +731,7 @@ class MetalView extends JFrame {
                         PlotOrientation.VERTICAL,
                         true,true,false);
 
+                // New frame to display pareto
                 JFrame chartFrame = new JFrame();
 
                 ChartPanel chartPanel = new ChartPanel(chart);
@@ -798,7 +748,9 @@ class MetalView extends JFrame {
 
     }
 
-    /* METHOD FOR ERRORS */
+
+    // Error option pane
+
     void showError(String errMessage) {
         JOptionPane.showMessageDialog(this, errMessage);
     }
