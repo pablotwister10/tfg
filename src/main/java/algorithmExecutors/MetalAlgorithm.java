@@ -576,14 +576,15 @@ public class MetalAlgorithm<T,E,P> {
         }
 
         // Path to script
-        String path = "\"C:\\Users\\Pablo\\IdeaProjects\\gh\\tfg\\src\\main\\scripts";
+        String pathToProgram = System.getProperty("user.dir");
+        String path = pathToProgram + "\\src\\main\\scripts";
 
-        String command ="python " + path + "\\update_script.py\" " + param;
+        String command ="python \"" + path + "\\update_script.py\" " + param;
         Process p = Runtime.getRuntime().exec(command);
 
         BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line = "";
-        System.out.println("Running Python starts: " + line);
+        System.out.println("Updating macro python script starts: " + line);
         line = bfr.readLine();
         System.out.println("\tPython output: " + line);
         while ((line = bfr.readLine()) != null){
