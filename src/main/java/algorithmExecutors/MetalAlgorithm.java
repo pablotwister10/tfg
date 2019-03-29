@@ -2,6 +2,8 @@ package algorithmExecutors;
 
 import metalMVC.MetalModel;
 import org.uma.jmetal.algorithm.Algorithm;
+import org.uma.jmetal.algorithm.multiobjective.mocell.MOCell;
+import org.uma.jmetal.algorithm.multiobjective.mocell.MOCellBuilder;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GeneticAlgorithmBuilder;
@@ -130,6 +132,27 @@ public class MetalAlgorithm<T,E,P> {
                         //runNSGA2CSTDouble();
                     } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
                         //runNSGA2CSTInteger();
+                    }
+                    done = true;
+                    break;
+                } else if (model.getOptimizationChoice().equalsIgnoreCase("MATLAB")) {
+                }
+            }
+            case "MOCell": {
+                if (model.getOptimizationChoice().equalsIgnoreCase("GUI")) {
+                    if (model.getVariableType().equalsIgnoreCase("Double")) {
+                        runMOCellGuiDouble();
+                    } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
+                        runMOCellGuiInteger();
+                    }
+                    done = true;
+                    break;
+                } else if (model.getOptimizationChoice().equalsIgnoreCase("CST")) {
+                    updateMacros();
+                    if (model.getVariableType().equalsIgnoreCase("Double")) {
+                        runNSGA2CSTDouble();
+                    } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
+                        runNSGA2CSTInteger();
                     }
                     done = true;
                     break;
@@ -501,6 +524,194 @@ public class MetalAlgorithm<T,E,P> {
 
     // Run NSGAII Algorithm type Integer with CST
     private void runNSGA2CSTInteger() {
+
+        // Setting algorithm of type Integer, with IntegerSolution and type of variable Integer
+        NSGAII<IntegerSolution> algorithm;
+        // Lower and Upper bounds instantiation
+        ArrayList<Integer> lowers = new ArrayList<>(model.getNumOfVariables());
+        ArrayList<Integer> uppers = new ArrayList<>(model.getNumOfVariables());
+        // Adding lower and upper bounds
+        lowers.addAll(model.getMinIntervalOfVariablesInteger());
+        uppers.addAll(model.getMaxIntervalOfVariablesInteger());
+
+        // Creating problem with model for data abstraction and lower and upper bounds
+        IntegerProblem problem = new GuiOptInteger(model,lowers,uppers);
+
+        // Crossover, Mutation and Selection parameters for the algorithm of type IntegerSolution
+        CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0);
+        MutationOperator<IntegerSolution> mutationOperator = new IntegerPolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<IntegerSolution>,IntegerSolution> selectionOperator = new BinaryTournamentSelection<>();
+
+        // NSGAII Algorithm, setting population size, evaluations and selection operator
+        algorithm = new NSGAIIBuilder<>(problem, crossoverOperator, mutationOperator)
+                .setPopulationSize(model.getPopulationSize())
+                .setMaxEvaluations(model.getEvaluations())
+                .setSelectionOperator(selectionOperator)
+                //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
+                .build();
+
+        // Execution of the algorithm, changing scores inside method
+        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
+                .execute();
+
+        // Initialization of solution to set it
+        List<IntegerSolution> solution = algorithm.getResult();
+
+        // Setting computing time and solution to metalSolution class
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        metalSolution.setSolutionAlgorithm(solution);
+        for (int i=0; i<model.getPopulationSize(); i++) {
+            for (int j=0; j<model.getNumOfObjFuncts(); j++) {
+                // Setting pareto scores to metalSolution class
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+            }
+        }
+
+    }
+
+    // Run MOCell Algorithm type Double with GUI functions
+    private void runMOCellGuiDouble() {
+
+        // Setting algorithm of type Double, with DoubleSolution and type of variable Double
+        MOCell<DoubleSolution> algorithm;
+        // Lower and Upper bounds instantiation
+        ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables());
+        ArrayList<Double> uppers = new ArrayList<>(model.getNumOfVariables());
+        // Adding lower and upper bounds
+        lowers.addAll(model.getMinIntervalOfVariablesDouble());
+        uppers.addAll(model.getMaxIntervalOfVariablesDouble());
+
+        // Creating problem with model for data abstraction and lower and upper bounds
+        DoubleProblem problem = new GuiOptDouble(model,lowers,uppers);
+
+        // Crossover, Mutation and Selection parameters for the algorithm of type DoubleSolution
+        CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0);
+        MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<>();
+
+        // NSGAII Algorithm, setting population size, evaluations and selection operator
+        algorithm = new MOCellBuilder<>(problem, crossoverOperator, mutationOperator)
+                .setPopulationSize(model.getPopulationSize())
+                .setMaxEvaluations(model.getEvaluations())
+                .setSelectionOperator(selectionOperator)
+                //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
+                .build();
+
+        // Execution of the algorithm, changing scores inside method
+        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
+                .execute();
+
+        // Initialization of solution to set it
+        List<DoubleSolution> solution = algorithm.getResult();
+
+        // Setting computing time and solution to metalSolution class
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        metalSolution.setSolutionAlgorithm(solution);
+        for (int i=0; i<model.getPopulationSize(); i++) {
+            for (int j=0; j<model.getNumOfObjFuncts(); j++) {
+                // Setting pareto scores to metalSolution class
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+            }
+        }
+
+    }
+
+    // Run MOCell Algorithm type Integer with GUI functions
+    private void runMOCellGuiInteger() {
+
+        // Setting algorithm of type Integer, with IntegerSolution and type of variable Integer
+        MOCell<IntegerSolution> algorithm;
+        // Lower and Upper bounds instantiation
+        ArrayList<Integer> lowers = new ArrayList<>(model.getNumOfVariables());
+        ArrayList<Integer> uppers = new ArrayList<>(model.getNumOfVariables());
+        // Adding lower and upper bounds
+        lowers.addAll(model.getMinIntervalOfVariablesInteger());
+        uppers.addAll(model.getMaxIntervalOfVariablesInteger());
+
+        // Creating problem with model for data abstraction and lower and upper bounds
+        IntegerProblem problem = new GuiOptInteger(model,lowers,uppers);
+
+        // Crossover, Mutation and Selection parameters for the algorithm of type IntegerSolution
+        CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0);
+        MutationOperator<IntegerSolution> mutationOperator = new IntegerPolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<IntegerSolution>,IntegerSolution> selectionOperator = new BinaryTournamentSelection<>();
+
+        // NSGAII Algorithm, setting population size, evaluations and selection operator
+        algorithm = new MOCellBuilder<>(problem, crossoverOperator, mutationOperator)
+                .setPopulationSize(model.getPopulationSize())
+                .setMaxEvaluations(model.getEvaluations())
+                .setSelectionOperator(selectionOperator)
+                //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
+                .build();
+
+        // Execution of the algorithm, changing scores inside method
+        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
+                .execute();
+
+        // Initialization of solution to set it
+        List<IntegerSolution> solution = algorithm.getResult();
+
+        // Setting computing time and solution to metalSolution class
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        metalSolution.setSolutionAlgorithm(solution);
+        for (int i=0; i<model.getPopulationSize(); i++) {
+            for (int j=0; j<model.getNumOfObjFuncts(); j++) {
+                // Setting pareto scores to metalSolution class
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+            }
+        }
+
+    }
+
+    // Run MOCell Algorithm type Double with CST
+    private void runMOCellCSTDouble() {
+
+        // Setting algorithm of type Double, with DoubleSolution and type of variable Double
+        NSGAII<DoubleSolution> algorithm;
+        // Lower and Upper bounds instantiation
+        ArrayList<Double> lowers = new ArrayList<>(model.getNumOfVariables());
+        ArrayList<Double> uppers = new ArrayList<>(model.getNumOfVariables());
+        // Adding lower and upper bounds
+        lowers.addAll(model.getMinIntervalOfVariablesDouble());
+        uppers.addAll(model.getMaxIntervalOfVariablesDouble());
+
+        // Creating problem with model for data abstraction and lower and upper bounds
+        DoubleProblem problem = new CstOptDouble(model,lowers,uppers);
+
+        // Crossover, Mutation and Selection parameters for the algorithm of type DoubleSolution
+        CrossoverOperator<DoubleSolution> crossoverOperator = new SBXCrossover(1.0,20.0);
+        MutationOperator<DoubleSolution> mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(),20.0);
+        SelectionOperator<List<DoubleSolution>,DoubleSolution> selectionOperator = new BinaryTournamentSelection<>();
+
+        // NSGAII Algorithm, setting population size, evaluations and selection operator
+        algorithm = new NSGAIIBuilder<>(problem, crossoverOperator, mutationOperator)
+                .setPopulationSize(model.getPopulationSize())
+                .setMaxEvaluations(model.getEvaluations())
+                .setSelectionOperator(selectionOperator)
+                //.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE)
+                .build();
+
+        // Execution of the algorithm, changing scores inside method
+        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
+                .execute();
+
+        // Initialization of solution to set it
+        List<DoubleSolution> solution = algorithm.getResult();
+
+        // Setting computing time and solution to metalSolution class
+        metalSolution.setComputingTime(algorithmRunner.getComputingTime());
+        metalSolution.setSolutionAlgorithm(solution);
+        for (int i=0; i<model.getPopulationSize(); i++) {
+            for (int j=0; j<model.getNumOfObjFuncts(); j++) {
+                // Setting pareto scores to metalSolution class
+                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+            }
+        }
+
+    }
+
+    // Run MOCell Algorithm type Integer with CST
+    private void runMOCellCSTInteger() {
 
         // Setting algorithm of type Integer, with IntegerSolution and type of variable Integer
         NSGAII<IntegerSolution> algorithm;

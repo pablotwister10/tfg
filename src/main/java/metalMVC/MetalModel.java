@@ -215,6 +215,10 @@ public class MetalModel {
             // Pareto graph
             if (done)
                 view.displayPareto(this);
+        } else if (algorithmType.equalsIgnoreCase("MOCell")) {
+            // Pareto graph
+            if (done)
+                view.displayPareto(this);
         }
 
         return done;

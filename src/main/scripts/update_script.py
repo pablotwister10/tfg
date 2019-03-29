@@ -11,7 +11,7 @@ parser.add_argument('-obj', '--objectives', action='append', help='Objective Var
 args = parser.parse_args()
 
 '''
-Updates macroTemplate.bas using argument parser and saves it as macroTest.bas
+Takes macro_template.bas using argument parser and saves it as macro.bas
 '''
 def main():
     current_path = os.path.dirname(os.path.realpath(__file__))

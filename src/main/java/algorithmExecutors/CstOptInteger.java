@@ -63,7 +63,7 @@ public class CstOptInteger extends AbstractIntegerProblem {
         try {
             modifyVariableValues(x,path);
         } catch (IOException ex) {
-            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE,null, ex);
         }
 
         // Commands to run CST
@@ -76,51 +76,87 @@ public class CstOptInteger extends AbstractIntegerProblem {
             //Execute launcher VirtualBox command
             executeCommand(commandLaunchCST);
         } catch (InterruptedException ex) {
-            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE,null, ex);
         }
 
         // Optimization results extraction
-        // TODO: Multiobjective Functions (not only S11)
-        String resultsFile = model.getProjectPath() + "\\Results.txt";
-        double[][] MS11 = null;
-        try {
-            MS11 = extractResults(resultsFile);
-        } catch (IOException ex) {
-            Logger.getLogger(CstOptInteger.class.getName()).log(Level.SEVERE, null, ex);
+
+        // Name of variables to optimize
+        String[] nameObjectiveVars = new String[model.getNumOfObjFuncts()];
+        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
+            nameObjectiveVars[i] = model.getObjFuncts(i+1);
         }
 
-        // Initialization for result evaluation
-        double fcost;
-        double[] frequency = new double [MS11.length];
-        double[] S11_data = new double [MS11.length];
+        // Extracting results from txt file created with CST
+        for (int i=0; i<model.getNumOfObjFuncts(); i++) {
 
-        // The Result.txt files are two columns with frequency (on the left) and amplitude (on the right)
-        for (int i=0; i<MS11.length; i++) {
-            frequency[i] = MS11[i][0];
-        }
-        for (int i=0; i<MS11.length; i++) {
-            S11_data[i] = MS11[i][1];
-        }
+            // Reading current file and extracting current objective variable results
+            String currentResultsFile = model.getProjectPath() + "\\Results_" + nameObjectiveVars[i] + ".txt";
+            double[][] currentObjectiveVar = null;
+            try {
+                currentObjectiveVar = extractResults(currentResultsFile);
+            } catch (IOException ex) {
+                Logger.getLogger(algorithmExecutors.CstOptDouble.class.getName()).log(Level.SEVERE,null, ex);
+            }
 
-        // Results evaluation
-        fcost = 0;
-        for (int i=0; i<S11_data.length; i++) {
-            if(S11_data[i]<-30)
-                fcost = fcost+1;
-            else if(S11_data[i]<-20)
-                fcost = fcost+10;
-            else if(S11_data[i]<-10)
-                fcost = fcost+1000;
-            else if(S11_data[i]<-5)
-                fcost = fcost+5000;
-            else
-                fcost = fcost+10000;
-        }
+            // Initialization for current result evaluation
+            double fcost;
+            double[] currentObjectiveVarFrequency = new double [currentObjectiveVar.length];
+            double[] currentObjectiveVarData = new double [currentObjectiveVar.length];
 
-        // Saving results and scores
-        model.getMetalSolution().scores[0].add(fcost);
-        // Setting algorithm objective for next evaluation
-        solution.setObjective(0,fcost);
+            // The Result.txt files are two columns with frequency (on the left) and amplitude (on the right)
+            for (int j=0; j<currentObjectiveVar.length; j++) {
+                currentObjectiveVarFrequency[j] = currentObjectiveVar[j][0];
+            }
+            for (int j=0; j<currentObjectiveVar.length; j++) {
+                currentObjectiveVarData[j] = currentObjectiveVar[j][1];
+            }
+
+            // Current result evaluation
+            fcost = 0;
+            // Minimize S11 and S22
+            if (nameObjectiveVars[i].equalsIgnoreCase("S11")
+                    || nameObjectiveVars[i].equalsIgnoreCase("S1,1")
+                    || nameObjectiveVars[i].equalsIgnoreCase("S22")
+                    || nameObjectiveVars[i].equalsIgnoreCase("S2,2")) {
+                for (int j=0; j<currentObjectiveVarData.length; j++) {
+                    if(currentObjectiveVarData[j]<-30)
+                        fcost = fcost+1;
+                    else if(currentObjectiveVarData[j]<-20)
+                        fcost = fcost+10;
+                    else if(currentObjectiveVarData[j]<-10)
+                        fcost = fcost+1000;
+                    else if(currentObjectiveVarData[j]<-5)
+                        fcost = fcost+5000;
+                    else
+                        fcost = fcost+10000;
+                }
+            }
+            // Maximize S12 and S21
+            else if (nameObjectiveVars[i].equalsIgnoreCase("S12")
+                    || nameObjectiveVars[i].equalsIgnoreCase("S1,2")
+                    || nameObjectiveVars[i].equalsIgnoreCase("S21")
+                    || nameObjectiveVars[i].equalsIgnoreCase("S2,1")) {
+                for (int j=0; j<currentObjectiveVarData.length; j++) {
+                    if(currentObjectiveVarData[j]<-30)
+                        fcost = fcost+10000;
+                    else if(currentObjectiveVarData[j]<-20)
+                        fcost = fcost+5000;
+                    else if(currentObjectiveVarData[j]<-10)
+                        fcost = fcost+1000;
+                    else if(currentObjectiveVarData[j]<-5)
+                        fcost = fcost+10;
+                    else
+                        fcost = fcost+1;
+                }
+            }
+
+            // Saving results and scores
+            model.getMetalSolution().scores[i].add(fcost);
+            // Setting algorithm objective for next evaluation
+            solution.setObjective(i,fcost);
+
+        }
 
     }
 

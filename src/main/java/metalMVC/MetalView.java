@@ -53,6 +53,7 @@ class MetalView extends JFrame {
     private ComboItem comboBoxIntVarType = new ComboItem("Integer",2);
     private ComboItem comboBoxAlgorithmGenetic = new ComboItem("Genetic Algorithm",1);
     private ComboItem comboBoxAlgorithmNSGAII = new ComboItem("NSGAII",2);
+    private ComboItem comboBoxAlgorithmMOCell = new ComboItem("MOCell",3);
 
     /* SECOND CARD */
 
@@ -196,6 +197,7 @@ class MetalView extends JFrame {
         panelParameterFirst.add(boxAlgorithmType);
         boxAlgorithmType.addItem(comboBoxAlgorithmGenetic);
         boxAlgorithmType.addItem(comboBoxAlgorithmNSGAII);
+        boxAlgorithmType.addItem(comboBoxAlgorithmMOCell);
 
         panelParameterFirst.add(labelNumOfObjFuncts);
         labelNumOfObjFuncts.setLabelFor(textNumOfObjFuncts);
