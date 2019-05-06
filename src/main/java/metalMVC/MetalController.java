@@ -62,15 +62,11 @@ class MetalController {
                         // Execute algorithms with data from MetalModel
                         boolean executed = mModel.execute(mView);
                         if (executed) {
-                            if (mModel.getPopulationSize() < 10)
-                                JOptionPane.showMessageDialog(mView,"Algorithm executed!\n\n" +
-                                                "Computing time took: " + Long.toString(mModel.getMetalSolution().getComputingTime()) + " ms\n" +
-                                                "MetalSolution: " + mModel.getMetalSolution().getSolutionAlgorithm().toString()
-                                );
-                            else
-                                JOptionPane.showMessageDialog(mView,"Algorithm executed!\n\n" +
-                                        "Computing time took: " + Long.toString(mModel.getMetalSolution().getComputingTime()) + " ms\n"
-                                );
+                            JOptionPane.showMessageDialog(mView,"Algorithm executed!\n\n" +
+                                    "Computing time took: " + Long.toString(mModel.getMetalSolution().getComputingTime()) + " ms\n" +
+                                    "MetalSolution: " + mModel.getMetalSolution().getSolutionVariables().toString() +
+                                    "\nfor variables: " + mModel.getNameOfVariables()
+                            );
                         }
                     } else
                         mView.showError("INSERT DATA");

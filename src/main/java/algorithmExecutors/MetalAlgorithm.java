@@ -129,9 +129,9 @@ public class MetalAlgorithm<T,E,P> {
                 } else if (model.getOptimizationChoice().equalsIgnoreCase("CST")) {
                     updateMacros();
                     if (model.getVariableType().equalsIgnoreCase("Double")) {
-                        //runNSGA2CSTDouble();
+                        runNSGA2CSTDouble();
                     } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
-                        //runNSGA2CSTInteger();
+                        runNSGA2CSTInteger();
                     }
                     done = true;
                     break;
@@ -150,9 +150,9 @@ public class MetalAlgorithm<T,E,P> {
                 } else if (model.getOptimizationChoice().equalsIgnoreCase("CST")) {
                     updateMacros();
                     if (model.getVariableType().equalsIgnoreCase("Double")) {
-                        runNSGA2CSTDouble();
+                        runMOCellCSTDouble();
                     } else if (model.getVariableType().equalsIgnoreCase("Integer")) {
-                        runNSGA2CSTInteger();
+                        runMOCellCSTInteger();
                     }
                     done = true;
                     break;
@@ -216,6 +216,12 @@ public class MetalAlgorithm<T,E,P> {
                 .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
                 .print();
 
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.getVariableValue(i));
+        }
+
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
         //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
         //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
@@ -268,6 +274,12 @@ public class MetalAlgorithm<T,E,P> {
                 .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
                 .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
                 .print();
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solutionInteger.getVariableValue(i));
+            metalSolution.solutionVariables.add(solutionInteger.getVariableValue(i));
+        }
 
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
         //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
@@ -323,6 +335,12 @@ public class MetalAlgorithm<T,E,P> {
                 .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
                 .print();
 
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.getVariableValue(i));
+        }
+
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
         //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
         //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
@@ -375,6 +393,12 @@ public class MetalAlgorithm<T,E,P> {
                 .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
                 .print();
 
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solutionInteger.getVariableValue(i));
+            metalSolution.solutionVariables.add(solutionInteger.getVariableValue(i));
+        }
+
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
         //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
         //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
@@ -416,14 +440,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<DoubleSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<DoubleSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }
@@ -463,14 +496,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<IntegerSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }
@@ -510,14 +552,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<DoubleSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<DoubleSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }
@@ -557,14 +608,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<IntegerSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }
@@ -604,14 +664,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<DoubleSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<DoubleSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }
@@ -651,14 +720,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<IntegerSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }
@@ -698,14 +776,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<DoubleSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<DoubleSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }
@@ -745,14 +832,23 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<IntegerSolution> solution = algorithm.getResult();
 
+        // Initialization to get population
+        List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
-                metalSolution.scoresPareto[i].add(j,solution.get(i).getObjective(j));
+                metalSolution.scoresPareto[i].add(j,finalPopulation.get(i).getObjective(j));
             }
+        }
+
+        for (int i=0; i<model.getNumOfVariables(); i++) {
+            System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
+                    + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
         }
 
     }

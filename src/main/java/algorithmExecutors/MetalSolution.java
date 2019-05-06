@@ -18,6 +18,7 @@ public class MetalSolution<T,E> {
     Vector<T>[] scoresPareto;
     private long computingTime;
     private E solutionAlgorithm;
+    Vector<Double> solutionVariables;
 
 
     /**
@@ -35,6 +36,7 @@ public class MetalSolution<T,E> {
         for (int i=0; i<model.getPopulationSize(); i++)
             scoresPareto[i] = new Vector<>(model.getNumOfObjFuncts());
         solutionAlgorithm = null;
+        solutionVariables = new Vector<>(model.getNumOfVariables());
     }
 
 
@@ -70,6 +72,10 @@ public class MetalSolution<T,E> {
 
     void setSolutionAlgorithm(E solutionAlgorithm) {
         this.solutionAlgorithm = solutionAlgorithm;
+    }
+
+    public Vector<Double> getSolutionVariables() {
+        return solutionVariables;
     }
 
 }
