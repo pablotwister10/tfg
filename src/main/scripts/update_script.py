@@ -41,7 +41,7 @@ def main():
             macro.writelines(line)
             macro.writelines(write_objectives(args.objectives, args.path))
             # Writing last lines and exiting
-            macro.writelines('\nSaveAs \"C:\\Users\\Pablo\\IdeaProjects\\gh\\files\\TsalidasArriba.cst\", False\n')
+            macro.writelines('\nSaveAs \"' + args.path + '\\TsalidasArriba.cst\", False\n')
             macro.writelines('\n\nEnd Sub\n')
             break
 

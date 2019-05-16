@@ -84,7 +84,14 @@ public class CstOptInteger extends AbstractIntegerProblem {
         // Name of variables to optimize
         String[] nameObjectiveVars = new String[model.getNumOfObjFuncts()];
         for (int i=0; i<model.getNumOfObjFuncts(); i++) {
-            nameObjectiveVars[i] = model.getObjFuncts(i+1);
+            String robet = model.getObjFuncts(i+1);
+            switch (model.getObjFuncts(i+1)) {
+                case "S11": nameObjectiveVars[i] = "S1,1"; break;
+                case "S12": nameObjectiveVars[i] = "S1,2"; break;
+                case "S21": nameObjectiveVars[i] = "S2,1"; break;
+                case "S22": nameObjectiveVars[i] = "S2,2"; break;
+                default: nameObjectiveVars[i] = model.getObjFuncts(i+1); break;
+            }
         }
 
         // Extracting results from txt file created with CST
