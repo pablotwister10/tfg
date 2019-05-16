@@ -276,9 +276,12 @@ public class MetalAlgorithm<T,E,P> {
                 .print();
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
+            double min_range = model.getMinIntervalOfVariablesDouble().get(i);
+            double step = model.getStepVariablesDouble().get(i);
+            double double_value = min_range + step*(solutionInteger.getVariableValue(i)-1);
             System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
-                    + solutionInteger.getVariableValue(i));
-            metalSolution.solutionVariables.add(solutionInteger.getVariableValue(i));
+                    + double_value + " in integer: " + solutionInteger.getVariableValue(i));
+            metalSolution.solutionVariables.add(double_value);
         }
 
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
@@ -394,9 +397,12 @@ public class MetalAlgorithm<T,E,P> {
                 .print();
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
+            double min_range = model.getMinIntervalOfVariablesDouble().get(i);
+            double step = model.getStepVariablesDouble().get(i);
+            double double_value = min_range + step*(solutionInteger.getVariableValue(i)-1);
             System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
-                    + solutionInteger.getVariableValue(i));
-            metalSolution.solutionVariables.add(solutionInteger.getVariableValue(i));
+                    + double_value + " in integer: " + solutionInteger.getVariableValue(i));
+            metalSolution.solutionVariables.add(double_value);
         }
 
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
@@ -502,6 +508,7 @@ public class MetalAlgorithm<T,E,P> {
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
+        // Objective function does not need conversion, working in double
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
@@ -509,10 +516,14 @@ public class MetalAlgorithm<T,E,P> {
             }
         }
 
+        // Variables need conversion, working in integer
         for (int i=0; i<model.getNumOfVariables(); i++) {
+            double min_range = model.getMinIntervalOfVariablesDouble().get(i);
+            double step = model.getStepVariablesDouble().get(i);
+            double double_value = min_range + step*(solution.get(0).getVariableValue(i)-1);
             System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
-                    + solution.get(0).getVariableValue(i));
-            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
+                    + double_value + " in integer: " + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(double_value);
         }
 
     }
@@ -614,6 +625,7 @@ public class MetalAlgorithm<T,E,P> {
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
+        // Objective function does not need conversion, working in double
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
@@ -621,10 +633,14 @@ public class MetalAlgorithm<T,E,P> {
             }
         }
 
+        // Variables need conversion, working in integer
         for (int i=0; i<model.getNumOfVariables(); i++) {
+            double min_range = model.getMinIntervalOfVariablesDouble().get(i);
+            double step = model.getStepVariablesDouble().get(i);
+            double double_value = min_range + step*(solution.get(0).getVariableValue(i)-1);
             System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
-                    + solution.get(0).getVariableValue(i));
-            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
+                    + double_value + " in integer: " + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(double_value);
         }
 
     }
@@ -726,6 +742,7 @@ public class MetalAlgorithm<T,E,P> {
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
+        // Objective function does not need conversion, working in double
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
@@ -733,10 +750,14 @@ public class MetalAlgorithm<T,E,P> {
             }
         }
 
+        // Variables need conversion, working in integer
         for (int i=0; i<model.getNumOfVariables(); i++) {
+            double min_range = model.getMinIntervalOfVariablesDouble().get(i);
+            double step = model.getStepVariablesDouble().get(i);
+            double double_value = min_range + step*(solution.get(0).getVariableValue(i)-1);
             System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
-                    + solution.get(0).getVariableValue(i));
-            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
+                    + double_value + " in integer: " + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(double_value);
         }
 
     }
@@ -838,6 +859,7 @@ public class MetalAlgorithm<T,E,P> {
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
+        // Objective function does not need conversion, working in double
         for (int i=0; i<model.getPopulationSize(); i++) {
             for (int j=0; j<model.getNumOfObjFuncts(); j++) {
                 // Setting pareto scores to metalSolution class
@@ -845,10 +867,14 @@ public class MetalAlgorithm<T,E,P> {
             }
         }
 
+        // Variables need conversion, working in integer
         for (int i=0; i<model.getNumOfVariables(); i++) {
+            double min_range = model.getMinIntervalOfVariablesDouble().get(i);
+            double step = model.getStepVariablesDouble().get(i);
+            double double_value = min_range + step*(solution.get(0).getVariableValue(i)-1);
             System.out.println("Solution for variable " + model.getNameOfVariables().get(i) + " is: "
-                    + solution.get(0).getVariableValue(i));
-            metalSolution.solutionVariables.add(solution.get(0).getVariableValue(i));
+                    + double_value + " in integer: " + solution.get(0).getVariableValue(i));
+            metalSolution.solutionVariables.add(double_value);
         }
 
     }

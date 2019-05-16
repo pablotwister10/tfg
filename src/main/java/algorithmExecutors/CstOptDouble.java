@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class CstOptDouble extends AbstractDoubleProblem {
 
     private MetalModel model;
+    int i;
 
 
     /**
@@ -34,6 +35,7 @@ public class CstOptDouble extends AbstractDoubleProblem {
      */
     CstOptDouble(MetalModel model, List<Double> lowerBounds, List<Double> upperBounds)  {
         this.model = model;
+        i=0;
 
         setNumberOfVariables(model.getNumOfVariables());
         setNumberOfObjectives(model.getNumOfObjFuncts());
@@ -48,6 +50,8 @@ public class CstOptDouble extends AbstractDoubleProblem {
     // Evaluation method extracting data from macro and setting it to solution
     @Override
     public void evaluate(DoubleSolution solution) {
+
+        System.out.println("Iteration " + i++);
 
         // Vector of variables to evaluate cost function
         double[] x = new double[model.getNumOfVariables()];
@@ -231,15 +235,9 @@ public class CstOptDouble extends AbstractDoubleProblem {
 
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-            // read the output from the command
-            System.out.println("Here is the standard output of the command: ");
-            while ((s = stdInput.readLine()) != null) {
-                //System.out.println(s);
-            }
-
             // read any errors from the attempted command
-            System.err.println("Here is the standard error of the command (if any): ");
             while ((s = stdError.readLine()) != null) {
+                System.err.println("Here is the standard error of the command: ");
                 System.err.println(s);
             }
 

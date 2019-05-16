@@ -726,7 +726,7 @@ class MetalView extends JFrame {
 
                 // Create chart with dataset
                 JFreeChart chart = ChartFactory.createScatterPlot(
-                        "Graph: " + Integer.toString(objectiveNumFirst+1) + " vs. " + Integer.toString(objectiveNumSecond+1),
+                        "Graph: f" + Integer.toString(objectiveNumFirst+1) + " vs. f" + Integer.toString(objectiveNumSecond+1),
                         Integer.toString(objectiveNumFirst+1),
                         Integer.toString(objectiveNumSecond+1),
                         dataset,
