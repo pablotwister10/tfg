@@ -597,7 +597,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesInteger());
 
         // Creating problem with model for data abstraction and lower and upper bounds
-        IntegerProblem problem = new GuiOptInteger(model,lowers,uppers);
+        IntegerProblem problem = new CstOptInteger(model,lowers,uppers);
 
         // Crossover, Mutation and Selection parameters for the algorithm of type IntegerSolution
         CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0);
@@ -831,7 +831,7 @@ public class MetalAlgorithm<T,E,P> {
         uppers.addAll(model.getMaxIntervalOfVariablesInteger());
 
         // Creating problem with model for data abstraction and lower and upper bounds
-        IntegerProblem problem = new GuiOptInteger(model,lowers,uppers);
+        IntegerProblem problem = new CstOptInteger(model,lowers,uppers);
 
         // Crossover, Mutation and Selection parameters for the algorithm of type IntegerSolution
         CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerSBXCrossover(1.0,20.0);
@@ -897,15 +897,17 @@ public class MetalAlgorithm<T,E,P> {
             if (model.getObjFuncts(i+1).equalsIgnoreCase("S11")
                     || model.getObjFuncts(i+1).equalsIgnoreCase("S1,1"))
                 param += "-obj S1,1 ";
-            if (model.getObjFuncts(i+1).equalsIgnoreCase("S12")
+            else if (model.getObjFuncts(i+1).equalsIgnoreCase("S12")
                     || model.getObjFuncts(i+1).equalsIgnoreCase("S1,2"))
                 param += "-obj S1,2 ";
-            if (model.getObjFuncts(i+1).equalsIgnoreCase("S21")
+            else if (model.getObjFuncts(i+1).equalsIgnoreCase("S21")
                     || model.getObjFuncts(i+1).equalsIgnoreCase("S2,1"))
                 param += "-obj S2,1 ";
-            if (model.getObjFuncts(i+1).equalsIgnoreCase("S22")
+            else if (model.getObjFuncts(i+1).equalsIgnoreCase("S22")
                     || model.getObjFuncts(i+1).equalsIgnoreCase("S2,2"))
                 param += "-obj S2,2 ";
+            else
+                param += "-obj S1,1 "; // By default in case there is a mathematical function
         }
 
         // Path to script
