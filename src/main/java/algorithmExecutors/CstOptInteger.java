@@ -4,9 +4,13 @@ import metalMVC.MetalModel;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
+import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.util.fileoutput.SolutionListOutput;
+import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +49,7 @@ public class CstOptInteger extends AbstractIntegerProblem {
         setNumberOfObjectives(model.getNumOfObjFuncts());
         setNumberOfConstraints(0);
         setName("prueba_GA");
-        
+
 
         setLowerLimit(lowerBounds);
         setUpperLimit(upperBounds);
@@ -57,6 +61,16 @@ public class CstOptInteger extends AbstractIntegerProblem {
     public void evaluate(IntegerSolution solution) {
 
         System.out.println("Iteration " + i++);
+        if (i%1000 == 0) {
+            System.out.println("Printing to text file...");
+            List<IntegerSolution> population = new ArrayList<>(this.model.getPopulationSize());
+            population.add(solution);
+            new SolutionListOutput(population)
+                    .setSeparator("\t")
+                    .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR_" + i + ".txt"))
+                    .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN_" + i + ".txt"))
+                    .print();
+        }
 
         // Vector of variables to evaluate cost function
         double[] x = new double[model.getNumOfVariables()];

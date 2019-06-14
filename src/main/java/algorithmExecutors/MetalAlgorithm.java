@@ -212,8 +212,8 @@ public class MetalAlgorithm<T,E,P> {
 
         new SolutionListOutput(population)
                 .setSeparator("\t")
-                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
-                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.txt"))
                 .print();
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
@@ -223,8 +223,8 @@ public class MetalAlgorithm<T,E,P> {
         }
 
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
-        //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
-        //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+        //JMetalLogger.logger.info("Objectives values have been written to file FUN.txt");
+        //JMetalLogger.logger.info("Variables values have been written to file VAR.txt");
 
     }
 
@@ -271,8 +271,8 @@ public class MetalAlgorithm<T,E,P> {
 
         new SolutionListOutput(populationInteger)
                 .setSeparator("\t")
-                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
-                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.txt"))
                 .print();
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
@@ -285,8 +285,8 @@ public class MetalAlgorithm<T,E,P> {
         }
 
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
-        //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
-        //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+        //JMetalLogger.logger.info("Objectives values have been written to file FUN.txt");
+        //JMetalLogger.logger.info("Variables values have been written to file VAR.txt");
 
     }
 
@@ -334,8 +334,8 @@ public class MetalAlgorithm<T,E,P> {
 
         new SolutionListOutput(population)
                 .setSeparator("\t")
-                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
-                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+                .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN.txt"))
                 .print();
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
@@ -345,8 +345,8 @@ public class MetalAlgorithm<T,E,P> {
         }
 
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
-        //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
-        //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+        //JMetalLogger.logger.info("Objectives values have been written to file FUN.txt");
+        //JMetalLogger.logger.info("Variables values have been written to file VAR.txt");
     }
 
     // Run Genetic Algorithm type Integer with CST
@@ -392,8 +392,8 @@ public class MetalAlgorithm<T,E,P> {
 
         new SolutionListOutput(populationInteger)
                 .setSeparator("\t")
-                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
-                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+                .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN.txt"))
                 .print();
 
         for (int i=0; i<model.getNumOfVariables(); i++) {
@@ -406,8 +406,8 @@ public class MetalAlgorithm<T,E,P> {
         }
 
         //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
-        //JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
-        //JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+        //JMetalLogger.logger.info("Objectives values have been written to file FUN.txt");
+        //JMetalLogger.logger.info("Variables values have been written to file VAR.txt");
 
     }
 
@@ -446,8 +446,15 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<DoubleSolution> solution = algorithm.getResult();
 
-        // Initialization to get population
+        // Initialization to get final population
         List<DoubleSolution> finalPopulation = algorithm.getPopulation();
+
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.txt"))
+                .print();
 
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
@@ -504,6 +511,13 @@ public class MetalAlgorithm<T,E,P> {
 
         // Initialization to get population
         List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.txt"))
+                .print();
 
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
@@ -563,8 +577,15 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization of solution to set it
         List<DoubleSolution> solution = algorithm.getResult();
 
-        // Initialization to get population
+        // Initialization to get final population
         List<DoubleSolution> finalPopulation = algorithm.getPopulation();
+
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN.txt"))
+                .print();
 
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
@@ -621,6 +642,13 @@ public class MetalAlgorithm<T,E,P> {
 
         // Initialization to get population
         List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN.txt"))
+                .print();
 
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
@@ -683,6 +711,13 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization to get population
         List<DoubleSolution> finalPopulation = algorithm.getPopulation();
 
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.txt"))
+                .print();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
@@ -738,6 +773,13 @@ public class MetalAlgorithm<T,E,P> {
 
         // Initialization to get population
         List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext("VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext("FUN.txt"))
+                .print();
 
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
@@ -800,6 +842,13 @@ public class MetalAlgorithm<T,E,P> {
         // Initialization to get population
         List<DoubleSolution> finalPopulation = algorithm.getPopulation();
 
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN.txt"))
+                .print();
+
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());
         metalSolution.setSolutionAlgorithm(solution);
@@ -855,6 +904,13 @@ public class MetalAlgorithm<T,E,P> {
 
         // Initialization to get population
         List<IntegerSolution> finalPopulation = algorithm.getPopulation();
+
+        // Output to files
+        new SolutionListOutput(finalPopulation)
+                .setSeparator("\t")
+                .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR.txt"))
+                .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN.txt"))
+                .print();
 
         // Setting computing time and solution to metalSolution class
         metalSolution.setComputingTime(algorithmRunner.getComputingTime());

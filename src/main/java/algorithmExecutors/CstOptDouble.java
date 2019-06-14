@@ -5,8 +5,11 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.util.fileoutput.SolutionListOutput;
+import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +59,16 @@ public class CstOptDouble extends AbstractDoubleProblem {
     public void evaluate(DoubleSolution solution) {
 
         System.out.println("Iteration " + i++);
+        if (i%1000 == 0) {
+            System.out.println("Printing to text file...");
+            List<DoubleSolution> population = new ArrayList<>(1);
+            population.add(solution);
+            new SolutionListOutput(population)
+                    .setSeparator("\t")
+                    .setVarFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\VAR_" + i + ".txt"))
+                    .setFunFileOutputContext(new DefaultFileOutputContext(model.getProjectPath() + "\\FUN_" + i + ".txt"))
+                    .print();
+        }
 
         // Vector of variables to evaluate cost function
         double[] x = new double[model.getNumOfVariables()];
