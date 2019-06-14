@@ -206,16 +206,13 @@ public class MetalModel {
             done = algo.run();
         }
 
-        // Display graph method calling
+        // Display graph method calling and Output scores into txt file
         if (algorithmType.equalsIgnoreCase("Genetic Algorithm")) {
             // Normal graph
             if (done)
                 view.displayGraph(this);
-        } else if (algorithmType.equalsIgnoreCase("NSGAII")) {
-            // Pareto graph
-            if (done)
-                view.displayPareto(this);
-        } else if (algorithmType.equalsIgnoreCase("MOCell")) {
+        } else if (algorithmType.equalsIgnoreCase("NSGAII")
+                || algorithmType.equalsIgnoreCase("MOCell")) {
             // Pareto graph
             if (done)
                 view.displayPareto(this);

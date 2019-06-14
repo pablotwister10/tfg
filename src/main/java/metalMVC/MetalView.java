@@ -689,7 +689,7 @@ class MetalView extends JFrame {
             // Create chart and dataset with scores
             JFreeChart lineChart = ChartFactory.createLineChart(
                     "Graph: " + graphNames[i],
-                    "population","cost", // TODO: best cost with value
+                    "evaluations","cost",
                     ChartUtilities.createDefaultCategoryDataset(model.getMetalSolution().getScores()[i]),
                     PlotOrientation.VERTICAL,
                     true,true,false);
@@ -749,7 +749,6 @@ class MetalView extends JFrame {
         }
 
     }
-
 
     // Error option pane
 

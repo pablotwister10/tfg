@@ -2,5 +2,6 @@
 .idea
 out
 *.tsv
+*.txt
 gradlew
 gradlew.bat

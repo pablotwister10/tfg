@@ -5,7 +5,10 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.util.fileoutput.SolutionListOutput;
+import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,7 @@ import java.util.Map;
 public class GuiOptDouble extends AbstractDoubleProblem {
 
     private MetalModel model;
+    int i;
 
 
     /**
@@ -35,6 +39,7 @@ public class GuiOptDouble extends AbstractDoubleProblem {
      */
     GuiOptDouble(MetalModel model, List<Double> lowerBounds, List<Double> upperBounds)  {
         this.model = model;
+        this.i = 0;
 
         setNumberOfVariables(model.getNumOfVariables());
         setNumberOfObjectives(model.getNumOfObjFuncts());
@@ -49,6 +54,18 @@ public class GuiOptDouble extends AbstractDoubleProblem {
     // Evaluation method extracting data from macro and setting it to solution
     @Override
     public void evaluate(DoubleSolution solution) {
+
+        System.out.println("Iteration " + i++);
+        if (i%1000 == 0) {
+            System.out.println("Printing to text file \"Scores_" + i + ".txt\"");
+            List<DoubleSolution> population = new ArrayList<>(1);
+            population.add(solution);
+            new SolutionListOutput(population)
+                    .setSeparator("\t")
+                    .setVarFileOutputContext(new DefaultFileOutputContext("VAR_" + i + ".txt"))
+                    .setFunFileOutputContext(new DefaultFileOutputContext("FUN_" + i + ".txt"))
+                    .print();
+        }
 
         int numberOfVariables = getNumberOfVariables();
 
